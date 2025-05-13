@@ -30,8 +30,14 @@
                     Please enter your password.
                 </div>
             </div>
-
             <button class="btn btn-primary w-100 rounded-pill mt-3 mb-3" style="font-weight: 900;" name="" type="submit">Login ➜</button>
+            <div class="d-flex justify-content-center align-items-center">
+                <div>
+                    <small class="small text-center">
+                        Don't have an account yet?
+                        <a class="fw-bold text-primary" href="register.php" style="text-decoration: none;">Register</a> </small>
+                </div>
+            </div>
         </form>
     </div>
 

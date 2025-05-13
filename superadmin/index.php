@@ -27,6 +27,22 @@
 <body>
 
     <?php include 'components/navbar.php' ?>
+    <div class="container-fluid p-4" style="background-color: #1a49cb;">
+        <div class="row">
+            <div class="d-flex align-items-center text-white">
+                <div class="flex-shrink-0 ms-3">
+                    <div class="lgu-logo-wrapper"></div>
+                </div>
+                <div class="flex-grow-1 ms-1">
+                    <h5 class="bold d-none d-sm-block pt-2" style="font-weight: 900;">CENTRALIZED RESIDENT MANAGEMENT
+                        SYSTEM</h5>
+                    <h5 class="bold d-block d-sm-none  pt-3" style="font-weight: 900;">CENTRALIZED RESIDENT MANAGEMENT
+                        SYSTEM</h5>
+                    <h4>MUNICIPALITY OF MATAASNAKAHOY, BATANGAS</h4>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <!-- Login Form Section -->
     <div class="container px-4 py-5" id="featured-3" style="margin-top: 20px;">
