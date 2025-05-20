@@ -31,8 +31,8 @@
 
     <div class="container-fluid" style="margin:1rem 0 1rem 0;">
         <ol class="breadcrumb breadcrumb-arrow shadow-sm">
-            <li><a href="home.php"><i class="bi bi-house-fill"></i></a></li>
-            <li class='active'><span><strong style="font-weight: 900 !important; color: white !important;">Family Members</strong></span></li>
+            <li><a href="index.php"><i class="bi bi-house-fill"></i></a></li>
+            <li class='active'><span><strong style="font-weight: 900 !important; color: white !important;">BARANGAY ADMINS</strong></span></li>
         </ol>
         <div class="application-index" style="height: 100vh;">
             <div id="application-grid">
@@ -40,11 +40,11 @@
                     <div class="d-flex justify-content-between align-items-center">
                         <div style="flex: 1;">
                             <h4 class="m-0 text-uppercase" style="font-weight: 900;">
-                                <img src="images/document.png" alt="BPLS" style="width: 30px;"> FAMILY MEMBERS
+                                <img src="images/document.png" alt="BPLS" style="width: 30px;"> BARANGAY ADMINS
                             </h4>
                         </div>
                         <div class="text-center text-md-right">
-                            <a class="btn btn-primary w-100 mb-3" style="font-weight: 900;" href="register_fm.php">New Application</a>
+                            <a class="btn btn-primary w-100 mb-3" style="font-weight: 900;" href="add_admin.php">New Application</a>
                         </div>
                     </div>
                 </div>
@@ -59,7 +59,7 @@
                         </div>
                         <div class="row-md-6">
                             <div class="text-center d-grid gap-2">
-                                <a class="btn btn-primary w-100 mb-3" style="font-weight: 900;" href="register_fm.php">New Application</a>
+                                <a class="btn btn-primary w-100 mb-3" style="font-weight: 900;" href="add_admin.php">New Application</a>
                             </div>
                         </div>
                     </div>
@@ -70,14 +70,12 @@
                         <thead>
                             <tr>
                                 <th>No.</th>
-                                <th>BIN</th>
-                                <th>Business Name</th>
-                                <th>Name of Owner/Applicant</th>
-                                <th>Type of Application</th>
-                                <th>Status of Application</th>
-                                <th>Method of Application</th>
-                                <th>Application Date</th>
-                                <th>Action</th>
+                                <th>Barangay</th>
+                                <th>Fullname</th>
+                                <th>Position</th>
+                                <th>Status</th>
+                                <th>Created At</th>
+                                <th>Updated At</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -89,8 +87,6 @@
                                 <td>5</td>
                                 <td>6</td>
                                 <td>7</td>
-                                <td>8</td>
-                                <td>9</td>
                             </tr>
                         </tbody>
                     </table>
