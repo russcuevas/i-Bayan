@@ -28,7 +28,6 @@
 
     <?php include 'components/navbar.php' ?>
 
-    <!-- Login Form Section -->
     <div class="container px-4 py-5" id="featured-3" style="margin-top: 20px;">
         <h2 class="pb-2 mb-3" style="color: #1a49cb; font-size: 25px; font-weight: 900; text-align: center;">Resident System for Mataasnakahoy Barangays</h2>
         <h5 class="pb-2 mb-5" style="color: grey; text-align: center">ENGAGE WITH US</h5>
@@ -39,8 +38,8 @@
                     style="background-color: #F2F6FE; min-height: 250px; border-radius: 8px;">
                     <div class="feature-icon text-white mb-3"
                         style="background-color: #1a49cb; font-size: 3rem; width: 5rem; 
-            height: 5rem; display: flex; align-items: center; 
-            justify-content: center; border-radius: 50%;">
+                height: 5rem; display: flex; align-items: center; 
+                justify-content: center; border-radius: 50%;">
                         <i class="bi bi-collection"></i>
                     </div>
                     <h5>Document Request</h5>
@@ -52,12 +51,11 @@
                     style="background-color: #F2F6FE; min-height: 250px; border-radius: 8px;">
                     <div class="feature-icon text-white mb-3"
                         style="background-color: #1a49cb; font-size: 3rem; width: 5rem; 
-    height: 5rem; display: flex; align-items: center; 
-    justify-content: center; border-radius: 50%;">
-                        <i class="bi bi-credit-card"></i> <!-- Changed to credit card icon -->
+            height: 5rem; display: flex; align-items: center; 
+            justify-content: center; border-radius: 50%;">
+                        <i class="bi bi-credit-card"></i>
                     </div>
                     <h5>Secured Payment</h5>
-
                 </div>
             </div>
 
@@ -66,16 +64,23 @@
                     style="background-color: #F2F6FE; min-height: 250px; border-radius: 8px;">
                     <div class="feature-icon text-white mb-3"
                         style="background-color: #1a49cb; font-size: 3rem; width: 5rem; 
-            height: 5rem; display: flex; align-items: center; 
-            justify-content: center; border-radius: 50%;">
-                        <i class="bi bi-megaphone"></i> <!-- Changed to announcement icon -->
+                height: 5rem; display: flex; align-items: center; 
+                justify-content: center; border-radius: 50%;">
+                        <i class="bi bi-megaphone"></i>
                     </div>
                     <h5>Barangay Announcement</h5>
                 </div>
             </div>
+        </div>
 
+        <!-- Centered Start Button -->
+        <div class="text-center">
+            <button type="button" onclick="window.location.href = 'choose_type.php'" class="btn btn-primary px-4 py-2" style="background-color: #1a49cb; border: none; font-weight: 900;">
+                CLICK HERE TO START
+            </button>
         </div>
     </div>
+
 
 
     <div class="relative flex items-center justify-center d-md-none">

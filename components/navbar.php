@@ -8,7 +8,7 @@
 
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
-                <li class="nav-item dropdown" style="margin-right: 10px;">
+                <!-- <li class="nav-item dropdown" style="margin-right: 10px;">
                     <a style="color: #1a49cb;" class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
                         data-bs-toggle="dropdown" aria-expanded="false">
                         REGISTER FAMILY MEMBERS
@@ -41,9 +41,12 @@
                 </li>
                 <li class="nav-item dropdown" style="margin-right: 10px;">
                     <a class="nav-link active" href="announcement.php" style="color: #1a49cb;">BARANGAY ANNOUNCEMENTS</a>
+                </li> -->
+                <li class="nav-item dropdown" style="margin-right: 10px;">
+                    <a class="nav-link active" href="home.php" style="color: #1a49cb;">HOME</a>
                 </li>
                 <li class="nav-item dropdown" style="margin-right: 10px;">
-                    <a class="nav-link active" href="login.php" style="color: #1a49cb;">LOGIN</a>
+                    <a class="nav-link" href="login.php" style="color: #1a49cb;">LOGIN</a>
                 </li>
             </ul>
         </div>

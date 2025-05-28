@@ -139,7 +139,7 @@
                                         </div>
                                         <div class="mb-3 field-sysuser-sys_contact_number">
                                             <label class="form-label" for="sysuser-sys_contact_number">Phone number <span style="color: red;">*</span></label>
-                                            <input type="text" id="sysuser-sys_contact_number" class="form-control text-input" style="font-weight: 900" name="" maxlength="500" placeholder="Middle name">
+                                            <input type="text" id="sysuser-sys_contact_number" class="form-control text-input" style="font-weight: 900" name="" maxlength="500" placeholder="Phone number">
                                             <div class="invalid-feedback"></div>
                                         </div>
                                     </div>

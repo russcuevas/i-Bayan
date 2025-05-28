@@ -38,6 +38,13 @@
                         <a class="fw-bold text-primary" href="register.php" style="text-decoration: none;">Register</a> </small>
                 </div>
             </div>
+            <div class="d-flex justify-content-center align-items-center">
+                <div>
+                    <small class="small text-center">
+                        Forgot Password?
+                        <a class="fw-bold text-primary" href="register.php" style="text-decoration: none;">Click here to read</a> </small>
+                </div>
+            </div>
         </form>
     </div>
 
