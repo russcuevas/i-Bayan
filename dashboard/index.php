@@ -123,7 +123,6 @@
                         <div style="color: white;">iBayan</div>
                     </div>
                 </a>
-
             </div>
             <div class="collapse navbar-collapse" id="navbar-collapse">
                 <ul class="nav navbar-nav navbar-right">
@@ -148,7 +147,7 @@
             </div>
             <!-- Widgets -->
             <div class="row clearfix">
-                <div class="col-sm-6 col-md-3 col-lg-4">
+                <div class="col-sm-6 col-md-3 col-lg-4" onclick="window.location.href = 'family_profiling.php'">
                     <div class="thumbnail text-center d-flex flex-column align-items-center justify-content-center" style="padding: 50px;">
                         <i class="fas fa-users fa-3x mb-3 icon-style"></i>
                         <div class="caption">
@@ -157,7 +156,7 @@
                     </div>
                 </div>
 
-                <div class="col-sm-6 col-md-3 col-lg-4">
+                <div class="col-sm-6 col-md-3 col-lg-4" onclick="window.location.href = 'document_request.php'">
                     <div class="thumbnail text-center d-flex flex-column align-items-center justify-content-center" style="padding: 50px;">
                         <i class="fas fa-file fa-3x mb-3 icon-style"></i>
                         <div class="caption">
@@ -165,7 +164,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-sm-6 col-md-3 col-lg-4">
+                <div class="col-sm-6 col-md-3 col-lg-4" onclick="window.location.href = 'live_chat.php'">
                     <div class="thumbnail text-center d-flex flex-column align-items-center justify-content-center" style="padding: 50px;">
                         <i class="fas fa-comment fa-3x mb-3 icon-style"></i>
                         <div class="caption">
@@ -176,7 +175,7 @@
                 <div class="col-lg-2">
 
                 </div>
-                <div class="col-sm-6 col-md-3 col-lg-4">
+                <div class="col-sm-6 col-md-3 col-lg-4" onclick="window.location.href = 'feedback.php'">
                     <div class="thumbnail text-center d-flex flex-column align-items-center justify-content-center" style="padding: 50px;">
                         <i class="fas fa-thumbs-up fa-3x mb-3 icon-style"></i>
                         <div class="caption">
@@ -184,7 +183,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-sm-6 col-md-3 col-lg-4">
+                <div class="col-sm-6 col-md-3 col-lg-4" onclick="window.location.href = 'about_us.php'">
                     <div class="thumbnail text-center d-flex flex-column align-items-center justify-content-center" style="padding: 50px;">
                         <i class="fas fa-book-open fa-3x mb-3 icon-style"></i>
                         <div class="caption">

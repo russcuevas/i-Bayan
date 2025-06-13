@@ -3547,7 +3547,7 @@ section.content {
 .noUi-connect {
     height: 3px;
     top: 6px;
-    background-color: #26a69a;
+    background-color: #1a49cb;
     box-shadow: none;
 }
 
@@ -3556,7 +3556,7 @@ section.content {
     height: 15px;
     border-radius: 50%;
     box-shadow: none;
-    background-color: #26a69a;
+    background-color: #1a49cb;
     border: none;
     left: -5px;
     top: -6px;
@@ -3581,7 +3581,7 @@ section.content {
     width: 30px;
     top: -17px;
     left: -2px;
-    background-color: #26a69a;
+    background-color: #1a49cb;
     border-radius: 50%;
     transition: border-radius .25s cubic-bezier(.215, .61, .355, 1), transform .25s cubic-bezier(.215, .61, .355, 1);
     transform: scale(.5) rotate(-45deg);
@@ -4575,8 +4575,8 @@ section.content {
     top: 0;
     width: 20px;
     height: 20px;
-    border: 2px solid #26a69a;
-    background-color: #26a69a;
+    border: 2px solid #1a49cb;
+    background-color: #1a49cb;
     z-index: 0;
 }
 
@@ -7019,12 +7019,12 @@ fieldset[disabled] .form-control {
 }
 
 .breadcrumb-col-red li a {
-    color: #000 !important;
+    color: #1a49cb !important;
     font-weight: bold;
 }
 
 .breadcrumb-bg-red {
-    background-color: #000 !important;
+    background-color: #1a49cb !important;
 }
 
 .breadcrumb-bg-red li {

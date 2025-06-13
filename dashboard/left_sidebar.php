@@ -13,7 +13,7 @@
                 </a>
             </li>
             <li>
-                <a href="family_profiling/list.php">
+                <a href="family_profiling.php">
                     <i class="material-icons">groups</i>
                     <span>Family Profiling</span>
                 </a>

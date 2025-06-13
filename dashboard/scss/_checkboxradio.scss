@@ -1,5 +1,5 @@
 ﻿[type="checkbox"] {
-    + label {
+    +label {
         padding-left: 26px;
         height: 25px;
         line-height: 21px;
@@ -8,7 +8,7 @@
     }
 
     &:checked {
-        + label {
+        +label {
             &:before {
                 top: -4px;
                 left: -2px;
@@ -20,7 +20,7 @@
 
     @each $key, $val in $colors {
         &:checked.chk-col-#{$key} {
-            + label {
+            +label {
                 &:before {
                     border-right: 2px solid $val;
                     border-bottom: 2px solid $val;
@@ -32,13 +32,13 @@
 
 [type="checkbox"].filled-in {
     &:checked {
-        + label {
+        +label {
             &:after {
                 top: 0;
                 width: 20px;
                 height: 20px;
-                border: 2px solid #26a69a;
-                background-color: #26a69a;
+                border: 2px solid #1a49cb;
+                background-color: #1a49cb;
                 z-index: 0;
             }
 
@@ -51,7 +51,7 @@
 
     @each $key, $val in $colors {
         &:checked.chk-col-#{$key} {
-            + label {
+            +label {
                 &:after {
                     border: 2px solid $val;
                     background-color: $val;
@@ -63,7 +63,7 @@
 
 [type="radio"] {
     &:not(:checked) {
-        + label {
+        +label {
             padding-left: 26px;
             height: 25px;
             line-height: 25px;
@@ -73,7 +73,7 @@
     }
 
     &:checked {
-        + label {
+        +label {
             padding-left: 26px;
             height: 25px;
             line-height: 25px;
@@ -86,7 +86,7 @@
 @each $key, $val in $colors {
     [type="radio"].radio-col-#{$key} {
         &:checked {
-            + label {
+            +label {
                 &:after {
                     background-color: $val;
                     border-color: $val;
@@ -100,7 +100,7 @@
 @each $key, $val in $colors {
     [type="radio"].with-gap.radio-col-#{$key} {
         &:checked {
-            + label {
+            +label {
                 &:before {
                     border: 2px solid $val;
                 }
