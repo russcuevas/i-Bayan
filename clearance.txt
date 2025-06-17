@@ -4,49 +4,63 @@ price
 
 clearance to operate
 tbl_operate
+document_number - randomized
 picked_up_by
-certificate_type
+relationship
+certificate_type -> Clearance to operate
 purpose
-company_name
+business_name
+business_trade -> foreign id to tbl_business_trade -> id
+business_address
 owner_name
 email
 contact
-business_trade -> foreign id to tbl_business_trade -> id
-business_address
+for_barangay
+valid_id
+birth_certificate
+is_resident
 created_at
 updated_at
 
 cedula
 tbl_cedula
+document_number - randomized
+cedula_number - randomized
 picked_up_by
+relationship
 certificate_type
-cedula_number
 purpose
-year
-place_of_issue
 fullname
+gender
 email
 contact
-gender
 civil_status
+tin
+profession
 basic_community_tax
 gross
 total_price
 interest
 total_amount_paid
+for_barangay
 created_at
 updated_at
 
 tbl_certificates
+document_number - randomized
+picked_up_by
+relationship
 certificate_type
 purpose
 fullname
 email
+gender
 contact
 valid_id
 birth_certificate
 is_resident
 is_barangay_clearance
 total_amount_paid
+for_barangay
 created_at
 updated_at

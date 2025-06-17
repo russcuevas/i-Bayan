@@ -19,10 +19,24 @@
                 </a>
             </li>
             <li>
-                <a href="certificate_issuance.php">
+                <a href="javascript:void(0);" class="menu-toggle">
                     <i class="material-icons">library_books</i>
                     <span>Certificate Issuance</span>
                 </a>
+                <ul class="ml-menu">
+                    <li>
+                        <a href="certificate_issuance.php">Certificate</a>
+                    </li>
+                    <li>
+                        <a href="certificate_operate.php">Operate</a>
+                    </li>
+                    <li>
+                        <a href="certificate_closure.php">Closure</a>
+                    </li>
+                    <li>
+                        <a href="certificate_cedula.php">Cedula</a>
+                    </li>
+                </ul>
             </li>
             <li>
                 <a href="">

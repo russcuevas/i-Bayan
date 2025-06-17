@@ -156,7 +156,7 @@
                     </div>
                 </div>
 
-                <div class="col-sm-6 col-md-3 col-lg-4" onclick="window.location.href = 'document_request.php'">
+                <div class="col-sm-6 col-md-3 col-lg-4" onclick="window.location.href = 'certificate_issuance.php'">
                     <div class="thumbnail text-center d-flex flex-column align-items-center justify-content-center" style="padding: 50px;">
                         <i class="fas fa-file fa-3x mb-3 icon-style"></i>
                         <div class="caption">

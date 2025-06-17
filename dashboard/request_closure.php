@@ -172,10 +172,11 @@
 
                                         <div class="form-group form-float" style="margin-top: 30px;">
                                             <div class="form-line">
-                                                <input style="background-color: #555; color: #ccc !important; padding: 10px !important" type="text" class="form-control" name="certificate_type" value="Cedula" readonly>
+                                                <input style="background-color: #555; color: #ccc !important; padding: 10px !important" type="text" class="form-control" name="certificate_type" value="Certificate of Business Closure" readonly>
                                                 <label class="form-label">Certificate Type <span style="color: red;">*</span></label>
                                             </div>
                                         </div>
+
                                         <!-- Purpose -->
                                         <div class="form-group form-float" style="margin-top: 30px;">
                                             <div class="form-line">
@@ -187,48 +188,37 @@
 
                                         <!-- Personal Info Heading -->
                                         <h4 class="bold span-or" style="font-weight: 900; color: #1a49cb; ">
-                                            Personal Information
+                                            Business Information
                                         </h4>
+
+                                        <div class="form-group form-float">
+                                            <label class="form-label">Business Type <span style="color: red;">*</span></label>
+                                            <select class="form-control select-form" name="certificate_type" required>
+                                                <option value="" disabled selected>SELECT BUSINESS TYPE</option>
+                                                <option value="grandfather">Barangay Clearance</option>
+                                                <option value="grandmother">Barangay Functionaries</option>
+                                            </select>
+                                        </div>
 
                                         <!-- Fullname -->
                                         <div class="form-group form-float" style="margin-top: 30px;">
                                             <div class="form-line">
-                                                <input type="text" class="form-control" name="fullname" required>
-                                                <label class="form-label">Fullname <span style="color: red;">*</span></label>
-                                            </div>
-                                        </div>
-
-                                        <!-- Gender -->
-                                        <div class="form-group form-float">
-                                            <label class="form-label">Civil Status <span style="color: red">*</span></label>
-                                            <select class="form-control select-form" name="civil_status">
-                                                <option value="" disabled selected>SELECT CIVIL STATUS</option>
-                                                <option value="single">Single</option>
-                                                <option value="married">Married</option>
-                                            </select>
-                                        </div>
-
-                                        <!-- Gender -->
-                                        <div class="form-group">
-                                            <label for="gender">Gender <span style="color: red;">*</span></label><br>
-                                            <input type="radio" name="gender" id="male" required checked>
-                                            <label for="male">Male</label>
-
-                                            <input type="radio" name="gender" id="female" class="with-gap m-l-20">
-                                            <label for="female">Female</label>
-                                        </div>
-
-                                        <div class="form-group form-float" style="margin-top: 30px;">
-                                            <div class="form-line">
-                                                <input type="text" class="form-control" name="tin" required>
-                                                <label class="form-label">Tin # <span style="color: red;">*</span></label>
+                                                <input type="text" class="form-control" name="business_name" required>
+                                                <label class="form-label">Business Name <span style="color: red;">*</span></label>
                                             </div>
                                         </div>
 
                                         <div class="form-group form-float" style="margin-top: 30px;">
                                             <div class="form-line">
-                                                <input type="text" class="form-control" name="profession" required>
-                                                <label class="form-label">Profession <span style="color: red;">*</span></label>
+                                                <input type="text" class="form-control" name="business_address" required>
+                                                <label class="form-label">Business Address <span style="color: red;">*</span></label>
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group form-float" style="margin-top: 30px;">
+                                            <div class="form-line">
+                                                <input type="text" class="form-control" name="owner_name" required>
+                                                <label class="form-label">Owner name <span style="color: red;">*</span></label>
                                             </div>
                                         </div>
 
@@ -240,6 +230,8 @@
                                             </div>
                                         </div>
 
+
+
                                         <!-- Contact -->
                                         <div class="form-group form-float">
                                             <div class="form-line">
@@ -247,6 +239,9 @@
                                                 <label class="form-label">Mobile # <span style="color: red;">*</span></label>
                                             </div>
                                         </div>
+
+
+
                                     </div>
 
                                     <!-- Right Column: File Uploads -->
