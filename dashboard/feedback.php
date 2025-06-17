@@ -67,25 +67,7 @@
             border-radius: 10px;
             padding: 50px;
             transition: all 0.3s ease;
-            cursor: pointer;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        }
-
-        .thumbnail:hover {
-            background-color: #1a49cb;
-            color: #ffffff;
-            transform: scale(1.05);
-            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
-        }
-
-        .thumbnail:hover .icon-style,
-        .thumbnail:hover h3 {
-            color: #ffffff;
-            transition: color 0.3s ease;
-        }
-
-        .icon-style {
-            transition: color 0.3s ease;
         }
     </style>
 </head>
@@ -140,117 +122,44 @@
     </section>
 
     <section class="content">
-        <div class="container-fluid">
-            <div class="block-header text-center" style="margin-bottom: 50px !important;">
-                <h3 style="color: #1a49cb;">Welcome User!</h3>
-                <h3 style="color: #1a49cb;">Resident System for Mataasnakahoy Barangays</h3>
-            </div>
-            <!-- Widgets -->
-            <div class="row clearfix">
-                <div class="col-sm-6 col-md-3 col-lg-4" onclick="window.location.href = 'family_profiling.php'">
-                    <div class="thumbnail text-center d-flex flex-column align-items-center justify-content-center" style="padding: 50px;">
-                        <i class="fas fa-users fa-3x mb-3 icon-style"></i>
-                        <div class="caption">
-                            <h3>Family Profiling</h3>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="col-sm-6 col-md-3 col-lg-4" data-toggle="modal" data-target="#requestCertificateModal">
-                    <div class="thumbnail text-center d-flex flex-column align-items-center justify-content-center" style="padding: 50px;">
-                        <i class="fas fa-file fa-3x mb-3 icon-style"></i>
-                        <div class="caption">
-                            <h3>Document Request</h3>
-                        </div>
-                    </div>
-                </div>
-
-
-                <div class="modal fade" id="requestCertificateModal" tabindex="-1" role="dialog" style="display: none;">
-                    <div class="modal-dialog modal-lg" role="document">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h4 class="modal-title" id="defaultModalLabel">Request</h4>
-                            </div>
-                            <div class="modal-body" style="max-height: 100vh; overflow-y: auto;">
-                                <div class="row">
-                                    <div class="col-sm-6 col-md-3 col-lg-4" onclick="window.location.href = 'request_certificate.php'">
-                                        <div class="thumbnail text-center d-flex flex-column align-items-center justify-content-center" style="padding: 50px;">
-                                            <i class="fas fa-file fa-3x mb-3 icon-style"></i>
-                                            <div class="caption">
-                                                <h3>Certificates</h3>
-                                            </div>
-                                        </div>
+        <div class="container-fluid" style="min-height: 80vh; display: flex; align-items: center; justify-content: center;">
+            <div class="row clearfix" style="width: 100%; max-width: 600px;">
+                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                    <div class="card">
+                        <div class="body">
+                            <h4 class="text-center" style="font-weight: 900; color: #1a49cb;">Feedback Form</h4>
+                            <form id="form_validation" method="POST">
+                                <div class="form-group form-float" style="margin-top: 20px;">
+                                    <label style="font-weight: bold;">How was your experience with our system? <span style="color:red;">*</span></label>
+                                    <div class="rating-stars text-warning" style="font-size: 24px;">
+                                        <i class="fa fa-star star" data-value="1"></i>
+                                        <i class="fa fa-star star" data-value="2"></i>
+                                        <i class="fa fa-star star" data-value="3"></i>
+                                        <i class="fa fa-star star" data-value="4"></i>
+                                        <i class="fa fa-star star" data-value="5"></i>
                                     </div>
+                                    <input type="hidden" name="rating" id="rating" required>
+                                </div>
 
-                                    <div class="col-sm-6 col-md-3 col-lg-4" onclick="window.location.href = 'request_operate.php'">
-                                        <div class="thumbnail text-center d-flex flex-column align-items-center justify-content-center" style="padding: 50px;">
-                                            <i class="fas fa-file fa-3x mb-3 icon-style"></i>
-                                            <div class="caption">
-                                                <h3>Operate</h3>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <div class="col-sm-6 col-md-3 col-lg-4" onclick="window.location.href = 'request_closure.php'">
-                                        <div class="thumbnail text-center d-flex flex-column align-items-center justify-content-center" style="padding: 50px;">
-                                            <i class="fas fa-file fa-3x mb-3 icon-style"></i>
-                                            <div class="caption">
-                                                <h3>Closure</h3>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <div class="col-sm-6 col-md-3 col-lg-4" onclick="window.location.href = 'request_cedula.php'">
-                                        <div class="thumbnail text-center d-flex flex-column align-items-center justify-content-center" style="padding: 50px;">
-                                            <i class="fas fa-file fa-3x mb-3 icon-style"></i>
-                                            <div class="caption">
-                                                <h3>Cedula</h3>
-                                            </div>
-                                        </div>
+                                <div class="form-group form-float" style="margin-top: 10px;">
+                                    <div class="form-line">
+                                        <textarea name="message" id="message" class="form-control" rows="5" required placeholder="Let us know how we can improve..."></textarea>
+                                        <label class="form-label">Your Feedback / Suggestions <span style="color:red;">*</span></label>
                                     </div>
                                 </div>
-                            </div>
-                            <!-- Footer Buttons aligned to bottom right -->
-                            <div class="modal-footer d-flex justify-content-end">
-                                <button type="button" class="btn btn-link waves-effect" data-dismiss="modal">CLOSE</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <!-- END ADD MODAL -->
 
-                <div class="col-sm-6 col-md-3 col-lg-4" onclick="window.location.href = 'live_chat.php'">
-                    <div class="thumbnail text-center d-flex flex-column align-items-center justify-content-center" style="padding: 50px;">
-                        <i class="fas fa-comment fa-3x mb-3 icon-style"></i>
-                        <div class="caption">
-                            <h3>Live Chat</h3>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-2">
-
-                </div>
-                <div class="col-sm-6 col-md-3 col-lg-4" onclick="window.location.href = 'feedback.php'">
-                    <div class="thumbnail text-center d-flex flex-column align-items-center justify-content-center" style="padding: 50px;">
-                        <i class="fas fa-thumbs-up fa-3x mb-3 icon-style"></i>
-                        <div class="caption">
-                            <h3>Feedback</h3>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-sm-6 col-md-3 col-lg-4" onclick="window.location.href = 'about_us.php'">
-                    <div class="thumbnail text-center d-flex flex-column align-items-center justify-content-center" style="padding: 50px;">
-                        <i class="fas fa-book-open fa-3x mb-3 icon-style"></i>
-                        <div class="caption">
-                            <h3>About Us</h3>
+                                <div style="display: flex; justify-content: flex-end; gap: 10px;">
+                                    <button type="submit" class="btn bg-teal waves-effect">Submit</button>
+                                    <button type="reset" class="btn btn-link waves-effect">Clear</button>
+                                </div>
+                            </form>
                         </div>
                     </div>
                 </div>
             </div>
-            <!-- #END# Widgets -->
         </div>
     </section>
+
 
     <!-- Jquery Core Js -->
     <script src="plugins/jquery/jquery.min.js"></script>
@@ -296,6 +205,7 @@
     <!-- Demo Js -->
     <script src="js/demo.js"></script>
     <script src="plugins/sweetalert/sweetalert.min.js"></script>
+
 </body>
 
 </html>

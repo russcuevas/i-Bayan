@@ -39,19 +39,19 @@
                 </ul>
             </li>
             <li>
-                <a href="">
+                <a href="live_chat.php">
                     <i class="material-icons">chat</i>
                     <span>Live Chat</span>
                 </a>
             </li>
             <li>
-                <a href="">
+                <a href="feedback.php">
                     <i class="material-icons">thumb_up</i>
                     <span>Feedback</span>
                 </a>
             </li>
             <li>
-                <a href="">
+                <a href="about_us.php">
                     <i class="material-icons">menu_book</i>
                     <span>About Us</span>
                 </a>

@@ -139,118 +139,160 @@
         <?php include('right_sidebar.php') ?>
     </section>
 
-    <section class="content">
-        <div class="container-fluid">
-            <div class="block-header text-center" style="margin-bottom: 50px !important;">
-                <h3 style="color: #1a49cb;">Welcome User!</h3>
-                <h3 style="color: #1a49cb;">Resident System for Mataasnakahoy Barangays</h3>
-            </div>
-            <!-- Widgets -->
-            <div class="row clearfix">
-                <div class="col-sm-6 col-md-3 col-lg-4" onclick="window.location.href = 'family_profiling.php'">
-                    <div class="thumbnail text-center d-flex flex-column align-items-center justify-content-center" style="padding: 50px;">
-                        <i class="fas fa-users fa-3x mb-3 icon-style"></i>
-                        <div class="caption">
-                            <h3>Family Profiling</h3>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="col-sm-6 col-md-3 col-lg-4" data-toggle="modal" data-target="#requestCertificateModal">
-                    <div class="thumbnail text-center d-flex flex-column align-items-center justify-content-center" style="padding: 50px;">
-                        <i class="fas fa-file fa-3x mb-3 icon-style"></i>
-                        <div class="caption">
-                            <h3>Document Request</h3>
-                        </div>
-                    </div>
-                </div>
-
-
-                <div class="modal fade" id="requestCertificateModal" tabindex="-1" role="dialog" style="display: none;">
-                    <div class="modal-dialog modal-lg" role="document">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h4 class="modal-title" id="defaultModalLabel">Request</h4>
-                            </div>
-                            <div class="modal-body" style="max-height: 100vh; overflow-y: auto;">
-                                <div class="row">
-                                    <div class="col-sm-6 col-md-3 col-lg-4" onclick="window.location.href = 'request_certificate.php'">
-                                        <div class="thumbnail text-center d-flex flex-column align-items-center justify-content-center" style="padding: 50px;">
-                                            <i class="fas fa-file fa-3x mb-3 icon-style"></i>
-                                            <div class="caption">
-                                                <h3>Certificates</h3>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <div class="col-sm-6 col-md-3 col-lg-4" onclick="window.location.href = 'request_operate.php'">
-                                        <div class="thumbnail text-center d-flex flex-column align-items-center justify-content-center" style="padding: 50px;">
-                                            <i class="fas fa-file fa-3x mb-3 icon-style"></i>
-                                            <div class="caption">
-                                                <h3>Operate</h3>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <div class="col-sm-6 col-md-3 col-lg-4" onclick="window.location.href = 'request_closure.php'">
-                                        <div class="thumbnail text-center d-flex flex-column align-items-center justify-content-center" style="padding: 50px;">
-                                            <i class="fas fa-file fa-3x mb-3 icon-style"></i>
-                                            <div class="caption">
-                                                <h3>Closure</h3>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <div class="col-sm-6 col-md-3 col-lg-4" onclick="window.location.href = 'request_cedula.php'">
-                                        <div class="thumbnail text-center d-flex flex-column align-items-center justify-content-center" style="padding: 50px;">
-                                            <i class="fas fa-file fa-3x mb-3 icon-style"></i>
-                                            <div class="caption">
-                                                <h3>Cedula</h3>
-                                            </div>
-                                        </div>
-                                    </div>
+    <section class="content" style="padding: 20px;">
+        <div class="container">
+            <div class="card">
+                <div class="body">
+                    <h4 class="text-center" style="font-weight: 900; color: #1a49cb;">Help Desk</h4>
+                    <p class="text-center">
+                        The Help Desk is your go-to support center for all concerns and inquiries related to barangay services. Whether you need assistance with document requests, family profiling, live chat communication, or providing feedback, our Help Desk is here to ensure a fast, reliable, and user-friendly experience for every resident.
+                    </p>
+                    <div class="row text-center" style="margin-top: 30px;">
+                        <!-- Family Profiling -->
+                        <div class="col-sm-6 col-md-3 col-lg-4" data-toggle="modal" data-target="#familyProfilingModal">
+                            <div class="thumbnail text-center d-flex flex-column align-items-center justify-content-center" style="padding: 50px;">
+                                <i class="fas fa-users fa-3x mb-3 icon-style"></i>
+                                <div class="caption">
+                                    <h3>Family Profiling</h3>
                                 </div>
                             </div>
-                            <!-- Footer Buttons aligned to bottom right -->
-                            <div class="modal-footer d-flex justify-content-end">
-                                <button type="button" class="btn btn-link waves-effect" data-dismiss="modal">CLOSE</button>
+                        </div>
+
+                        <!-- Document Request -->
+                        <div class="col-sm-6 col-md-3 col-lg-4" data-toggle="modal" data-target="#documentRequestModal">
+                            <div class="thumbnail text-center d-flex flex-column align-items-center justify-content-center" style="padding: 50px;">
+                                <i class="fas fa-file fa-3x mb-3 icon-style"></i>
+                                <div class="caption">
+                                    <h3>Document Request</h3>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                </div>
-                <!-- END ADD MODAL -->
 
-                <div class="col-sm-6 col-md-3 col-lg-4" onclick="window.location.href = 'live_chat.php'">
-                    <div class="thumbnail text-center d-flex flex-column align-items-center justify-content-center" style="padding: 50px;">
-                        <i class="fas fa-comment fa-3x mb-3 icon-style"></i>
-                        <div class="caption">
-                            <h3>Live Chat</h3>
+                        <!-- Live Chat -->
+                        <div class="col-sm-6 col-md-3 col-lg-4" data-toggle="modal" data-target="#liveChatModal">
+                            <div class="thumbnail text-center d-flex flex-column align-items-center justify-content-center" style="padding: 50px;">
+                                <i class="fas fa-comment fa-3x mb-3 icon-style"></i>
+                                <div class="caption">
+                                    <h3>Live Chat</h3>
+                                </div>
+                            </div>
                         </div>
-                    </div>
-                </div>
-                <div class="col-lg-2">
 
-                </div>
-                <div class="col-sm-6 col-md-3 col-lg-4" onclick="window.location.href = 'feedback.php'">
-                    <div class="thumbnail text-center d-flex flex-column align-items-center justify-content-center" style="padding: 50px;">
-                        <i class="fas fa-thumbs-up fa-3x mb-3 icon-style"></i>
-                        <div class="caption">
-                            <h3>Feedback</h3>
+                        <div class="col-lg-2">
+
                         </div>
-                    </div>
-                </div>
-                <div class="col-sm-6 col-md-3 col-lg-4" onclick="window.location.href = 'about_us.php'">
-                    <div class="thumbnail text-center d-flex flex-column align-items-center justify-content-center" style="padding: 50px;">
-                        <i class="fas fa-book-open fa-3x mb-3 icon-style"></i>
-                        <div class="caption">
-                            <h3>About Us</h3>
+
+                        <!-- Feedback -->
+                        <div class="col-sm-6 col-md-3 col-lg-4" data-toggle="modal" data-target="#feedbackModal">
+                            <div class="thumbnail text-center d-flex flex-column align-items-center justify-content-center" style="padding: 50px;">
+                                <i class="fas fa-thumbs-up fa-3x mb-3 icon-style"></i>
+                                <div class="caption">
+                                    <h3>Feedback</h3>
+                                </div>
+                            </div>
                         </div>
+
+                        <!-- About Us -->
+                        <div class="col-sm-6 col-md-3 col-lg-4" data-toggle="modal" data-target="#aboutUsModal">
+                            <div class="thumbnail text-center d-flex flex-column align-items-center justify-content-center" style="padding: 50px;">
+                                <i class="fas fa-book-open fa-3x mb-3 icon-style"></i>
+                                <div class="caption">
+                                    <h3>About Us</h3>
+                                </div>
+                            </div>
+                        </div>
+
                     </div>
                 </div>
             </div>
-            <!-- #END# Widgets -->
         </div>
+
+        <div class="modal fade" id="familyProfilingModal" tabindex="-1" role="dialog">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h4 class="modal-title">Family Profiling</h4>
+                    </div>
+                    <div class="modal-body">
+                        This module allows you to profile and manage family records, including household members and related demographic data.
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn bg-teal waves-effect" data-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Document Request Modal -->
+        <div class="modal fade" id="documentRequestModal" tabindex="-1" role="dialog">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h4 class="modal-title">Document Request</h4>
+                    </div>
+                    <div class="modal-body">
+                        Submit a request for official barangay documents. This may include Barangay Clearance, Certificate of Residency, and more.
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn bg-teal waves-effect" data-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Live Chat Modal -->
+        <div class="modal fade" id="liveChatModal" tabindex="-1" role="dialog">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h4 class="modal-title">Live Chat</h4>
+                    </div>
+                    <div class="modal-body">
+                        Talk to a barangay officer directly for assistance.
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn bg-teal waves-effect" data-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Feedback Modal -->
+        <div class="modal fade" id="feedbackModal" tabindex="-1" role="dialog">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h4 class="modal-title">Feedback</h4>
+                    </div>
+                    <div class="modal-body">
+                        Share your experience or suggestions to help improve our services.
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn bg-teal waves-effect" data-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- About Us Modal -->
+        <div class="modal fade" id="aboutUsModal" tabindex="-1" role="dialog">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h4 class="modal-title">About Us</h4>
+                    </div>
+                    <div class="modal-body">
+                        Learn more about our mission, services, and the team behind iBayan.
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn bg-teal waves-effect" data-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
     </section>
+
 
     <!-- Jquery Core Js -->
     <script src="plugins/jquery/jquery.min.js"></script>

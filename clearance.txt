@@ -1,6 +1,62 @@
+//SUPERADMIN
+tbl_system_configuration
+smtp_email
+sms_info_bip
+
+
+//ADMIN
+tbl_barangay
+barangay
+municipality - mataasnakahoy
+zip - 4223
+mission
+vision
+created_at
+updated_at
+created_by
+updated_by
+
+tbl_barangay_officials
+name
+position
+year
+
+tbl_admin
+barangay_id -> foreign to tbl_barangay -> id
+username
+password
+email
+fullname
+contact_number
+position - staff, 
+status
+created_at
+updated_at
+
 tbl_business_trade
 name
 price
+
+
+// USERS
+
+tbl_residents
+first_name
+middle_name
+last_name
+suffix
+barangay_address -> foreign to tbl_barangay -> id
+purok
+username
+password
+email
+valid_id
+phone_number
+is_approved
+is_online
+type
+created_at
+updated_at
 
 clearance to operate
 tbl_operate
@@ -64,3 +120,42 @@ total_amount_paid
 for_barangay
 created_at
 updated_at
+
+tbl_feedback
+resident_id -> foreign to tbl_residents -> id
+message
+rating
+created_at
+
+tbl_announcement
+announcement_title
+announcement_content
+announcement_venue
+announcement_image
+publish_date
+expiry_date
+status
+created_at
+updated_at
+created_by
+updated_by
+
+CREATE TABLE tbl_chats (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    room_id VARCHAR(100),
+    resident_id INT NULL,
+    admin_id INT NULL,
+    message TEXT NOT NULL,
+    sender_type ENUM('resident', 'admin') NOT NULL,
+    chat_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+
+    FOREIGN KEY (resident_id) REFERENCES tbl_residents(id) ON DELETE CASCADE,
+    FOREIGN KEY (admin_id) REFERENCES tbl_admin(id) ON DELETE CASCADE
+);
+
+
+
+
+
+
+

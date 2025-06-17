@@ -307,7 +307,8 @@
                                         </div>
 
                                         <!-- Pickup By -->
-                                        <h5 class="bold span-or mt-4" style="font-weight: 900; color: #1a49cb;">Pickup by: (leave blank if self)</h5>
+                                        <h5 class="bold span-or mt-4" style="font-weight: 900; color: #1a49cb;"> Pickup by: (leave blank if you will pick it up)
+                                        </h5>
 
                                         <div class="form-group form-float mt-3" style="margin-top: 20px;">
                                             <div class="form-line">

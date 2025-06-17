@@ -227,6 +227,7 @@
                                             <th>Purpose</th>
                                             <th>Email</th>
                                             <th>Mobile</th>
+                                            <th>Date</th>
                                             <th>Status</th>
                                             <th>Actions</th>
                                         </tr>
@@ -239,6 +240,7 @@
                                             <td>Education</td>
                                             <td>russelcuevas0@gmail.com</td>
                                             <td>09495748301</td>
+                                            <td>March/06/2025</td>
                                             <td>Pending</td>
                                             <td>
                                                 <a href="" class="btn bg-teal waves-effect" style="margin-bottom: 5px;"><i class="fa-solid fa-eye"></i> VIEW INFORMATION</a>
