@@ -132,7 +132,6 @@
                             <ul id="family-profiling-list">
                                 <li>Example Family Member 1</li>
                                 <li>Example Family Member 2</li>
-                                <!-- You can populate this dynamically using PHP or JavaScript -->
                             </ul>
                         </div>
                     </div>
@@ -141,11 +140,11 @@
                 <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12">
                     <div class="card">
                         <div class="header">
-                            <h2>FAMILY MEMBERS</h2>
+                            <h2>ADD FAMILY MEMBERS</h2>
                         </div>
                         <div class="body">
                             <form id="add_family_profiling" method="POST" style="margin-top: 20px;">
-                                <h4 class="bold span-or mb-4" style="font-weight: 900; color: gray;">
+                                <h4 class="bold span-or mb-4" style="font-weight: 900; color: #1a49cb;">
                                     Relationship to Family Member
                                 </h4> <br>
 
@@ -165,7 +164,7 @@
                                     </div>
                                 </div>
 
-                                <h4 class="bold span-or mb-4" style="font-weight: 900; color: gray;">
+                                <h4 class="bold span-or mb-4" style="font-weight: 900; color: #1a49cb;">
                                     Personal Information
                                 </h4> <br>
                                 <div class="row">
@@ -237,18 +236,18 @@
                                                 <input type="number" class="form-control" name="occupation" required>
                                                 <label class="form-label">Occupation <span style="color: red;">*</span></label>
                                             </div>
-                                            <div class="help-info">N/A if no one</div>
+                                            <div class="help-info">N/A if none</div>
                                         </div>
                                     </div>
                                 </div>
 
-                                <h4 class="bold span-or mb-4" style="font-weight: 900; color: gray;">
+                                <h4 class="bold span-or mb-4" style="font-weight: 900; color: #1a49cb;">
                                     Other Information
                                 </h4> <br>
                                 <div class="row">
                                     <div class="col-md-6">
                                         <div class="form-group">
-                                            <label for="botante">BOTANTE BA DITO? <span style="color: red;">*</span></label><br>
+                                            <label for="botante">Botante ba dito? <span style="color: red;">*</span></label><br>
 
                                             <input type="radio" name="botante" id="yes" value="yes" checked>
                                             <label for="yes">Yes</label>
@@ -272,7 +271,7 @@
                                     <div class="col-md-6">
                                         <div class="form-group form-float">
                                             <div class="form-line">
-                                                <input type="number" class="form-control" name="mobile" required>
+                                                <input type="number" class="form-control" name="mobile">
                                                 <label class="form-label">Mobile #</label>
                                             </div>
                                         </div>
@@ -280,7 +279,7 @@
                                     <div class="col-md-6">
                                         <div class="form-group form-float">
                                             <div class="form-line">
-                                                <input type="text" class="form-control" name="philhealth" required>
+                                                <input type="text" class="form-control" name="philhealth">
                                                 <label class="form-label">Philhealth #</label>
                                             </div>
                                         </div>

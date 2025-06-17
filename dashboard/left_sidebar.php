@@ -19,7 +19,7 @@
                 </a>
             </li>
             <li>
-                <a href="">
+                <a href="certificate_issuance.php">
                     <i class="material-icons">library_books</i>
                     <span>Certificate Issuance</span>
                 </a>
