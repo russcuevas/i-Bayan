@@ -162,21 +162,22 @@
                         </div>
                         <div class="body">
                             <form id="request_certifacte_validation" method="POST" enctype="multipart/form-data">
-                                <h4 class="bold span-or " style="font-weight: 900; color: #1a49cb; margin-bottom: 0px !important;">
-                                    Request Information
-                                </h4> <br>
-
                                 <div class="row">
-                                    <!-- Left Column: Form Inputs -->
+                                    <!-- LEFT COLUMN -->
                                     <div class="col-md-6 pr-4">
-                                        <div class="form-group form-float" style="margin-top: 30px;">
+
+                                        <!-- Request Information -->
+                                        <h4 class="bold span-or" style="font-weight: 900; color: #1a49cb;">
+                                            Request Information
+                                        </h4><br>
+
+                                        <div class="form-group form-float">
                                             <div class="form-line">
                                                 <input style="background-color: #555; color: #ccc !important; padding: 10px !important" type="text" class="form-control" name="certificate_type" value="Clearance to Operate" readonly>
                                                 <label class="form-label">Certificate Type <span style="color: red;">*</span></label>
                                             </div>
                                         </div>
 
-                                        <!-- Purpose -->
                                         <div class="form-group form-float" style="margin-top: 30px;">
                                             <div class="form-line">
                                                 <input type="text" class="form-control" name="purpose" required>
@@ -184,22 +185,20 @@
                                             </div>
                                         </div>
 
-
-                                        <!-- Personal Info Heading -->
-                                        <h4 class="bold span-or" style="font-weight: 900; color: #1a49cb; ">
+                                        <!-- Business Information -->
+                                        <h4 class="bold span-or mt-4" style="font-weight: 900; color: #1a49cb;">
                                             Business Information
-                                        </h4>
+                                        </h4><br>
 
                                         <div class="form-group form-float">
                                             <label class="form-label">Business Type <span style="color: red;">*</span></label>
-                                            <select class="form-control select-form" name="certificate_type" required>
+                                            <select class="form-control select-form" name="business_type" required>
                                                 <option value="" disabled selected>SELECT BUSINESS TYPE</option>
-                                                <option value="grandfather">Barangay Clearance</option>
-                                                <option value="grandmother">Barangay Functionaries</option>
+                                                <option value="barangay_clearance">Barangay Clearance</option>
+                                                <option value="barangay_functionaries">Barangay Functionaries</option>
                                             </select>
                                         </div>
 
-                                        <!-- Fullname -->
                                         <div class="form-group form-float" style="margin-top: 30px;">
                                             <div class="form-line">
                                                 <input type="text" class="form-control" name="business_name" required>
@@ -217,11 +216,10 @@
                                         <div class="form-group form-float" style="margin-top: 30px;">
                                             <div class="form-line">
                                                 <input type="text" class="form-control" name="owner_name" required>
-                                                <label class="form-label">Owner name <span style="color: red;">*</span></label>
+                                                <label class="form-label">Owner Name <span style="color: red;">*</span></label>
                                             </div>
                                         </div>
 
-                                        <!-- Email -->
                                         <div class="form-group form-float">
                                             <div class="form-line">
                                                 <input type="email" class="form-control" name="email" required>
@@ -229,27 +227,22 @@
                                             </div>
                                         </div>
 
-
-
-                                        <!-- Contact -->
                                         <div class="form-group form-float">
                                             <div class="form-line">
                                                 <input type="number" class="form-control" name="contact" required>
                                                 <label class="form-label">Mobile # <span style="color: red;">*</span></label>
                                             </div>
                                         </div>
-
-
-
                                     </div>
 
-                                    <!-- Right Column: File Uploads -->
+                                    <!-- RIGHT COLUMN -->
                                     <div class="col-md-6 pl-4">
+
+                                        <!-- Requirements -->
                                         <h4 class="bold span-or mb-4" style="font-weight: 900; color: #1a49cb;">
                                             Requirements
-                                        </h4> <br>
+                                        </h4><br>
 
-                                        <!-- Valid ID -->
                                         <div class="form-group form-float">
                                             <div class="form-line">
                                                 <input type="file" class="form-control" name="valid_id" required>
@@ -257,7 +250,6 @@
                                             </div>
                                         </div>
 
-                                        <!-- Birth Certificate -->
                                         <div class="form-group form-float">
                                             <div class="form-line">
                                                 <input type="file" class="form-control" name="birth_certificate" required>
@@ -267,28 +259,24 @@
 
                                         <div class="form-group form-float">
                                             <label for="botante">Resident? <span style="color: red;">*</span></label><br>
-
                                             <input type="radio" name="botante" id="yes" value="yes" required checked>
                                             <label for="yes">Yes</label>
-
                                             <input type="radio" name="botante" id="no" value="no" class="m-l-20">
                                             <label for="no">No</label>
-
                                         </div>
 
-                                        <h5 class="bold span-or" style="font-weight: 900; color: #1a49cb; ">
-                                            Pickup by : (leave blank if you the one will pickup)
-                                        </h5>
+                                        <!-- Pickup Info -->
+                                        <h5 class="bold span-or mt-4" style="font-weight: 900; color: #1a49cb;">
+                                            Pickup by: (leave blank if you will pick it up)
+                                        </h5><br>
 
-                                        <!-- Fullname -->
-                                        <div class="form-group form-float" style="margin-top: 30px;">
+                                        <div class="form-group form-float" style="margin-top: 10px;">
                                             <div class="form-line">
                                                 <input type="text" class="form-control" name="fullname_relatives">
                                                 <label class="form-label">Fullname</label>
                                             </div>
                                         </div>
 
-                                        <!-- Gender -->
                                         <div class="form-group form-float">
                                             <label class="form-label">Relationship</label>
                                             <select class="form-control select-form" name="relationship">
@@ -299,28 +287,25 @@
                                                 <option value="mother">Mother</option>
                                                 <option value="sibling">Sibling</option>
                                                 <option value="son">Son</option>
-
                                             </select>
                                         </div>
                                     </div>
                                 </div>
 
-                                <!-- Buttons -->
-                                <!-- Total Price Display -->
+                                <!-- Footer -->
                                 <div style="display: flex; justify-content: end; margin-top: 20px;">
                                     <h5 style="font-weight: bold; color: brown;">
                                         AMOUNT TO PAY: <span style="color: #000;">₱50.00 pesos</span>
                                     </h5>
                                 </div>
 
-                                <!-- Buttons -->
                                 <div style="display: flex; justify-content: end; gap: 5px; margin-top: 10px;">
                                     <button class="btn bg-teal waves-effect" type="submit">Request</button>
                                     <button class="btn btn-link waves-effect" type="button" onclick="window.location.href = 'certificate_operate.php'">Go back</button>
                                 </div>
-
                             </form>
                         </div>
+
                     </div>
                 </div>
             </div>

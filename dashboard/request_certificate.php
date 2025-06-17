@@ -162,53 +162,45 @@
                         </div>
                         <div class="body">
                             <form id="request_certifacte_validation" method="POST" enctype="multipart/form-data">
-                                <h4 class="bold span-or " style="font-weight: 900; color: #1a49cb; margin-bottom: 0px !important;">
-                                    Request Information
-                                </h4> <br>
-
                                 <div class="row">
-                                    <!-- Left Column: Form Inputs -->
+                                    <!-- Left Column: Request Info and Personal Info -->
                                     <div class="col-md-6 pr-4">
-                                        <!-- Certificate Type -->
+                                        <!-- Request Information -->
+                                        <h4 class="bold span-or" style="font-weight: 900; color: #1a49cb;">Request Information</h4>
                                         <div class="form-group form-float">
                                             <label class="form-label">Certificate Type <span style="color: red;">*</span></label>
                                             <select class="form-control select-form" name="certificate_type" required>
                                                 <option value="" disabled selected>CHOOSE CERTIFICATE</option>
-                                                <option value="grandfather">Barangay Clearance</option>
-                                                <option value="grandmother">Barangay Functionaries</option>
-                                                <option value="father">Certificate of Indigency</option>
-                                                <option value="mother">Certificate of Relationship</option>
-                                                <option value="sibling">Certificate of Residency</option>
-                                                <option value="sibling">Certificate of Non-Residency</option>
-                                                <option value="sibling">Certificate of Good Moral</option>
-                                                <option value="sibling">Certificate of Transient</option>
-                                                <option value="sibling">Certificate of Low Income</option>
-                                                <option value="sibling">Certificate of No Income</option>
-                                                <option value="sibling">Certificate of Permit</option>
-                                                <option value="sibling">Certificate of Solo Parents</option>
-                                                <option value="sibling">Certificate of Business Closure</option>
-                                                <option value="sibling">Certificate of Guardianship</option>
+                                                <option value="Barangay Clearance">Barangay Clearance</option>
+                                                <option value="Barangay Functionaries">Barangay Functionaries</option>
+                                                <option value="Certificate of Indigency">Certificate of Indigency</option>
+                                                <option value="Certificate of Relationship">Certificate of Relationship</option>
+                                                <option value="Certificate of Residency">Certificate of Residency</option>
+                                                <option value="Certificate of Non-Residency">Certificate of Non-Residency</option>
+                                                <option value="Certificate of Good Moral">Certificate of Good Moral</option>
+                                                <option value="Certificate of Transient">Certificate of Transient</option>
+                                                <option value="Certificate of Low Income">Certificate of Low Income</option>
+                                                <option value="Certificate of No Income">Certificate of No Income</option>
+                                                <option value="Certificate of Permit">Certificate of Permit</option>
+                                                <option value="Certificate of Solo Parents">Certificate of Solo Parents</option>
+                                                <option value="Certificate of Business Closure">Certificate of Business Closure</option>
+                                                <option value="Certificate of Guardianship">Certificate of Guardianship</option>
                                             </select>
                                         </div>
 
-                                        <!-- Purpose -->
                                         <div class="form-group form-float">
                                             <label class="form-label">Purpose <span style="color: red;">*</span></label>
                                             <select class="form-control select-form" name="purpose" required>
                                                 <option value="" disabled selected>CHOOSE PURPOSE</option>
-                                                <option value="medical">Medical</option>
-                                                <option value="educational">Educational</option>
-                                                <option value="burial">Burial</option>
-                                                <option value="financial">Financial</option>
+                                                <option value="Medical">Medical</option>
+                                                <option value="Educational">Educational</option>
+                                                <option value="Burial">Burial</option>
+                                                <option value="Financial">Financial</option>
                                             </select>
                                         </div>
 
-                                        <!-- Personal Info Heading -->
-                                        <h4 class="bold span-or" style="font-weight: 900; color: #1a49cb; ">
-                                            Personal Information
-                                        </h4>
-
-                                        <!-- Fullname -->
+                                        <!-- Personal Information -->
+                                        <h4 class="bold span-or" style="font-weight: 900; color: #1a49cb;">Personal Information</h4>
                                         <div class="form-group form-float" style="margin-top: 30px;">
                                             <div class="form-line">
                                                 <input type="text" class="form-control" name="fullname" required>
@@ -216,17 +208,14 @@
                                             </div>
                                         </div>
 
-                                        <!-- Gender -->
                                         <div class="form-group">
                                             <label for="gender">Gender <span style="color: red;">*</span></label><br>
-                                            <input type="radio" name="gender" id="male" required checked>
+                                            <input type="radio" name="gender" id="male" value="Male" required checked>
                                             <label for="male">Male</label>
-
-                                            <input type="radio" name="gender" id="female" class="with-gap m-l-20">
+                                            <input type="radio" name="gender" id="female" value="Female" class="m-l-20">
                                             <label for="female">Female</label>
                                         </div>
 
-                                        <!-- Email -->
                                         <div class="form-group form-float">
                                             <div class="form-line">
                                                 <input type="email" class="form-control" name="email" required>
@@ -234,9 +223,6 @@
                                             </div>
                                         </div>
 
-
-
-                                        <!-- Contact -->
                                         <div class="form-group form-float">
                                             <div class="form-line">
                                                 <input type="number" class="form-control" name="contact" required>
@@ -245,21 +231,16 @@
                                         </div>
                                     </div>
 
-                                    <!-- Right Column: File Uploads -->
+                                    <!-- Right Column: Requirements and Pickup Info -->
                                     <div class="col-md-6 pl-4">
-                                        <h4 class="bold span-or mb-4" style="font-weight: 900; color: #1a49cb;">
-                                            Requirements
-                                        </h4> <br>
-
-                                        <!-- Valid ID -->
-                                        <div class="form-group form-float">
+                                        <h4 class="bold span-or mb-4" style="font-weight: 900; color: #1a49cb;">Requirements</h4>
+                                        <div class="form-group form-float" style="margin-top: 30px;">
                                             <div class="form-line">
                                                 <input type="file" class="form-control" name="valid_id" required>
                                                 <label class="form-label">VALID ID <span style="color: red;">*</span></label>
                                             </div>
                                         </div>
 
-                                        <!-- Birth Certificate -->
                                         <div class="form-group form-float">
                                             <div class="form-line">
                                                 <input type="file" class="form-control" name="birth_certificate" required>
@@ -269,20 +250,14 @@
 
                                         <div class="form-group form-float">
                                             <label for="botante">Resident? <span style="color: red;">*</span></label><br>
-
                                             <input type="radio" name="botante" id="yes" value="yes" required checked>
                                             <label for="yes">Yes</label>
-
                                             <input type="radio" name="botante" id="no" value="no" class="m-l-20">
                                             <label for="no">No</label>
-
                                         </div>
 
-                                        <h5 class="bold span-or" style="font-weight: 900; color: #1a49cb; ">
-                                            Pickup by : (leave blank if you the one will pickup)
-                                        </h5>
+                                        <h5 class="bold span-or" style="font-weight: 900; color: #1a49cb;">Pickup by: (leave blank if you will pick it up)</h5>
 
-                                        <!-- Fullname -->
                                         <div class="form-group form-float" style="margin-top: 30px;">
                                             <div class="form-line">
                                                 <input type="text" class="form-control" name="fullname_relatives">
@@ -290,7 +265,6 @@
                                             </div>
                                         </div>
 
-                                        <!-- Gender -->
                                         <div class="form-group form-float">
                                             <label class="form-label">Relationship</label>
                                             <select class="form-control select-form" name="relationship">
@@ -306,7 +280,6 @@
                                     </div>
                                 </div>
 
-                                <!-- Buttons -->
                                 <!-- Total Price Display -->
                                 <div style="display: flex; justify-content: end; margin-top: 20px;">
                                     <h5 style="font-weight: bold; color: brown;">
@@ -319,9 +292,9 @@
                                     <button class="btn bg-teal waves-effect" type="submit">Request</button>
                                     <button class="btn btn-link waves-effect" type="button" onclick="window.location.href = 'certificate_issuance.php'">Go back</button>
                                 </div>
-
                             </form>
                         </div>
+
                     </div>
                 </div>
             </div>
