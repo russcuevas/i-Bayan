@@ -1,97 +1,284 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 
 <head>
     <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge">
+    <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
     <title>iBayan</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
-    <link rel="stylesheet" href="assets/css/home.css">
+    <!-- Favicon-->
+    <link rel="icon" href="img/logo.png" type="image/x-icon">
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css?family=Roboto:400,700&subset=latin,cyrillic-ext" rel="stylesheet"
+        type="text/css">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" type="text/css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <!-- Bootstrap Core Css -->
+    <link href="plugins/bootstrap/css/bootstrap.css" rel="stylesheet">
+
+    <!-- Waves Effect Css -->
+    <link href="plugins/node-waves/waves.css" rel="stylesheet" />
+
+    <!-- Animation Css -->
+    <link href="plugins/animate-css/animate.css" rel="stylesheet" />
+
+    <!-- Morris Chart Css-->
+    <link href="plugins/morrisjs/morris.css" rel="stylesheet" />
+
+    <!-- Custom Css -->
+    <link href="css/style.css" rel="stylesheet">
+    <link href="css/custom.css" rel="stylesheet">
+
+    <!-- AdminBSB Themes. You can choose a theme from css/themes instead of get all themes -->
+    <link href="css/themes/all-themes.css" rel="stylesheet" />
+    <!-- Sweetalert Css -->
+    <link href="plugins/sweetalert/sweetalert.css" rel="stylesheet" />
     <style>
-        .lgu-logo-wrapper {
-            background-origin: content-box;
-            background-size: contain;
-            background-repeat: no-repeat;
-            background-position: center;
-            background-image: url(images/logo.png);
-            width: 70px;
-            height: 70px;
-            margin-top: 5px;
-            float: left;
-            margin-right: 20px;
+        @import url('https://fonts.googleapis.com/css2?family=Poppins&display=swap');
+
+        body {
+            font-family: 'Poppins', sans-serif !important;
+        }
+
+        .select-form {
+            display: block !important;
+            width: 100% !important;
+            height: 34px !important;
+            padding: 6px 12px !important;
+            font-size: 14px !important;
+            line-height: 1.42857143 !important;
+            color: #555 !important;
+            background-color: #fff !important;
+            background-image: none !important;
+            border: 1px solid #ccc !important;
+            border-radius: 4px !important;
+            -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075) !important;
+            box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075) !important;
+            -webkit-transition: border-color ease-in-out .15s, -webkit-box-shadow ease-in-out .15s !important;
+            -o-transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s !important;
+            transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s !important;
+        }
+
+        /* HOMEPAGE */
+        .thumbnail {
+            background-color: #ffffff;
+            border: 2px solid #1a49cb;
+            border-radius: 10px;
+            padding: 50px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .thumbnail:hover {
+            background-color: #1a49cb;
+            color: #ffffff;
+            transform: scale(1.05);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+        }
+
+        .thumbnail:hover .icon-style,
+        .thumbnail:hover h3 {
+            color: #ffffff;
+            transition: color 0.3s ease;
+        }
+
+        .icon-style {
+            transition: color 0.3s ease;
         }
     </style>
 </head>
 
-<body>
-
-    <?php include 'components/navbar.php' ?>
-
-
-    <!-- Login Form Section -->
-    <div class="container px-4 py-5" id="featured-3" style="margin-top: 20px;">
-        <h2 class="pb-2 mb-3" style="color: #1a49cb; font-size: 25px; font-weight: 900; text-align: center;">Resident System for Mataasnakahoy Barangays</h2>
-        <h5 class="pb-2 mb-5" style="color: grey; text-align: center">ENGAGE WITH US</h5>
-
-        <div class="row row-cols-1 row-cols-sm-2 row-cols-lg-3 g-4 mb-5">
-            <div class="col">
-                <div class="feature d-flex flex-column align-items-center justify-content-center text-center p-4"
-                    style="background-color: #F2F6FE; min-height: 250px; border-radius: 8px;">
-                    <div class="feature-icon text-white mb-3"
-                        style="background-color: #1a49cb; font-size: 3rem; width: 5rem; 
-            height: 5rem; display: flex; align-items: center; 
-            justify-content: center; border-radius: 50%;">
-                        <i class="bi bi-collection"></i>
+<body class="theme-teal">
+    <!-- Page Loader -->
+    <div class="page-loader-wrapper">
+        <div class="loader">
+            <div class="preloader">
+                <div class="spinner-layer pl-teal">
+                    <div class="circle-clipper left">
+                        <div class="circle"></div>
                     </div>
-                    <h5>Document Request</h5>
+                    <div class="circle-clipper right">
+                        <div class="circle"></div>
+                    </div>
                 </div>
             </div>
-
-            <div class="col">
-                <div class="feature d-flex flex-column align-items-center justify-content-center text-center p-4"
-                    style="background-color: #F2F6FE; min-height: 250px; border-radius: 8px;">
-                    <div class="feature-icon text-white mb-3"
-                        style="background-color: #1a49cb; font-size: 3rem; width: 5rem; 
-    height: 5rem; display: flex; align-items: center; 
-    justify-content: center; border-radius: 50%;">
-                        <i class="bi bi-credit-card"></i> <!-- Changed to credit card icon -->
-                    </div>
-                    <h5>Secured Payment</h5>
-
-                </div>
-            </div>
-
-            <div class="col">
-                <div class="feature d-flex flex-column align-items-center justify-content-center text-center p-4"
-                    style="background-color: #F2F6FE; min-height: 250px; border-radius: 8px;">
-                    <div class="feature-icon text-white mb-3"
-                        style="background-color: #1a49cb; font-size: 3rem; width: 5rem; 
-            height: 5rem; display: flex; align-items: center; 
-            justify-content: center; border-radius: 50%;">
-                        <i class="bi bi-megaphone"></i> <!-- Changed to announcement icon -->
-                    </div>
-                    <h5>Barangay Announcement</h5>
-                </div>
-            </div>
-
+            <p>Please wait...</p>
         </div>
     </div>
+    <!-- #END# Page Loader -->
+    <!-- Overlay For Sidebars -->
+    <div class="overlay"></div>
+    <!-- #END# Overlay For Sidebars -->
+    <!-- Top Bar -->
+    <nav class="navbar">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <a href="javascript:void(0);" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar-collapse" aria-expanded="false"></a>
+                <a href="javascript:void(0);" class="bars"></a>
+                <a id="app-title" style="display:flex;align-items:center;" class="navbar-brand" href="index.php">
+                    <img id="bcas-logo" style="width:45px;display:inline;margin-right:10px;" src="img/logo.png" />
+                    <div>
+                        <div style="color: white;">iBayan</div>
+                    </div>
+                </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <!-- #END# Tasks -->
+                    <li class="pull-right"><a href="javascript:void(0);" class="js-right-sidebar" data-close="true"><i
+                                class="material-icons">account_circle</i></a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    <!-- #Top Bar -->
+    <section>
+        <?php include('left_sidebar.php') ?>
+        <?php include('right_sidebar.php') ?>
+    </section>
 
+    <section class="content">
+        <div class="container-fluid">
+            <div class="block-header text-left">
+                <h3 style="color: #1a49cb;">Dashboard</h3>
+            </div>
+            <div class="row clearfix">
+                <div class="col-sm-6 col-md-3 col-lg-4" onclick="window.location.href = 'family_profiling.php'">
+                    <div class="thumbnail text-center d-flex flex-column align-items-center justify-content-center" style="padding: 50px;">
+                        <h1>12</h1>
+                        <div class="caption">
+                            <h3>Total Barangay</h3>
+                        </div>
+                    </div>
+                </div>
 
-    <div class="relative flex items-center justify-center d-md-none">
-        <img class="mt-0 img-fluid" src="images/city-mobile.png" alt="" style="max-width: 100%; height: auto; color: transparent;">
-    </div>
-    <div class="relative flex items-center justify-center d-none d-md-block">
-        <img class="mt-0 img-fluid" src="images/city-desktop.png" alt="" style="max-width: 100%; height: auto; color: transparent;">
-    </div>
+                <div class="col-sm-6 col-md-3 col-lg-4" onclick="window.location.href = 'family_profiling.php'">
+                    <div class="thumbnail text-center d-flex flex-column align-items-center justify-content-center" style="padding: 50px;">
+                        <h1>12</h1>
+                        <div class="caption">
+                            <h3>Total Admin</h3>
+                        </div>
+                    </div>
+                </div>
 
-    <?php include 'components/footer.php' ?>
+                <div class="col-sm-6 col-md-3 col-lg-4" onclick="window.location.href = 'family_profiling.php'">
+                    <div class="thumbnail text-center d-flex flex-column align-items-center justify-content-center" style="padding: 50px;">
+                        <h1>12</h1>
+                        <div class="caption">
+                            <h3>Total Emergency</h3>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- #END# Widgets -->
 
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js" integrity="sha384-IQsoLXl5PILFhosVNubq5LC7Qb9DXgDA9i+tQ8Zj3iwWAwPtgFTxbJ8NT4GN1R8p" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.min.js" integrity="sha384-cVKIPhGWiC2Al4u+LWgxfKTRIcfu0JTxR+EQDz/bgldoEyl4H0zUF0QKbrJ0EcQF" crossorigin="anonymous"></script>
-    <script src="assets/js/time.js"></script>
+            <div class="block-header text-left">
+                <h3 style="color: #1a49cb;">Analytics</h3>
+            </div>
 
+            <!-- GRAPHS SHOWING  -->
+            <div class="row clearfix">
+                <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+                    <div class="card">
+                        <div class="header" style="background-color: #1a49cb;">
+                            <h2 style="color: white !important">TOTAL RESIDENTS (ALL BARANGAY)</h2>
+                        </div>
+                        <div class="col-md-6">
+                            <div style="display: flex; justify-content: flex-end; align-items: center; gap: 10px; padding: 15px;">
+                                <label class="form-label" style="white-space: nowrap;">SELECT YEAR:</label>
+                                <select class="form-control select-form" name="relationship" required style="padding: 5px; flex: 1;">
+                                    <option value="2025">2025</option>
+                                    <option value="2026">2026</option>
+                                    <option value="2027">2027</option>
+                                    <option value="2028">2028</option>
+                                    <option value="2029">2029</option>
+                                    <option value="2030">2030</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="body">
+                            <canvas style="border-color:#1a49cb;" id="line_chart" height="150"></canvas>
+                        </div>
+                    </div>
+                </div>
+                <!-- #END# Line Chart -->
+                <!-- Bar Chart -->
+                <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+                    <div class="card">
+                        <div class="header" style="background-color: #1a49cb;">
+                            <h2 style="color: white !important">TOTAL CERTIFICATE FEES (ALL BARANGAY)</h2>
+                        </div>
+                        <div class="col-md-6">
+                            <div style="display: flex; justify-content: flex-end; align-items: center; gap: 10px; padding: 15px;">
+                                <label class="form-label" style="white-space: nowrap;">SELECT YEAR:</label>
+                                <select class="form-control select-form" name="relationship" required style="padding: 5px; flex: 1;">
+                                    <option value="2025">2025</option>
+                                    <option value="2026">2026</option>
+                                    <option value="2027">2027</option>
+                                    <option value="2028">2028</option>
+                                    <option value="2029">2029</option>
+                                    <option value="2030">2030</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="body">
+                            <canvas id="bar_chart" height="150"></canvas>
+                        </div>
+                    </div>
+                </div>
+                <!-- #END# Bar Chart -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Jquery Core Js -->
+    <script src="plugins/jquery/jquery.min.js"></script>
+    <!-- Jquery Validation Plugin Css -->
+    <script src="plugins/jquery-validation/jquery.validate.js"></script>
+    <script src="js/pages/forms/form-validation.js"></script>
+    <!-- Bootstrap Core Js -->
+    <script src="plugins/bootstrap/js/bootstrap.js"></script>
+
+    <!-- Slimscroll Plugin Js -->
+    <script src="plugins/jquery-slimscroll/jquery.slimscroll.js"></script>
+
+    <!-- Waves Effect Plugin Js -->
+    <script src="plugins/node-waves/waves.js"></script>
+
+    <!-- Jquery CountTo Plugin Js -->
+    <script src="plugins/jquery-countto/jquery.countTo.js"></script>
+
+    <!-- Morris Plugin Js -->
+    <script src="plugins/raphael/raphael.min.js"></script>
+    <script src="plugins/morrisjs/morris.js"></script>
+
+    <!-- ChartJs -->
+    <script src="plugins/chartjs/Chart.bundle.js"></script>
+
+    <!-- Flot Charts Plugin Js -->
+    <script src="plugins/flot-charts/jquery.flot.js"></script>
+    <script src="plugins/flot-charts/jquery.flot.resize.js"></script>
+    <script src="plugins/flot-charts/jquery.flot.pie.js"></script>
+    <script src="plugins/flot-charts/jquery.flot.categories.js"></script>
+    <script src="plugins/flot-charts/jquery.flot.time.js"></script>
+
+    <!-- Sparkline Chart Plugin Js -->
+    <script src="plugins/jquery-sparkline/jquery.sparkline.js"></script>
+
+    <!-- Custom Js -->
+    <script src="plugins/chartjs/Chart.bundle.js"></script>
+
+    <!-- Custom Js -->
+    <script src="js/admin.js"></script>
+    <script src="js/pages/charts/chartjs.js"></script>
+
+    <script src="js/pages/index.js"></script>
+
+    <!-- Demo Js -->
+    <script src="js/demo.js"></script>
+    <script src="plugins/sweetalert/sweetalert.min.js"></script>
 </body>
 
 </html>

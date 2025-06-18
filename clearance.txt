@@ -6,7 +6,7 @@ sms_info_bip
 
 //ADMIN
 tbl_barangay
-barangay
+barangay_name
 municipality - mataasnakahoy
 zip - 4223
 mission
@@ -21,6 +21,8 @@ name
 position
 year
 barangay
+created_at
+updated_at
 
 tbl_admin
 barangay_id -> foreign to tbl_barangay -> id

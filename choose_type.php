@@ -103,7 +103,7 @@
                     </div>
                 </div>
 
-                <div class="col" onclick="window.location.href = 'supderadmin/login.php'">
+                <div class="col" onclick="window.location.href = 'superadmin/login.php'">
                     <div class="p-4 card-hover text-center">
                         <div class="mb-3">
                             <i class="bi bi-shield-lock" style="font-size: 4rem; color: #1a49cb;"></i>
