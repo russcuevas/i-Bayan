@@ -172,12 +172,36 @@
                                     <div class="col-md-6" style="margin-top: 10px;">
                                         <div class="form-group form-float">
                                             <div class="form-line">
-                                                <input type="text" class="form-control" name="fullname" required>
-                                                <label class="form-label">Fullname <span style="color: red;">*</span></label>
+                                                <input type="text" class="form-control" name="first_name" required>
+                                                <label class="form-label">First name <span style="color: red;">*</span></label>
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="col-md-6">
+                                    <div class="col-md-6" style="margin-top: 10px;">
+                                        <div class="form-group form-float">
+                                            <div class="form-line">
+                                                <input type="text" class="form-control" name="middle_name" required>
+                                                <label class="form-label">Middle name <span style="color: red;">*</span></label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6" style="margin-top: 10px;">
+                                        <div class="form-group form-float">
+                                            <div class="form-line">
+                                                <input type="text" class="form-control" name="last_name" required>
+                                                <label class="form-label">Last name <span style="color: red;">*</span></label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6" style="margin-top: 10px; margin-bottom: 25px">
+                                        <div class="form-group form-float">
+                                            <div class="form-line">
+                                                <input type="text" class="form-control" name="suffix">
+                                                <label class="form-label">Suffix</label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6" style="margin-bottom: 20px;">
                                         <div class="form-group">
                                             <label for="gender">Gender <span style="color: red;">*</span></label><br>
 
@@ -230,14 +254,40 @@
                                     </div>
                                 </div>
 
-                                <div class="row" style="margin-top: 10px !important;">
+                                <div class="row" style="margin-bottom: 20px;">
+                                    <div class="col-md-12">
+                                        <label><strong>Current Status</strong></label><br>
+                                        <input type="radio" name="is_working" value="1" id="working">
+                                        <label for="working">Working</label>
+
+                                        <input type="radio" name="is_working" value="2" id="student" style="margin-left: 15px;">
+                                        <label for="student">Student</label>
+
+                                        <input type="radio" name="is_working" value="3" id="none" style="margin-left: 15px;" checked>
+                                        <label for="none">None</label>
+                                    </div>
+                                </div>
+
+                                <!-- Occupation Input -->
+                                <div class="row" id="occupationDiv" style="display: none; margin-top: 10px;">
                                     <div class="col-md-12">
                                         <div class="form-group form-float">
                                             <div class="form-line">
-                                                <input type="number" class="form-control" name="occupation" required>
+                                                <input type="text" class="form-control" name="occupation" required>
                                                 <label class="form-label">Occupation <span style="color: red;">*</span></label>
                                             </div>
-                                            <div class="help-info">N/A if none</div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- School Input -->
+                                <div class="row" id="schoolDiv" style="display: none; margin-top: 10px;">
+                                    <div class="col-md-12">
+                                        <div class="form-group form-float">
+                                            <div class="form-line">
+                                                <input type="text" class="form-control" name="school" required>
+                                                <label class="form-label">School <span style="color: red;">*</span></label>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -336,6 +386,26 @@
     <!-- Demo Js -->
     <script src="js/demo.js"></script>
 
+    <!-- CURRENT STATUS SCRIPT -->
+    <script>
+        document.querySelectorAll('input[name="is_working"]').forEach((elem) => {
+            elem.addEventListener('change', function() {
+                const occupationDiv = document.getElementById('occupationDiv');
+                const schoolDiv = document.getElementById('schoolDiv');
+
+                if (this.value === "1") {
+                    occupationDiv.style.display = 'block';
+                    schoolDiv.style.display = 'none';
+                } else if (this.value === "2") {
+                    occupationDiv.style.display = 'none';
+                    schoolDiv.style.display = 'block';
+                } else {
+                    occupationDiv.style.display = 'none';
+                    schoolDiv.style.display = 'none';
+                }
+            });
+        });
+    </script>
     <script>
         $('#add_family_profiling').validate({
             rules: {},

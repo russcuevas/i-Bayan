@@ -5,6 +5,8 @@
     <meta charset="UTF-8">
     <title>iBayan</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- Favicon-->
+    <link rel="icon" href="images/logo.png" type="image/x-icon">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
@@ -65,6 +67,75 @@
                                             <input type="text" id="sysuser-sys_ext_name" class="form-control text-input" style="font-weight: 900" name="" maxlength="50" placeholder="e.g. Jr, III">
                                             <div class="invalid-feedback"></div>
                                         </div>
+
+                                        <div class="row" style="margin-bottom: 20px;">
+                                            <div class="col-md-12">
+                                                <label><strong>Gender</strong> <span style="color: red;">*</span></label><br>
+                                                <input type="radio" name="gender" value="Male" id="male" checked>
+                                                <label for="male">Male</label>
+
+                                                <input type="radio" name="gender" value="Female" id="female" style="margin-left: 15px;">
+                                                <label for="female">Female</label>
+                                            </div>
+                                        </div>
+
+                                        <div class="row" style="margin-bottom: 20px;">
+                                            <div class="col-md-6">
+                                                <div class="form-group form-float">
+                                                    <div class="form-line">
+                                                        <label class="form-label">Date of birth <span style="color: red;">*</span></label>
+                                                        <input type="date" style="font-weight: 900" class="form-control" name="birthday" required>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="form-group form-float">
+                                                    <div class="form-line">
+                                                        <label class="form-label">Birthplace <span style="color: red;">*</span></label>
+                                                        <input type="text" style="font-weight: 900" class="form-control" name="birthplace" required>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="row" style="margin-bottom: 20px;">
+                                            <div class="col-md-12">
+                                                <label><strong>Current Status</strong> <span style="color: red;">*</span></label><br>
+                                                <input type="radio" name="is_working" value="1" id="working">
+                                                <label for="working">Working</label>
+
+                                                <input type="radio" name="is_working" value="2" id="student" style="margin-left: 15px;">
+                                                <label for="student">Student</label>
+
+                                                <input type="radio" name="is_working" value="3" id="none" style="margin-left: 15px;" checked>
+                                                <label for="none">None</label>
+                                            </div>
+                                        </div>
+
+                                        <!-- Occupation Input -->
+                                        <div class="row" id="occupationDiv" style="display: none; margin-top: 10px;">
+                                            <div class="col-md-12">
+                                                <div class="form-group form-float">
+                                                    <div class="form-line">
+                                                        <label class="form-label">Occupation <span style="color: red;">*</span></label>
+                                                        <input type="text" style="font-weight: 900" class="form-control" name="occupation" required>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <!-- School Input -->
+                                        <div class="row" id="schoolDiv" style="display: none; margin-top: 10px;">
+                                            <div class="col-md-12">
+                                                <div class="form-group form-float">
+                                                    <div class="form-line">
+                                                        <label class="form-label">School <span style="color: red;">*</span></label>
+                                                        <input type="text" style="font-weight: 900" class="form-control" name="school" required>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
                                         <div class="mb-3 field-sysuser-sys_barangay">
                                             <label class="form-label" for="sysuser-sys_barangay">Address <span style="color: red;">*</span></label>
                                             <select class="form-select" aria-label=".form-select-lg example" style="font-weight: 900;">
@@ -222,6 +293,26 @@
         })();
     </script>
 
+    <!-- CURRENT STATUS SCRIPT -->
+    <script>
+        document.querySelectorAll('input[name="is_working"]').forEach((elem) => {
+            elem.addEventListener('change', function() {
+                const occupationDiv = document.getElementById('occupationDiv');
+                const schoolDiv = document.getElementById('schoolDiv');
+
+                if (this.value === "1") {
+                    occupationDiv.style.display = 'block';
+                    schoolDiv.style.display = 'none';
+                } else if (this.value === "2") {
+                    occupationDiv.style.display = 'none';
+                    schoolDiv.style.display = 'block';
+                } else {
+                    occupationDiv.style.display = 'none';
+                    schoolDiv.style.display = 'none';
+                }
+            });
+        });
+    </script>
 
 </body>
 

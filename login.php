@@ -4,6 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <title>iBayan</title>
+    <link rel="icon" href="images/logo.png" type="image/x-icon">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
@@ -42,11 +43,38 @@
                 <div>
                     <small class="small text-center">
                         Forgot Password?
-                        <a class="fw-bold text-primary" href="register.php" style="text-decoration: none;">Click here to read</a> </small>
+                        <a class="fw-bold text-primary" href="#" data-bs-toggle="modal" data-bs-target="#forgotPasswordModal" style="text-decoration: none;">Click here to read</a>
                 </div>
             </div>
         </form>
     </div>
+
+    <!-- MODAL FORGOT PASSWORD -->
+    <div class="modal fade" id="forgotPasswordModal" tabindex="-1" aria-labelledby="forgotPasswordModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content rounded-3">
+                <div class="modal-header">
+                    <h5 class="modal-title fw-bold" id="forgotPasswordModalLabel">How to Forgot Your Password?</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <ol class="fw-semibold text-start">
+                        <li>Visit your Barangay Hall for verification.</li>
+                        <li>Bring a valid ID for identification.</li>
+                        <li>Request a password reset form from the staff.</li>
+                        <li>Wait for confirmation the staff to change your password</li>
+                        <li>Use the temporary password and change it immediately.</li>
+                    </ol>
+                    <p class="mt-3 mb-0 text-muted">For more help, contact the iBayan support desk at your LGU office.</p>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary rounded-pill" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
 
 
     <div class="relative flex items-center justify-center d-md-none">
@@ -57,6 +85,8 @@
     </div>
 
     <?php include 'components/footer.php' ?>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js"></script>
     <script src="assets/js/time.js"></script>
     <script>
         (function() {
@@ -73,6 +103,7 @@
             });
         })();
     </script>
+
 
 
 </body>

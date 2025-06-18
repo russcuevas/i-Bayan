@@ -20,6 +20,7 @@ tbl_barangay_officials
 name
 position
 year
+barangay
 
 tbl_admin
 barangay_id -> foreign to tbl_barangay -> id
@@ -45,6 +46,13 @@ first_name
 middle_name
 last_name
 suffix
+gender
+civil_status
+date_of_birth
+birthplace
+is_working
+school -> nullable
+occupation -> nullable
 barangay_address -> foreign to tbl_barangay -> id
 purok
 username
@@ -58,8 +66,23 @@ type
 created_at
 updated_at
 
+tbl_residents_family_members
+first_name
+middle_name
+last_name
+suffix -> nullable
+gender
+date_of_birth
+birthplace
+civil_status
+is_working
+school -> nullable
+occupation -> nullable
+
+
 clearance to operate
 tbl_operate
+resident_id -> foreign to tbl_residents -> id
 document_number - randomized
 picked_up_by
 relationship
@@ -80,6 +103,7 @@ updated_at
 
 cedula
 tbl_cedula
+resident_id -> foreign to tbl_residents -> id
 document_number - randomized
 cedula_number - randomized
 picked_up_by
@@ -103,6 +127,7 @@ created_at
 updated_at
 
 tbl_certificates
+resident_id -> foreign to tbl_residents -> id
 document_number - randomized
 picked_up_by
 relationship
@@ -125,6 +150,7 @@ tbl_feedback
 resident_id -> foreign to tbl_residents -> id
 message
 rating
+barangay
 created_at
 
 tbl_announcement
@@ -132,6 +158,7 @@ announcement_title
 announcement_content
 announcement_venue
 announcement_image
+barangay
 publish_date
 expiry_date
 status
