@@ -20,6 +20,9 @@
     <!-- Waves Effect Css -->
     <link href="plugins/node-waves/waves.css" rel="stylesheet" />
 
+    <!-- JQuery DataTable Css -->
+    <link href="plugins/jquery-datatable/skin/bootstrap/css/dataTables.bootstrap.css" rel="stylesheet">
+
     <!-- Animation Css -->
     <link href="plugins/animate-css/animate.css" rel="stylesheet" />
 
@@ -141,95 +144,74 @@
 
     <section class="content">
         <div class="container-fluid">
-            <div class="block-header text-left">
-                <h3 style="color: #1a49cb;">Dashboard</h3>
+            <div class="block-header">
+                <ol style="font-size: 15px;" class="breadcrumb breadcrumb-col-red">
+                    <li><a href="index.php"><i style="font-size: 20px;" class="material-icons">home</i>
+                            Dashboard</a></li>
+                    <li class="active"><i style="font-size: 20px;" class="material-icons">description</i> System Settings
+                    </li>
+                    <li class="active"><i style="font-size: 20px;" class="material-icons">description</i> System Preference
+                    </li>
+                </ol>
             </div>
+            <!-- Basic Validation -->
             <div class="row clearfix">
-                <div class="col-sm-6 col-md-3 col-lg-4" onclick="window.location.href = 'barangay_management.php'">
-                    <div class="thumbnail text-center d-flex flex-column align-items-center justify-content-center" style="padding: 50px;">
-                        <h1>12</h1>
-                        <div class="caption">
-                            <h3>Total Barangay</h3>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="col-sm-6 col-md-3 col-lg-4" onclick="window.location.href = 'admin_management.php'">
-                    <div class="thumbnail text-center d-flex flex-column align-items-center justify-content-center" style="padding: 50px;">
-                        <h1>12</h1>
-                        <div class="caption">
-                            <h3>Total Admin</h3>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="col-sm-6 col-md-3 col-lg-4" onclick="window.location.href = 'family_profiling.php'">
-                    <div class="thumbnail text-center d-flex flex-column align-items-center justify-content-center" style="padding: 50px;">
-                        <h1>12</h1>
-                        <div class="caption">
-                            <h3>Total Emergency</h3>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <!-- #END# Widgets -->
-
-            <div class="block-header text-left">
-                <h3 style="color: #1a49cb;">Analytics</h3>
-            </div>
-
-            <!-- GRAPHS SHOWING  -->
-            <div class="row clearfix">
-                <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+                <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
                     <div class="card">
-                        <div class="header" style="background-color: #1a49cb;">
-                            <h2 style="color: white !important">TOTAL RESIDENTS (ALL BARANGAY)</h2>
-                        </div>
-                        <div class="col-md-6">
-                            <div style="display: flex; justify-content: flex-end; align-items: center; gap: 10px; padding: 15px;">
-                                <label class="form-label" style="white-space: nowrap;">SELECT YEAR:</label>
-                                <select class="form-control select-form" name="relationship" required style="padding: 5px; flex: 1;">
-                                    <option value="2025">2025</option>
-                                    <option value="2026">2026</option>
-                                    <option value="2027">2027</option>
-                                    <option value="2028">2028</option>
-                                    <option value="2029">2029</option>
-                                    <option value="2030">2030</option>
-                                </select>
-                            </div>
+                        <div class="header">
+                            <h2>SYSTEM PREFERENCE</h2>
                         </div>
                         <div class="body">
-                            <canvas style="border-color:#1a49cb;" id="line_chart" height="150"></canvas>
+                            <form id="form_validation" method="POST" enctype="multipart/form-data">
+                                <div class="row">
+                                    <!-- LEFT COLUMN -->
+                                    <div class="col-md-12 pr-4">
+                                        <div class="form-group form-float" style="margin-top: 30px;">
+                                            <div class="form-line">
+                                                <input type="text" class="form-control" name="system_title" required>
+                                                <label class="form-label">System Title <span style="color: red;">*</span></label>
+                                            </div>
+                                        </div>
+
+                                        <img id="logoPreview" src="#" alt="Logo Preview" style="display:none; margin-top: 20px; max-width: 100%; height: auto; border: 1px solid #ccc; border-radius: 5px;" />
+                                        <div class="form-group form-float" style="margin-top: 30px;">
+                                            <div class="form-line">
+                                                <input type="file" class="form-control" name="system_logo" required>
+                                                <label class="form-label">System Logo</label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div style="display: flex; justify-content: end; gap: 5px; margin-top: 10px;">
+                                    <button class="btn bg-teal waves-effect" type="submit"> + SAVE</button>
+                                </div>
+                            </form>
                         </div>
+
                     </div>
                 </div>
-                <!-- #END# Line Chart -->
-                <!-- Bar Chart -->
-                <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+
+                <!-- RIGHT CARD -->
+                <div class="col-md-8 col-sm-12">
                     <div class="card">
-                        <div class="header" style="background-color: #1a49cb;">
-                            <h2 style="color: white !important">TOTAL CERTIFICATE FEES (ALL BARANGAY)</h2>
-                        </div>
-                        <div class="col-md-6">
-                            <div style="display: flex; justify-content: flex-end; align-items: center; gap: 10px; padding: 15px;">
-                                <label class="form-label" style="white-space: nowrap;">SELECT YEAR:</label>
-                                <select class="form-control select-form" name="relationship" required style="padding: 5px; flex: 1;">
-                                    <option value="2025">2025</option>
-                                    <option value="2026">2026</option>
-                                    <option value="2027">2027</option>
-                                    <option value="2028">2028</option>
-                                    <option value="2029">2029</option>
-                                    <option value="2030">2030</option>
-                                </select>
+                        <div class="body text-center">
+                            <h1>iBayan</h1>
+                            <img src="img/logo.png" alt="System Logo" style="height: 100px; margin-bottom: 15px; border-radius: 10px; border: 1px solid #ccc;">
+                            <div>
+                                <a href="#" class="btn bg-teal waves-effect" style="margin-right: 5px;">
+                                    <i class="fa-solid fa-pencil"></i> UPDATE
+                                </a>
+                                <a href="#" class="btn bg-teal waves-effect" style="margin-right: 5px;">
+                                    <i class="fa-solid fa-trash"></i> DELETE
+                                </a>
                             </div>
                         </div>
-                        <div class="body">
-                            <canvas id="bar_chart" height="150"></canvas>
-                        </div>
                     </div>
                 </div>
-                <!-- #END# Bar Chart -->
             </div>
+            <!-- #END# Basic Validation -->
+        </div>
         </div>
     </section>
 
@@ -246,6 +228,17 @@
 
     <!-- Waves Effect Plugin Js -->
     <script src="plugins/node-waves/waves.js"></script>
+
+    <!-- Jquery DataTable Plugin Js -->
+    <script src="plugins/jquery-datatable/jquery.dataTables.js"></script>
+    <script src="plugins/jquery-datatable/skin/bootstrap/js/dataTables.bootstrap.js"></script>
+    <script src="plugins/jquery-datatable/extensions/export/dataTables.buttons.min.js"></script>
+    <script src="plugins/jquery-datatable/extensions/export/buttons.flash.min.js"></script>
+    <script src="plugins/jquery-datatable/extensions/export/jszip.min.js"></script>
+    <script src="plugins/jquery-datatable/extensions/export/pdfmake.min.js"></script>
+    <script src="plugins/jquery-datatable/extensions/export/vfs_fonts.js"></script>
+    <script src="plugins/jquery-datatable/extensions/export/buttons.html5.min.js"></script>
+    <script src="plugins/jquery-datatable/extensions/export/buttons.print.min.js"></script>
 
     <!-- Jquery CountTo Plugin Js -->
     <script src="plugins/jquery-countto/jquery.countTo.js"></script>
@@ -272,13 +265,32 @@
 
     <!-- Custom Js -->
     <script src="js/admin.js"></script>
+    <script src="js/pages/tables/jquery-datatable.js"></script>
     <script src="js/pages/charts/chartjs.js"></script>
-
     <script src="js/pages/index.js"></script>
 
     <!-- Demo Js -->
     <script src="js/demo.js"></script>
     <script src="plugins/sweetalert/sweetalert.min.js"></script>
+    <script>
+        document.querySelector('input[name="system_logo"]').addEventListener('change', function(event) {
+            const file = event.target.files[0];
+            const preview = document.getElementById('logoPreview');
+
+            if (file && file.type.startsWith('image/')) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    preview.src = e.target.result;
+                    preview.style.display = 'block';
+                };
+                reader.readAsDataURL(file);
+            } else {
+                preview.src = '#';
+                preview.style.display = 'none';
+            }
+        });
+    </script>
+
 </body>
 
 </html>

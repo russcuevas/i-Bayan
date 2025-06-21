@@ -45,13 +45,13 @@
                 </ul>
             </li>
             <li>
-                <a href="live_chat.php">
+                <a href="emergency_update.php">
                     <i class="material-icons">emergency</i>
                     <span>Emergency Updates</span>
                 </a>
             </li>
             <li>
-                <a href="feedback.php">
+                <a href="system_settings.php">
                     <i class="material-icons">settings</i>
                     <span>System Settings</span>
                 </a>

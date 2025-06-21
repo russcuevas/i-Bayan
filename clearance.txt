@@ -30,8 +30,9 @@ username
 password
 email
 fullname
+gender
 contact_number
-position - staff, 
+position - staff,
 status
 created_at
 updated_at
@@ -168,6 +169,11 @@ created_at
 updated_at
 created_by
 updated_by
+
+tbl_system_preference
+system_logo
+system_title
+
 
 CREATE TABLE tbl_chats (
     id INT AUTO_INCREMENT PRIMARY KEY,

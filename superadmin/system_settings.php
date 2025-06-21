@@ -141,95 +141,51 @@
 
     <section class="content">
         <div class="container-fluid">
-            <div class="block-header text-left">
-                <h3 style="color: #1a49cb;">Dashboard</h3>
+            <div class="block-header text-center" style="margin-bottom: 50px !important;">
+                <h3 style="color: #1a49cb;">System Settings</h3>
             </div>
-            <div class="row clearfix">
-                <div class="col-sm-6 col-md-3 col-lg-4" onclick="window.location.href = 'barangay_management.php'">
-                    <div class="thumbnail text-center d-flex flex-column align-items-center justify-content-center" style="padding: 50px;">
-                        <h1>12</h1>
-                        <div class="caption">
-                            <h3>Total Barangay</h3>
+            <!-- Widgets -->
+            <div class="container">
+                <div class="row clearfix">
+                    <div class="col-sm-6 col-md-6 col-lg-6" onclick="window.location.href = 'system_preference.php'">
+                        <div class="thumbnail text-center d-flex flex-column align-items-center justify-content-center" style="padding: 50px;">
+                            <i class="fas fa-circle fa-3x mb-3 icon-style"></i>
+                            <div class="caption">
+                                <h3>System Preferences</h3>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-6 col-md-6 col-lg-6" onclick="window.location.href = 'system_configuration.php'">
+                        <div class="thumbnail text-center d-flex flex-column align-items-center justify-content-center" style="padding: 50px;">
+                            <i class="fas fa-circle fa-3x mb-3 icon-style"></i>
+                            <div class="caption">
+                                <h3>Email/SMS Configuration</h3>
+                            </div>
                         </div>
                     </div>
                 </div>
 
-                <div class="col-sm-6 col-md-3 col-lg-4" onclick="window.location.href = 'admin_management.php'">
-                    <div class="thumbnail text-center d-flex flex-column align-items-center justify-content-center" style="padding: 50px;">
-                        <h1>12</h1>
-                        <div class="caption">
-                            <h3>Total Admin</h3>
+                <div class="row clearfix">
+                    <div class="col-sm-6 col-md-6 col-lg-6" onclick="window.location.href = 'system_permissions.php'">
+                        <div class="thumbnail text-center d-flex flex-column align-items-center justify-content-center" style="padding: 50px;">
+                            <i class="fas fa-circle fa-3x mb-3 icon-style"></i>
+                            <div class="caption">
+                                <h3>Permission & Roles</h3>
+                            </div>
                         </div>
                     </div>
-                </div>
-
-                <div class="col-sm-6 col-md-3 col-lg-4" onclick="window.location.href = 'family_profiling.php'">
-                    <div class="thumbnail text-center d-flex flex-column align-items-center justify-content-center" style="padding: 50px;">
-                        <h1>12</h1>
-                        <div class="caption">
-                            <h3>Total Emergency</h3>
+                    <div class="col-sm-6 col-md-6 col-lg-6" onclick="window.location.href = 'system_logs.php'">
+                        <div class="thumbnail text-center d-flex flex-column align-items-center justify-content-center" style="padding: 50px;">
+                            <i class="fas fa-circle fa-3x mb-3 icon-style"></i>
+                            <div class="caption">
+                                <h3>System Logs</h3>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
+
             <!-- #END# Widgets -->
-
-            <div class="block-header text-left">
-                <h3 style="color: #1a49cb;">Analytics</h3>
-            </div>
-
-            <!-- GRAPHS SHOWING  -->
-            <div class="row clearfix">
-                <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
-                    <div class="card">
-                        <div class="header" style="background-color: #1a49cb;">
-                            <h2 style="color: white !important">TOTAL RESIDENTS (ALL BARANGAY)</h2>
-                        </div>
-                        <div class="col-md-6">
-                            <div style="display: flex; justify-content: flex-end; align-items: center; gap: 10px; padding: 15px;">
-                                <label class="form-label" style="white-space: nowrap;">SELECT YEAR:</label>
-                                <select class="form-control select-form" name="relationship" required style="padding: 5px; flex: 1;">
-                                    <option value="2025">2025</option>
-                                    <option value="2026">2026</option>
-                                    <option value="2027">2027</option>
-                                    <option value="2028">2028</option>
-                                    <option value="2029">2029</option>
-                                    <option value="2030">2030</option>
-                                </select>
-                            </div>
-                        </div>
-                        <div class="body">
-                            <canvas style="border-color:#1a49cb;" id="line_chart" height="150"></canvas>
-                        </div>
-                    </div>
-                </div>
-                <!-- #END# Line Chart -->
-                <!-- Bar Chart -->
-                <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
-                    <div class="card">
-                        <div class="header" style="background-color: #1a49cb;">
-                            <h2 style="color: white !important">TOTAL CERTIFICATE FEES (ALL BARANGAY)</h2>
-                        </div>
-                        <div class="col-md-6">
-                            <div style="display: flex; justify-content: flex-end; align-items: center; gap: 10px; padding: 15px;">
-                                <label class="form-label" style="white-space: nowrap;">SELECT YEAR:</label>
-                                <select class="form-control select-form" name="relationship" required style="padding: 5px; flex: 1;">
-                                    <option value="2025">2025</option>
-                                    <option value="2026">2026</option>
-                                    <option value="2027">2027</option>
-                                    <option value="2028">2028</option>
-                                    <option value="2029">2029</option>
-                                    <option value="2030">2030</option>
-                                </select>
-                            </div>
-                        </div>
-                        <div class="body">
-                            <canvas id="bar_chart" height="150"></canvas>
-                        </div>
-                    </div>
-                </div>
-                <!-- #END# Bar Chart -->
-            </div>
         </div>
     </section>
 
@@ -240,6 +196,9 @@
     <script src="js/pages/forms/form-validation.js"></script>
     <!-- Bootstrap Core Js -->
     <script src="plugins/bootstrap/js/bootstrap.js"></script>
+
+    <!-- Select Plugin Js -->
+    <script src="plugins/bootstrap-select/js/bootstrap-select.js"></script>
 
     <!-- Slimscroll Plugin Js -->
     <script src="plugins/jquery-slimscroll/jquery.slimscroll.js"></script>
@@ -268,12 +227,7 @@
     <script src="plugins/jquery-sparkline/jquery.sparkline.js"></script>
 
     <!-- Custom Js -->
-    <script src="plugins/chartjs/Chart.bundle.js"></script>
-
-    <!-- Custom Js -->
     <script src="js/admin.js"></script>
-    <script src="js/pages/charts/chartjs.js"></script>
-
     <script src="js/pages/index.js"></script>
 
     <!-- Demo Js -->
