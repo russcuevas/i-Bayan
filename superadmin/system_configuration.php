@@ -159,11 +159,11 @@
                 <!-- RIGHT CARD -->
                 <div class="col-md-12 col-sm-12">
                     <div class="card">
-                        <div class="body text-center">
-                            <h1>iBayan</h1>
-                            <img src="img/logo.png" alt="System Logo" style="height: 300px; margin-bottom: 15px; border-radius: 10px; border: 1px solid #ccc;">
-                            <div>
-                                <a href="#" class="btn bg-teal waves-effect" style="margin-right: 5px;">
+                        <div class="body text-left">
+                            <h3>EMAIL CONFIGURATION: russelcuevas0@gmail.com</h3>
+                            <h3>SMS # CONFIGURATION: 09495748301</h3>
+                            <div style="text-align: end !important;">
+                                <a href="#" class="btn bg-teal waves-effect" style="margin-right: 5px; margin-top: 5px">
                                     <i class="fa-solid fa-pencil"></i> UPDATE
                                 </a>
                             </div>

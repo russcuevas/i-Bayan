@@ -150,28 +150,69 @@
                             Dashboard</a></li>
                     <li class="active"><i style="font-size: 20px;" class="material-icons">description</i> System Settings
                     </li>
-                    <li class="active"><i style="font-size: 20px;" class="material-icons">description</i> System Preference
+                    <li class="active"><i style="font-size: 20px;" class="material-icons">description</i> System Permissions
                     </li>
                 </ol>
             </div>
             <!-- Basic Validation -->
             <div class="row clearfix">
-                <!-- RIGHT CARD -->
-                <div class="col-md-12 col-sm-12">
+                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
                     <div class="card">
-                        <div class="body text-center">
-                            <h1>iBayan</h1>
-                            <img src="img/logo.png" alt="System Logo" style="height: 300px; margin-bottom: 15px; border-radius: 10px; border: 1px solid #ccc;">
-                            <div>
-                                <a href="#" class="btn bg-teal waves-effect" style="margin-right: 5px;">
-                                    <i class="fa-solid fa-pencil"></i> UPDATE
-                                </a>
+                        <div class="header">
+                            <h2>SYSTEM ROLES</h2>
+                        </div>
+                        <div class="body">
+                            <div class="table-responsive">
+                                <table class="table table-bordered table-striped table-hover js-basic-example dataTable">
+                                    <thead>
+                                        <tr>
+                                            <th>Fullname</th>
+                                            <th>Position</th>
+                                            <th>Mobile</th>
+                                            <th>Status</th>
+                                            <th>Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>Russel Vincent Cuevas</td>
+                                            <td>Admin</td>
+                                            <td>09495748302</td>
+                                            <td><span style="color: green">Online</span></td>
+                                            <td>
+                                                <a href="" class="btn bg-teal waves-effect" style="margin-bottom: 5px;"><i class="fa-solid fa-pencil"></i> UPDATE</a>
+                                                <a href="" class="btn bg-teal waves-effect" style="margin-bottom: 5px;"><i class="fa-solid fa-trash"></i> DELETE</a>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>Russel Vincent Cuevas</td>
+                                            <td>Superadmin</td>
+                                            <td>09495748302</td>
+                                            <td><span style="color: green">Online</span></td>
+                                            <td>
+                                                <a href="" class="btn bg-teal waves-effect" style="margin-bottom: 5px;"><i class="fa-solid fa-pencil"></i> UPDATE</a>
+                                                <a href="" class="btn bg-teal waves-effect" style="margin-bottom: 5px;"><i class="fa-solid fa-trash"></i> DELETE</a>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>Russel Vincent Cuevas</td>
+                                            <td>Residents</td>
+                                            <td>09495748302</td>
+                                            <td><span style="color: green">Online</span></td>
+                                            <td>
+                                                <a href="" class="btn bg-teal waves-effect" style="margin-bottom: 5px;"><i class="fa-solid fa-pencil"></i> UPDATE</a>
+                                                <a href="" class="btn bg-teal waves-effect" style="margin-bottom: 5px;"><i class="fa-solid fa-trash"></i> DELETE</a>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
             <!-- #END# Basic Validation -->
+        </div>
         </div>
     </section>
 
@@ -232,25 +273,6 @@
     <!-- Demo Js -->
     <script src="js/demo.js"></script>
     <script src="plugins/sweetalert/sweetalert.min.js"></script>
-    <script>
-        document.querySelector('input[name="system_logo"]').addEventListener('change', function(event) {
-            const file = event.target.files[0];
-            const preview = document.getElementById('logoPreview');
-
-            if (file && file.type.startsWith('image/')) {
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    preview.src = e.target.result;
-                    preview.style.display = 'block';
-                };
-                reader.readAsDataURL(file);
-            } else {
-                preview.src = '#';
-                preview.style.display = 'none';
-            }
-        });
-    </script>
-
 </body>
 
 </html>
