@@ -20,6 +20,9 @@
     <!-- Waves Effect Css -->
     <link href="../plugins/node-waves/waves.css" rel="stylesheet" />
 
+    <!-- JQuery DataTable Css -->
+    <link href="../plugins/jquery-datatable/skin/bootstrap/css/dataTables.bootstrap.css" rel="stylesheet">
+
     <!-- Animation Css -->
     <link href="../plugins/animate-css/animate.css" rel="stylesheet" />
 
@@ -141,47 +144,107 @@
 
     <section class="content">
         <div class="container-fluid">
-            <div class="block-header text-left">
-                <h3 style="color: #1a49cb;">Dashboard</h3>
+            <div class="block-header">
+                <ol style="font-size: 15px;" class="breadcrumb breadcrumb-col-red">
+                    <li><a href="index.php"><i style="font-size: 20px;" class="material-icons">home</i>
+                            Dashboard</a></li>
+                    <li class="active"><i style="font-size: 20px;" class="material-icons">description</i> Announcements
+                    </li>
+                </ol>
             </div>
+            <!-- Basic Validation -->
             <div class="row clearfix">
-                <div class="col-sm-6 col-md-3 col-lg-6" onclick="window.location.href = 'barangay_management.php'">
-                    <div class="thumbnail text-center d-flex flex-column align-items-center justify-content-center" style="padding: 50px;">
-                        <h1>12</h1>
-                        <div class="caption">
-                            <h3>Total Residents</h3>
+                <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+                    <div class="card">
+                        <div class="header">
+                            <h2>ADD ANNOUNCEMENT</h2>
                         </div>
+                        <div class="body">
+                            <form id="form_validation" method="POST" enctype="multipart/form-data">
+                                <div class="row">
+                                    <!-- LEFT COLUMN -->
+                                    <div class="col-md-12 pr-4">
+                                        <!-- hidden input -->
+                                        <input type="hidden" name="barangay" value="">
+                                        <input type="hidden" name="zip" value="4223">
+                                        <div class="form-group form-float" style="margin-top: 30px;">
+                                            <div class="form-line">
+                                                <input type="text" class="form-control" name="announcement_title" required>
+                                                <label class="form-label">Announcement Title <span style="color: red;">*</span></label>
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group form-float" style="margin-top: 30px;">
+                                            <div class="form-line">
+                                                <textarea style="padding: 5px;" name="announcement_content" cols="30" rows="5" class="form-control" required></textarea>
+                                                <label class="form-label">Content <span style="color: red;">*</span></label>
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group form-float" style="margin-top: 30px;">
+                                            <div class="form-line">
+                                                <input type="text" class="form-control" name="announcement_venue">
+                                                <label class="form-label">Venue</label>
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group form-float" style="margin-top: 30px;">
+                                            <div class="form-line">
+                                                <input type="file" class="form-control" name="announcement_image">
+                                                <label class="form-label">Picture</label>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </div>
+
+                                <div style="display: flex; justify-content: end; gap: 5px; margin-top: 10px;">
+                                    <button class="btn bg-teal waves-effect" type="submit"> + Save</button>
+                                </div>
+                            </form>
+                        </div>
+
                     </div>
                 </div>
 
-                <div class="col-sm-6 col-md-3 col-lg-6" onclick="window.location.href = 'admin_management.php'">
-                    <div class="thumbnail text-center d-flex flex-column align-items-center justify-content-center" style="padding: 50px;">
-                        <h1>12</h1>
-                        <div class="caption">
-                            <h3>Pending Approvals</h3>
+                <!-- RIGHT CARD -->
+                <div class="col-lg-8 col-md-8 col-sm-12 col-xs-12">
+                    <div class="card">
+                        <div class="header">
+                            <h2>ANNOUNCEMENT LIST</h2>
                         </div>
-                    </div>
-                </div>
-
-                <div class="col-sm-6 col-md-3 col-lg-6" onclick="window.location.href = 'family_profiling.php'">
-                    <div class="thumbnail text-center d-flex flex-column align-items-center justify-content-center" style="padding: 50px;">
-                        <h1>12</h1>
-                        <div class="caption">
-                            <h3>Certificate Requests</h3>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="col-sm-6 col-md-3 col-lg-6" onclick="window.location.href = 'family_profiling.php'">
-                    <div class="thumbnail text-center d-flex flex-column align-items-center justify-content-center" style="padding: 50px;">
-                        <h1>12</h1>
-                        <div class="caption">
-                            <h3>Certificate Sent</h3>
+                        <div class="body">
+                            <div class="table-responsive">
+                                <table class="table table-bordered table-striped table-hover js-basic-example dataTable">
+                                    <thead>
+                                        <tr>
+                                            <th>Picture</th>
+                                            <th>Title</th>
+                                            <th>Content</th>
+                                            <th>Venue</th>
+                                            <th>Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td><img src="" alt="Sample"></td>
+                                            <td>Sample Title</td>
+                                            <td>Sample Content</td>
+                                            <td>Sample Venue</td>
+                                            <td>
+                                                <a href="" class="btn bg-teal waves-effect" style="margin-bottom: 5px;"><i class="fa-solid fa-comment-sms"></i> SEND SMS</a>
+                                                <a href="" class="btn bg-teal waves-effect" style="margin-bottom: 5px;"><i class="fa-solid fa-trash"></i> DELETE</a>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
-            <!-- #END# Widgets -->
+            <!-- #END# Basic Validation -->
+        </div>
         </div>
     </section>
 
@@ -193,14 +256,22 @@
     <!-- Bootstrap Core Js -->
     <script src="../plugins/bootstrap/js/bootstrap.js"></script>
 
-    <!-- Select Plugin Js -->
-    <script src="../plugins/bootstrap-select/js/bootstrap-select.js"></script>
-
     <!-- Slimscroll Plugin Js -->
     <script src="../plugins/jquery-slimscroll/jquery.slimscroll.js"></script>
 
     <!-- Waves Effect Plugin Js -->
     <script src="../plugins/node-waves/waves.js"></script>
+
+    <!-- Jquery DataTable Plugin Js -->
+    <script src="../plugins/jquery-datatable/jquery.dataTables.js"></script>
+    <script src="../plugins/jquery-datatable/skin/bootstrap/js/dataTables.bootstrap.js"></script>
+    <script src="../plugins/jquery-datatable/extensions/export/dataTables.buttons.min.js"></script>
+    <script src="../plugins/jquery-datatable/extensions/export/buttons.flash.min.js"></script>
+    <script src="../plugins/jquery-datatable/extensions/export/jszip.min.js"></script>
+    <script src="../plugins/jquery-datatable/extensions/export/pdfmake.min.js"></script>
+    <script src="../plugins/jquery-datatable/extensions/export/vfs_fonts.js"></script>
+    <script src="../plugins/jquery-datatable/extensions/export/buttons.html5.min.js"></script>
+    <script src="../plugins/jquery-datatable/extensions/export/buttons.print.min.js"></script>
 
     <!-- Jquery CountTo Plugin Js -->
     <script src="../plugins/jquery-countto/jquery.countTo.js"></script>
@@ -223,7 +294,12 @@
     <script src="../plugins/jquery-sparkline/jquery.sparkline.js"></script>
 
     <!-- Custom Js -->
+    <script src="../plugins/chartjs/Chart.bundle.js"></script>
+
+    <!-- Custom Js -->
     <script src="../js/admin.js"></script>
+    <script src="../js/pages/tables/jquery-datatable.js"></script>
+    <script src="../js/pages/charts/chartjs.js"></script>
     <script src="../js/pages/index.js"></script>
 
     <!-- Demo Js -->

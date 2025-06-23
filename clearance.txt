@@ -1,7 +1,16 @@
 //SUPERADMIN
+tbl_superadmin
+first_name
+last_name
+age
+phone_number
+email
+password
+
 tbl_system_configuration
-smtp_email
-sms_info_bip
+email_config
+sms_config
+
 
 
 //ADMIN
@@ -79,6 +88,7 @@ date_of_birth
 birthplace
 civil_status
 is_working
+is_approved
 school -> nullable
 occupation -> nullable
 
@@ -159,20 +169,23 @@ created_at
 tbl_announcement
 announcement_title
 announcement_content
-announcement_venue
-announcement_image
+announcement_venue -> nullable
+announcement_image -> nullable
 barangay
-publish_date
-expiry_date
 status
 created_at
 updated_at
-created_by
-updated_by
 
 tbl_system_preference
 system_logo
 system_title
+created_at
+updated_at
+
+tbl_system_logs
+user_id
+logged_in -> DATETIME
+logged_out -> DATETIME
 
 
 CREATE TABLE tbl_chats (

@@ -9,19 +9,31 @@
             <li class="active">
                 <a href="index.php">
                     <i class="material-icons">home</i>
-                    <span>Home</span>
+                    <span>Dashboard</span>
+                </a>
+            </li>
+            <li>
+                <a href="manage_residents.php">
+                    <i class="material-icons">groups</i>
+                    <span>Manage Residents</span>
+                </a>
+            </li>
+            <li>
+                <a href="resident_verifications.php">
+                    <i class="material-icons">check</i>
+                    <span>Resident Verifications</span>
                 </a>
             </li>
             <li>
                 <a href="family_profiling.php">
-                    <i class="material-icons">groups</i>
-                    <span>Family Profiling</span>
+                    <i class="material-icons">house</i>
+                    <span>Household List</span>
                 </a>
             </li>
             <li>
                 <a href="javascript:void(0);" class="menu-toggle">
                     <i class="material-icons">library_books</i>
-                    <span>Certificate Issuance</span>
+                    <span>Certificate Requests</span>
                 </a>
                 <ul class="ml-menu">
                     <li>
@@ -45,15 +57,27 @@
                 </a>
             </li>
             <li>
+                <a href="announcements.php">
+                    <i class="material-icons">campaign</i>
+                    <span>Announcements</span>
+                </a>
+            </li>
+            <li>
                 <a href="feedback.php">
                     <i class="material-icons">thumb_up</i>
                     <span>Feedback</span>
                 </a>
             </li>
             <li>
-                <a href="about_us.php">
-                    <i class="material-icons">menu_book</i>
-                    <span>About Us</span>
+                <a href="activity_logs.php">
+                    <i class="material-icons">track_changes</i>
+                    <span>Activity Logs</span>
+                </a>
+            </li>
+            <li>
+                <a href="reports.php">
+                    <i class="material-icons">article</i>
+                    <span>Reports</span>
                 </a>
             </li>
         </ul>

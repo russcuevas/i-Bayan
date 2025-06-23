@@ -20,6 +20,9 @@
     <!-- Waves Effect Css -->
     <link href="../plugins/node-waves/waves.css" rel="stylesheet" />
 
+    <!-- JQuery DataTable Css -->
+    <link href="../plugins/jquery-datatable/skin/bootstrap/css/dataTables.bootstrap.css" rel="stylesheet">
+
     <!-- Animation Css -->
     <link href="../plugins/animate-css/animate.css" rel="stylesheet" />
 
@@ -141,47 +144,68 @@
 
     <section class="content">
         <div class="container-fluid">
-            <div class="block-header text-left">
-                <h3 style="color: #1a49cb;">Dashboard</h3>
+            <div class="block-header">
+                <ol style="font-size: 15px;" class="breadcrumb breadcrumb-col-red">
+                    <li><a href="index.php"><i style="font-size: 20px;" class="material-icons">home</i>
+                            Dashboard</a></li>
+                    <li class="active"><i style="font-size: 20px;" class="material-icons">description</i> Manage Residents
+                    </li>
+                </ol>
             </div>
+            <!-- Basic Validation -->
             <div class="row clearfix">
-                <div class="col-sm-6 col-md-3 col-lg-6" onclick="window.location.href = 'barangay_management.php'">
-                    <div class="thumbnail text-center d-flex flex-column align-items-center justify-content-center" style="padding: 50px;">
-                        <h1>12</h1>
-                        <div class="caption">
-                            <h3>Total Residents</h3>
+                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                    <div class="card">
+                        <div class="header">
+                            <h2>TOTAL RESIDENTS</h2>
                         </div>
-                    </div>
-                </div>
+                        <div class="body">
+                            <div class="text-right" style="margin-bottom: 15px;">
+                                <div class="btn-group">
+                                    <button type="button" class="btn bg-red dropdown-toggle waves-effect" data-toggle="dropdown" aria-expanded="false">
+                                        <i style="font-size: 15px !important;" class="material-icons">filter_alt</i>
+                                        View All Residents <span class="caret"></span>
+                                    </button>
+                                    <ul class="dropdown-menu pull-right">
+                                        <li><a href="">Recently Added</a></li>
+                                        <li><a href="">Export</a></li>
+                                    </ul>
+                                </div>
+                            </div>
 
-                <div class="col-sm-6 col-md-3 col-lg-6" onclick="window.location.href = 'admin_management.php'">
-                    <div class="thumbnail text-center d-flex flex-column align-items-center justify-content-center" style="padding: 50px;">
-                        <h1>12</h1>
-                        <div class="caption">
-                            <h3>Pending Approvals</h3>
-                        </div>
-                    </div>
-                </div>
 
-                <div class="col-sm-6 col-md-3 col-lg-6" onclick="window.location.href = 'family_profiling.php'">
-                    <div class="thumbnail text-center d-flex flex-column align-items-center justify-content-center" style="padding: 50px;">
-                        <h1>12</h1>
-                        <div class="caption">
-                            <h3>Certificate Requests</h3>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="col-sm-6 col-md-3 col-lg-6" onclick="window.location.href = 'family_profiling.php'">
-                    <div class="thumbnail text-center d-flex flex-column align-items-center justify-content-center" style="padding: 50px;">
-                        <h1>12</h1>
-                        <div class="caption">
-                            <h3>Certificate Sent</h3>
+                            <div class="table-responsive">
+                                <table class="table table-bordered table-striped table-hover js-basic-example dataTable">
+                                    <thead>
+                                        <tr>
+                                            <th>Fullname</th>
+                                            <th>Barangay</th>
+                                            <th>Mobile</th>
+                                            <th>Status</th>
+                                            <th>Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>Russel Vincent Cuevas</td>
+                                            <td>Calingatan</td>
+                                            <td>09495748302</td>
+                                            <td><span style="color: green">Verified</span></td>
+                                            <td>
+                                                <a href="" class="btn bg-teal waves-effect" style="margin-bottom: 5px;"><i class="fa-solid fa-id-card"></i> VIEW INFORMATION</a>
+                                                <a href="" class="btn bg-teal waves-effect" style="margin-bottom: 5px;"><i class="fa-solid fa-pencil"></i> UPDATE</a>
+                                                <a href="" class="btn bg-teal waves-effect" style="margin-bottom: 5px;"><i class="fa-solid fa-trash"></i> DELETE</a>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
-            <!-- #END# Widgets -->
+            <!-- #END# Basic Validation -->
+        </div>
         </div>
     </section>
 
@@ -193,14 +217,22 @@
     <!-- Bootstrap Core Js -->
     <script src="../plugins/bootstrap/js/bootstrap.js"></script>
 
-    <!-- Select Plugin Js -->
-    <script src="../plugins/bootstrap-select/js/bootstrap-select.js"></script>
-
     <!-- Slimscroll Plugin Js -->
     <script src="../plugins/jquery-slimscroll/jquery.slimscroll.js"></script>
 
     <!-- Waves Effect Plugin Js -->
     <script src="../plugins/node-waves/waves.js"></script>
+
+    <!-- Jquery DataTable Plugin Js -->
+    <script src="../plugins/jquery-datatable/jquery.dataTables.js"></script>
+    <script src="../plugins/jquery-datatable/skin/bootstrap/js/dataTables.bootstrap.js"></script>
+    <script src="../plugins/jquery-datatable/extensions/export/dataTables.buttons.min.js"></script>
+    <script src="../plugins/jquery-datatable/extensions/export/buttons.flash.min.js"></script>
+    <script src="../plugins/jquery-datatable/extensions/export/jszip.min.js"></script>
+    <script src="../plugins/jquery-datatable/extensions/export/pdfmake.min.js"></script>
+    <script src="../plugins/jquery-datatable/extensions/export/vfs_fonts.js"></script>
+    <script src="../plugins/jquery-datatable/extensions/export/buttons.html5.min.js"></script>
+    <script src="../plugins/jquery-datatable/extensions/export/buttons.print.min.js"></script>
 
     <!-- Jquery CountTo Plugin Js -->
     <script src="../plugins/jquery-countto/jquery.countTo.js"></script>
@@ -223,7 +255,12 @@
     <script src="../plugins/jquery-sparkline/jquery.sparkline.js"></script>
 
     <!-- Custom Js -->
+    <script src="../plugins/chartjs/Chart.bundle.js"></script>
+
+    <!-- Custom Js -->
     <script src="../js/admin.js"></script>
+    <script src="../js/pages/tables/jquery-datatable.js"></script>
+    <script src="../js/pages/charts/chartjs.js"></script>
     <script src="../js/pages/index.js"></script>
 
     <!-- Demo Js -->
