@@ -3,6 +3,7 @@
         <ul class="list">
             <li class="header" style="font-size: 12px">
                 WELCOME <br>
+                <span style="color: #1a49cb;">BARANGAY CALINGATAN</span> <br>
                 <span style="color: #1a49cb;">RUSSEL VINCENT CUEVAS</span> <br>
                 <span style="color: #1a49cb;">ADMINISTRATOR - STAFF</span>
             </li>

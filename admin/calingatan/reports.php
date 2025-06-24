@@ -187,7 +187,7 @@
                 <ol style="font-size: 15px;" class="breadcrumb breadcrumb-col-red">
                     <li><a href="index.php"><i style="font-size: 20px;" class="material-icons">home</i>
                             Dashboard</a></li>
-                    <li class="active"><i style="font-size: 20px;" class="material-icons">description</i> Announcements
+                    <li class="active"><i style="font-size: 20px;" class="material-icons">description</i> Reports
                     </li>
                 </ol>
             </div>
@@ -199,7 +199,7 @@
                 <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
                     <div class="card">
                         <div class="header">
-                            <h2>Categories</h2>
+                            <h2>CATEGORIES</h2>
                         </div>
                         <div class="body">
                             <ul id="tagList" class="report-tags">
@@ -222,7 +222,7 @@
                         </div>
                         <div class="body">
                             <div class="table-responsive">
-                                <h1 style="text-align: center;">No selected categories</h1>
+                                <h1 style="text-align: center;">Please select categories</h1>
                             </div>
                         </div>
                     </div>
