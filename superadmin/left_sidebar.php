@@ -19,6 +19,12 @@
                 </a>
             </li>
             <li>
+                <a href="business_clearance.php">
+                    <i class="material-icons">business</i>
+                    <span>Business List</span>
+                </a>
+            </li>
+            <li>
                 <a href="admin_management.php">
                     <i class="material-icons">admin_panel_settings</i>
                     <span>Admin Management</span>

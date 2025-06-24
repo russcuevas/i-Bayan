@@ -9,7 +9,15 @@
                     <li style="display: flex; align-items: center;" onclick="window.location.href = 'edit_profile.php'">
                         <div>
                             <label class="mb-0 hov-pointer">
-                                <i class="material-icons mr-2" style="font-size: 18px; vertical-align: middle;">lock</i> EDIT PROFILE
+                                <i class="material-icons mr-2" style="font-size: 18px; vertical-align: middle;">person</i> MY PROFILE
+                            </label>
+                        </div>
+                    </li>
+
+                    <li style="display: flex; align-items: center;" onclick="window.location.href = 'edit_profile.php'">
+                        <div>
+                            <label class="mb-0 hov-pointer">
+                                <i class="material-icons mr-2" style="font-size: 18px; vertical-align: middle;">settings</i> ACCOUNT SETTINGS
                             </label>
                         </div>
                     </li>

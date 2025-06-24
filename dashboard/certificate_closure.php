@@ -160,62 +160,8 @@
                         </div>
                         <div class="body">
                             <div>
-                                <button class="btn bg-red waves-effect" style="margin-bottom: 15px;" data-toggle="modal" data-target="#requestCertificateModal">+ PLEASE CLICK HERE TO REQUEST</button>
+                                <button class="btn bg-red waves-effect" style="margin-bottom: 15px;" onclick="window.location.href='request_closure.php'">+ CLICK HERE TO REQUEST</button>
                             </div>
-
-                            <div class="modal fade" id="requestCertificateModal" tabindex="-1" role="dialog" style="display: none;">
-                                <div class="modal-dialog modal-lg" role="document">
-                                    <div class="modal-content">
-                                        <div class="modal-header">
-                                            <h4 class="modal-title" id="defaultModalLabel">Request</h4>
-                                        </div>
-                                        <div class="modal-body" style="max-height: 100vh; overflow-y: auto;">
-                                            <div class="row">
-                                                <div class="col-sm-6 col-md-3 col-lg-4" onclick="window.location.href = 'request_certificate.php'">
-                                                    <div class="thumbnail text-center d-flex flex-column align-items-center justify-content-center" style="padding: 50px;">
-                                                        <i class="fas fa-file fa-3x mb-3 icon-style"></i>
-                                                        <div class="caption">
-                                                            <h3>Certificates</h3>
-                                                        </div>
-                                                    </div>
-                                                </div>
-
-                                                <div class="col-sm-6 col-md-3 col-lg-4" onclick="window.location.href = 'request_operate.php'">
-                                                    <div class="thumbnail text-center d-flex flex-column align-items-center justify-content-center" style="padding: 50px;">
-                                                        <i class="fas fa-file fa-3x mb-3 icon-style"></i>
-                                                        <div class="caption">
-                                                            <h3>Operate</h3>
-                                                        </div>
-                                                    </div>
-                                                </div>
-
-                                                <div class="col-sm-6 col-md-3 col-lg-4" onclick="window.location.href = 'request_closure.php'">
-                                                    <div class="thumbnail text-center d-flex flex-column align-items-center justify-content-center" style="padding: 50px;">
-                                                        <i class="fas fa-file fa-3x mb-3 icon-style"></i>
-                                                        <div class="caption">
-                                                            <h3>Closure</h3>
-                                                        </div>
-                                                    </div>
-                                                </div>
-
-                                                <div class="col-sm-6 col-md-3 col-lg-4" onclick="window.location.href = 'request_cedula.php'">
-                                                    <div class="thumbnail text-center d-flex flex-column align-items-center justify-content-center" style="padding: 50px;">
-                                                        <i class="fas fa-file fa-3x mb-3 icon-style"></i>
-                                                        <div class="caption">
-                                                            <h3>Cedula</h3>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <!-- Footer Buttons aligned to bottom right -->
-                                        <div class="modal-footer d-flex justify-content-end">
-                                            <button type="button" class="btn btn-link waves-effect" data-dismiss="modal">CLOSE</button>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <!-- END ADD MODAL -->
 
                             <div class="table-responsive">
                                 <table class="table table-bordered table-striped table-hover js-basic-example dataTable">

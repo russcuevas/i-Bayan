@@ -3,38 +3,40 @@
 
 <head>
     <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge">
     <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
     <title>iBayan</title>
     <!-- Favicon-->
-    <link rel="icon" href="img/logo.png" type="image/x-icon">
+    <link rel="icon" href="../img/logo.png" type="image/x-icon">
 
     <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css?family=Roboto:400,700&subset=latin,cyrillic-ext" rel="stylesheet" type="text/css">
+    <link href="https://fonts.googleapis.com/css?family=Roboto:400,700&subset=latin,cyrillic-ext" rel="stylesheet"
+        type="text/css">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" type="text/css">
-
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <!-- Bootstrap Core Css -->
-    <link href="plugins/bootstrap/css/bootstrap.css" rel="stylesheet">
+    <link href="../plugins/bootstrap/css/bootstrap.css" rel="stylesheet">
 
     <!-- Waves Effect Css -->
-    <link href="plugins/node-waves/waves.css" rel="stylesheet" />
-
-    <!-- Animation Css -->
-    <link href="plugins/animate-css/animate.css" rel="stylesheet" />
+    <link href="../plugins/node-waves/waves.css" rel="stylesheet" />
 
     <!-- JQuery DataTable Css -->
-    <link href="plugins/jquery-datatable/skin/bootstrap/css/dataTables.bootstrap.css" rel="stylesheet">
+    <link href="../plugins/jquery-datatable/skin/bootstrap/css/dataTables.bootstrap.css" rel="stylesheet">
 
-    <!-- Font Awesome -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <!-- Animation Css -->
+    <link href="../plugins/animate-css/animate.css" rel="stylesheet" />
+
+    <!-- Morris Chart Css-->
+    <link href="../plugins/morrisjs/morris.css" rel="stylesheet" />
 
     <!-- Custom Css -->
-    <link href="css/style.css" rel="stylesheet">
-    <link href="css/custom.css" rel="stylesheet">
-    <!-- Sweetalert Css -->
-    <link href="plugins/sweetalert/sweetalert.css" rel="stylesheet" />
+    <link href="../css/style.css" rel="stylesheet">
+    <link href="../css/custom.css" rel="stylesheet">
 
     <!-- AdminBSB Themes. You can choose a theme from css/themes instead of get all themes -->
-    <link href="css/themes/all-themes.css" rel="stylesheet" />
+    <link href="../css/themes/all-themes.css" rel="stylesheet" />
+    <!-- Sweetalert Css -->
+    <link href="../plugins/sweetalert/sweetalert.css" rel="stylesheet" />
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Poppins&display=swap');
 
@@ -60,7 +62,6 @@
             -o-transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s !important;
             transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s !important;
         }
-
 
         /* HOMEPAGE */
         .thumbnail {
@@ -120,12 +121,11 @@
                 <a href="javascript:void(0);" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar-collapse" aria-expanded="false"></a>
                 <a href="javascript:void(0);" class="bars"></a>
                 <a id="app-title" style="display:flex;align-items:center;" class="navbar-brand" href="index.php">
-                    <img id="bcas-logo" style="width:45px;display:inline;margin-right:10px;" src="img/logo.png" />
+                    <img id="bcas-logo" style="width:45px;display:inline;margin-right:10px;" src="../img/logo.png" />
                     <div>
                         <div style="color: white;">iBayan</div>
                     </div>
                 </a>
-
             </div>
             <div class="collapse navbar-collapse" id="navbar-collapse">
                 <ul class="nav navbar-nav navbar-right">
@@ -136,6 +136,7 @@
             </div>
         </div>
     </nav>
+    <!-- #Top Bar -->
     <section>
         <?php include('left_sidebar.php') ?>
         <?php include('right_sidebar.php') ?>
@@ -147,7 +148,7 @@
                 <ol style="font-size: 15px;" class="breadcrumb breadcrumb-col-red">
                     <li><a href="index.php"><i style="font-size: 20px;" class="material-icons">home</i>
                             Dashboard</a></li>
-                    <li class="active"><i style="font-size: 20px;" class="material-icons">description</i> Certificate Issuance
+                    <li class="active"><i style="font-size: 20px;" class="material-icons">description</i> Activity Logs
                     </li>
                 </ol>
             </div>
@@ -156,43 +157,47 @@
                 <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
                     <div class="card">
                         <div class="header">
-                            <h2>CERTIFICATE STATUS</h2>
+                            <h2>ACTIVITY LOGS</h2>
                         </div>
                         <div class="body">
-                            <div>
-                                <button class="btn bg-red waves-effect" style="margin-bottom: 15px;" onclick="window.location.href='request_certificate.php'">+ CLICK HERE TO REQUEST</button>
+                            <div style="margin-bottom: 15px;">
+                                <div class="btn-group">
+                                    <button type="button" class="btn bg-red dropdown-toggle waves-effect" data-toggle="dropdown" aria-expanded="false">
+                                        <i style="font-size: 15px !important;" class="material-icons">filter_alt</i>
+                                        Filter User Type <span class="caret"></span>
+                                    </button>
+                                    <ul class="dropdown-menu pull-right">
+                                        <li><a href="">All Types</a></li>
+                                        <li><a href="">Barangay Officials</a></li>
+                                        <li><a href="">Staff</a></li>
+                                        <li><a href="">Admin</a></li>
+                                        <li><a href="">Residents</a></li>
+                                    </ul>
+                                </div>
+                                <div class="btn-group">
+                                    <a href="activity_logs.php" class="btn bg-red dropdown-toggle waves-effect">
+                                        <i style="font-size: 15px !important;" class="material-icons">refresh</i>
+                                        Refresh
+                                    </a>
+                                </div>
                             </div>
-
 
                             <div class="table-responsive">
                                 <table class="table table-bordered table-striped table-hover js-basic-example dataTable">
                                     <thead>
                                         <tr>
-                                            <th>Fullname</th>
-                                            <th>Certificate</th>
-                                            <th>Price</th>
-                                            <th>Purpose</th>
-                                            <th>Email</th>
-                                            <th>Mobile</th>
-                                            <th>Date</th>
-                                            <th>Status</th>
-                                            <th>Actions</th>
+                                            <th>Username</th>
+                                            <th>User Type</th>
+                                            <th>Action</th>
+                                            <th>Time</th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         <tr>
                                             <td>Russel Vincent Cuevas</td>
-                                            <td>Barangay Clearance</td>
-                                            <td>₱50.00</td>
-                                            <td>Education</td>
-                                            <td>russelcuevas0@gmail.com</td>
-                                            <td>09495748301</td>
-                                            <td>March/06/2025</td>
-                                            <td>Pending</td>
-                                            <td>
-                                                <a href="" class="btn bg-teal waves-effect" style="margin-bottom: 5px;"><i class="fa-solid fa-eye"></i> VIEW INFORMATION</a>
-                                                <a href="" class="btn bg-teal waves-effect" style="margin-bottom: 5px;"><i class="fa-solid fa-ban"></i> CANCEL REQUEST</a>
-                                            </td>
+                                            <td>Sample</td>
+                                            <td>Sample Ratings</td>
+                                            <td>March/12/2025</td>
                                         </tr>
                                     </tbody>
                                 </table>
@@ -203,78 +208,66 @@
             </div>
             <!-- #END# Basic Validation -->
         </div>
+        </div>
     </section>
 
     <!-- Jquery Core Js -->
-    <script src="plugins/jquery/jquery.min.js"></script>
+    <script src="../plugins/jquery/jquery.min.js"></script>
     <!-- Jquery Validation Plugin Css -->
-    <script src="plugins/jquery-validation/jquery.validate.js"></script>
-    <script src="js/pages/forms/form-validation.js"></script>
-
+    <script src="../plugins/jquery-validation/jquery.validate.js"></script>
+    <script src="../js/pages/forms/form-validation.js"></script>
     <!-- Bootstrap Core Js -->
-    <script src="plugins/bootstrap/js/bootstrap.js"></script>
-
-    <!-- Select Plugin Js -->
+    <script src="../plugins/bootstrap/js/bootstrap.js"></script>
 
     <!-- Slimscroll Plugin Js -->
-    <script src="plugins/jquery-slimscroll/jquery.slimscroll.js"></script>
+    <script src="../plugins/jquery-slimscroll/jquery.slimscroll.js"></script>
 
     <!-- Waves Effect Plugin Js -->
-    <script src="plugins/node-waves/waves.js"></script>
+    <script src="../plugins/node-waves/waves.js"></script>
 
     <!-- Jquery DataTable Plugin Js -->
-    <script src="plugins/jquery-datatable/jquery.dataTables.js"></script>
-    <script src="plugins/jquery-datatable/skin/bootstrap/js/dataTables.bootstrap.js"></script>
-    <script src="plugins/jquery-datatable/extensions/export/dataTables.buttons.min.js"></script>
-    <script src="plugins/jquery-datatable/extensions/export/buttons.flash.min.js"></script>
-    <script src="plugins/jquery-datatable/extensions/export/jszip.min.js"></script>
-    <script src="plugins/jquery-datatable/extensions/export/pdfmake.min.js"></script>
-    <script src="plugins/jquery-datatable/extensions/export/vfs_fonts.js"></script>
-    <script src="plugins/jquery-datatable/extensions/export/buttons.html5.min.js"></script>
-    <script src="plugins/jquery-datatable/extensions/export/buttons.print.min.js"></script>
+    <script src="../plugins/jquery-datatable/jquery.dataTables.js"></script>
+    <script src="../plugins/jquery-datatable/skin/bootstrap/js/dataTables.bootstrap.js"></script>
+    <script src="../plugins/jquery-datatable/extensions/export/dataTables.buttons.min.js"></script>
+    <script src="../plugins/jquery-datatable/extensions/export/buttons.flash.min.js"></script>
+    <script src="../plugins/jquery-datatable/extensions/export/jszip.min.js"></script>
+    <script src="../plugins/jquery-datatable/extensions/export/pdfmake.min.js"></script>
+    <script src="../plugins/jquery-datatable/extensions/export/vfs_fonts.js"></script>
+    <script src="../plugins/jquery-datatable/extensions/export/buttons.html5.min.js"></script>
+    <script src="../plugins/jquery-datatable/extensions/export/buttons.print.min.js"></script>
+
+    <!-- Jquery CountTo Plugin Js -->
+    <script src="../plugins/jquery-countto/jquery.countTo.js"></script>
+
+    <!-- Morris Plugin Js -->
+    <script src="../plugins/raphael/raphael.min.js"></script>
+    <script src="../plugins/morrisjs/morris.js"></script>
+
+    <!-- ChartJs -->
+    <script src="../plugins/chartjs/Chart.bundle.js"></script>
+
+    <!-- Flot Charts Plugin Js -->
+    <script src="../plugins/flot-charts/jquery.flot.js"></script>
+    <script src="../plugins/flot-charts/jquery.flot.resize.js"></script>
+    <script src="../plugins/flot-charts/jquery.flot.pie.js"></script>
+    <script src="../plugins/flot-charts/jquery.flot.categories.js"></script>
+    <script src="../plugins/flot-charts/jquery.flot.time.js"></script>
+
+    <!-- Sparkline Chart Plugin Js -->
+    <script src="../plugins/jquery-sparkline/jquery.sparkline.js"></script>
 
     <!-- Custom Js -->
-    <script src="js/admin.js"></script>
-    <script src="js/pages/tables/jquery-datatable.js"></script>
-    <!-- SweetAlert Plugin Js -->
-    <script src="plugins/sweetalert/sweetalert.min.js"></script>
+    <script src="../plugins/chartjs/Chart.bundle.js"></script>
+
+    <!-- Custom Js -->
+    <script src="../js/admin.js"></script>
+    <script src="../js/pages/tables/jquery-datatable.js"></script>
+    <script src="../js/pages/charts/chartjs.js"></script>
+    <script src="../js/pages/index.js"></script>
+
     <!-- Demo Js -->
-    <script src="js/demo.js"></script>
-
-    <script>
-        $('#request_certifacte_validation').validate({
-            rules: {},
-            highlight: function(input) {
-                $(input).parents('.form-line').addClass('error');
-            },
-            unhighlight: function(input) {
-                $(input).parents('.form-line').removeClass('error');
-            },
-            errorPlacement: function(error, element) {
-                $(element).parents('.form-group').append(error);
-            },
-        });
-    </script>
-    <script>
-        <?php if (isset($_SESSION['success'])): ?>
-            swal({
-                type: 'success',
-                title: 'Success!',
-                text: '<?php echo $_SESSION['success']; ?>',
-                confirmButtonText: 'OK'
-            });
-            <?php unset($_SESSION['success']); ?>
-        <?php elseif (isset($_SESSION['error'])): ?>
-            swal({
-                type: 'error',
-                title: 'Oops...',
-                text: '<?php echo $_SESSION['error']; ?>',
-                confirmButtonText: 'OK'
-            });
-            <?php unset($_SESSION['error']); ?>
-        <?php endif; ?>
-    </script>
-
+    <script src="../js/demo.js"></script>
+    <script src="../plugins/sweetalert/sweetalert.min.js"></script>
 </body>
 
 </html>

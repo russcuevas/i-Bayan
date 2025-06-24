@@ -20,6 +20,9 @@
     <!-- Waves Effect Css -->
     <link href="../plugins/node-waves/waves.css" rel="stylesheet" />
 
+    <!-- JQuery DataTable Css -->
+    <link href="../plugins/jquery-datatable/skin/bootstrap/css/dataTables.bootstrap.css" rel="stylesheet">
+
     <!-- Animation Css -->
     <link href="../plugins/animate-css/animate.css" rel="stylesheet" />
 
@@ -141,47 +144,103 @@
 
     <section class="content">
         <div class="container-fluid">
-            <div class="block-header text-left">
-                <h3 style="color: #1a49cb;">Dashboard</h3>
+            <div class="block-header">
+                <ol style="font-size: 15px;" class="breadcrumb breadcrumb-col-red">
+                    <li><a href="index.php"><i style="font-size: 20px;" class="material-icons">home</i>
+                            Dashboard</a></li>
+                    <li class="active"><i style="font-size: 20px;" class="material-icons">description</i> Barangay Officials
+                    </li>
+                </ol>
             </div>
+            <!-- Basic Validation -->
             <div class="row clearfix">
-                <div class="col-sm-6 col-md-3 col-lg-6" onclick="window.location.href = 'barangay_management.php'">
-                    <div class="thumbnail text-center d-flex flex-column align-items-center justify-content-center" style="padding: 50px;">
-                        <h1>12</h1>
-                        <div class="caption">
-                            <h3>Total Residents</h3>
+                <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+                    <div class="card">
+                        <div class="header">
+                            <h2>ADD BARANGAY OFFICIALS</h2>
                         </div>
+                        <div class="body">
+                            <form id="form_validation" method="POST" enctype="multipart/form-data">
+                                <div class="row">
+                                    <!-- LEFT COLUMN -->
+                                    <div class="col-md-12 pr-4">
+                                        <!-- hidden input -->
+                                        <input type="hidden" name="barangay" value="">
+
+                                        <div>
+                                            <img id="profilePreview" style="height: 100px;"
+                                                src="https://th.bing.com/th/id/R.8e2c571ff125b3531705198a15d3103c?rik=gzhbzBpXBa%2bxMA&riu=http%3a%2f%2fpluspng.com%2fimg-png%2fuser-png-icon-big-image-png-2240.png&ehk=VeWsrun%2fvDy5QDv2Z6Xm8XnIMXyeaz2fhR3AgxlvxAc%3d&risl=&pid=ImgRaw&r=0"
+                                                alt="Profile Picture Preview">
+                                        </div>
+
+                                        <div class="form-group form-float" style="margin-top: 30px;">
+                                            <div class="form-line">
+                                                <input type="file" class="form-control" name="profile_picture" id="profile_picture">
+                                                <label class="form-label">Profile Picture</label>
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group form-float" style="margin-top: 30px;">
+                                            <div class="form-line">
+                                                <input type="text" class="form-control" name="fullname" required>
+                                                <label class="form-label">Fullname <span style="color: red;">*</span></label>
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group form-float" style="margin-top: 30px;">
+                                            <div class="form-line">
+                                                <input type="text" class="form-control" name="position" required>
+                                                <label class="form-label">Position <span style="color: red;">*</span></label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div style="display: flex; justify-content: end; gap: 5px; margin-top: 10px;">
+                                    <button class="btn bg-teal waves-effect" type="submit"> + Save</button>
+                                </div>
+                            </form>
+                        </div>
+
                     </div>
                 </div>
 
-                <div class="col-sm-6 col-md-3 col-lg-6" onclick="window.location.href = 'admin_management.php'">
-                    <div class="thumbnail text-center d-flex flex-column align-items-center justify-content-center" style="padding: 50px;">
-                        <h1>12</h1>
-                        <div class="caption">
-                            <h3>Pending Approvals</h3>
+                <!-- RIGHT CARD -->
+                <div class="col-lg-8 col-md-8 col-sm-12 col-xs-12">
+                    <div class="card">
+                        <div class="header">
+                            <h2>BARANGAY OFFICIAL LIST</h2>
                         </div>
-                    </div>
-                </div>
-
-                <div class="col-sm-6 col-md-3 col-lg-6" onclick="window.location.href = 'family_profiling.php'">
-                    <div class="thumbnail text-center d-flex flex-column align-items-center justify-content-center" style="padding: 50px;">
-                        <h1>12</h1>
-                        <div class="caption">
-                            <h3>Certificate Requests</h3>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="col-sm-6 col-md-3 col-lg-6" onclick="window.location.href = 'family_profiling.php'">
-                    <div class="thumbnail text-center d-flex flex-column align-items-center justify-content-center" style="padding: 50px;">
-                        <h1>12</h1>
-                        <div class="caption">
-                            <h3>Certificate Completed</h3>
+                        <div class="body">
+                            <div class="table-responsive">
+                                <table class="table table-bordered table-striped table-hover js-basic-example dataTable">
+                                    <thead>
+                                        <tr>
+                                            <th>Profile</th>
+                                            <th>Fullname</th>
+                                            <th>Position</th>
+                                            <th>Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td><img src="" alt="Sample"></td>
+                                            <td>Sample Fullname</td>
+                                            <td>Sample Position</td>
+                                            <td>
+                                                <a href="" class="btn bg-teal waves-effect" style="margin-bottom: 5px;"><i class="fa-solid fa-pencil"></i> UPDATE</a>
+                                                <a href="" class="btn bg-teal waves-effect" style="margin-bottom: 5px;"><i class="fa-solid fa-trash"></i> DELETE</a>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
-            <!-- #END# Widgets -->
+            <!-- #END# Basic Validation -->
+        </div>
         </div>
     </section>
 
@@ -193,14 +252,22 @@
     <!-- Bootstrap Core Js -->
     <script src="../plugins/bootstrap/js/bootstrap.js"></script>
 
-    <!-- Select Plugin Js -->
-    <script src="../plugins/bootstrap-select/js/bootstrap-select.js"></script>
-
     <!-- Slimscroll Plugin Js -->
     <script src="../plugins/jquery-slimscroll/jquery.slimscroll.js"></script>
 
     <!-- Waves Effect Plugin Js -->
     <script src="../plugins/node-waves/waves.js"></script>
+
+    <!-- Jquery DataTable Plugin Js -->
+    <script src="../plugins/jquery-datatable/jquery.dataTables.js"></script>
+    <script src="../plugins/jquery-datatable/skin/bootstrap/js/dataTables.bootstrap.js"></script>
+    <script src="../plugins/jquery-datatable/extensions/export/dataTables.buttons.min.js"></script>
+    <script src="../plugins/jquery-datatable/extensions/export/buttons.flash.min.js"></script>
+    <script src="../plugins/jquery-datatable/extensions/export/jszip.min.js"></script>
+    <script src="../plugins/jquery-datatable/extensions/export/pdfmake.min.js"></script>
+    <script src="../plugins/jquery-datatable/extensions/export/vfs_fonts.js"></script>
+    <script src="../plugins/jquery-datatable/extensions/export/buttons.html5.min.js"></script>
+    <script src="../plugins/jquery-datatable/extensions/export/buttons.print.min.js"></script>
 
     <!-- Jquery CountTo Plugin Js -->
     <script src="../plugins/jquery-countto/jquery.countTo.js"></script>
@@ -223,12 +290,33 @@
     <script src="../plugins/jquery-sparkline/jquery.sparkline.js"></script>
 
     <!-- Custom Js -->
+    <script src="../plugins/chartjs/Chart.bundle.js"></script>
+
+    <!-- Custom Js -->
     <script src="../js/admin.js"></script>
+    <script src="../js/pages/tables/jquery-datatable.js"></script>
+    <script src="../js/pages/charts/chartjs.js"></script>
     <script src="../js/pages/index.js"></script>
 
     <!-- Demo Js -->
     <script src="../js/demo.js"></script>
     <script src="../plugins/sweetalert/sweetalert.min.js"></script>
+
+    <!-- PREVIEW PROFILE -->
+    <script>
+        document.getElementById('profile_picture').addEventListener('change', function(event) {
+            const file = event.target.files[0];
+            const preview = document.getElementById('profilePreview');
+
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    preview.src = e.target.result;
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+    </script>
 </body>
 
 </html>

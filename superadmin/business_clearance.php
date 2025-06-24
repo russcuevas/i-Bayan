@@ -20,6 +20,9 @@
     <!-- Waves Effect Css -->
     <link href="plugins/node-waves/waves.css" rel="stylesheet" />
 
+    <!-- JQuery DataTable Css -->
+    <link href="plugins/jquery-datatable/skin/bootstrap/css/dataTables.bootstrap.css" rel="stylesheet">
+
     <!-- Animation Css -->
     <link href="plugins/animate-css/animate.css" rel="stylesheet" />
 
@@ -141,114 +144,97 @@
 
     <section class="content">
         <div class="container-fluid">
-            <div class="block-header text-center" style="margin-bottom: 50px !important;">
-                <h3 style="color: #1a49cb;">Welcome User!</h3>
-                <h3 style="color: #1a49cb;">Resident System for Mataasnakahoy Barangays</h3>
+            <div class="block-header">
+                <ol style="font-size: 15px;" class="breadcrumb breadcrumb-col-red">
+                    <li><a href="index.php"><i style="font-size: 20px;" class="material-icons">home</i>
+                            Dashboard</a></li>
+                    <li class="active"><i style="font-size: 20px;" class="material-icons">description</i> Business List
+                    </li>
+                </ol>
             </div>
-            <!-- Widgets -->
+            <!-- Basic Validation -->
             <div class="row clearfix">
-                <div class="col-sm-6 col-md-3 col-lg-4" onclick="window.location.href = 'family_profiling.php'">
-                    <div class="thumbnail text-center d-flex flex-column align-items-center justify-content-center" style="padding: 50px;">
-                        <i class="fas fa-users fa-3x mb-3 icon-style"></i>
-                        <div class="caption">
-                            <h3>Family Profiling</h3>
+                <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+                    <div class="card">
+                        <div class="header">
+                            <h2>ADD BUSINESS PRICE</h2>
                         </div>
-                    </div>
-                </div>
-
-                <div class="col-sm-6 col-md-3 col-lg-4" data-toggle="modal" data-target="#requestCertificateModal">
-                    <div class="thumbnail text-center d-flex flex-column align-items-center justify-content-center" style="padding: 50px;">
-                        <i class="fas fa-file fa-3x mb-3 icon-style"></i>
-                        <div class="caption">
-                            <h3>Document Request</h3>
-                        </div>
-                    </div>
-                </div>
-
-
-                <div class="modal fade" id="requestCertificateModal" tabindex="-1" role="dialog" style="display: none;">
-                    <div class="modal-dialog modal-lg" role="document">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h4 class="modal-title" id="defaultModalLabel">Request</h4>
-                            </div>
-                            <div class="modal-body" style="max-height: 100vh; overflow-y: auto;">
+                        <div class="body">
+                            <form id="form_validation" method="POST" enctype="multipart/form-data">
                                 <div class="row">
-                                    <div class="col-sm-6 col-md-3 col-lg-6" onclick="window.location.href = 'request_certificate.php'">
-                                        <div class="thumbnail text-center d-flex flex-column align-items-center justify-content-center" style="padding: 50px;">
-                                            <i class="fas fa-file fa-3x mb-3 icon-style"></i>
-                                            <div class="caption">
-                                                <h3>Certificates</h3>
+                                    <!-- LEFT COLUMN -->
+                                    <div class="col-md-12 pr-4">
+                                        <!-- hidden input -->
+                                        <input type="hidden" name="municipality" value="mataasnakahoy">
+                                        <input type="hidden" name="zip" value="4223">
+                                        <div class="form-group form-float" style="margin-top: 30px;">
+                                            <div class="form-line">
+                                                <input type="text" class="form-control" name="code" style="background-color: #555; padding: 10px; color: #ccc !important" value="01234" readonly>
+                                                <label class="form-label">Business Code</label>
                                             </div>
                                         </div>
-                                    </div>
 
-                                    <div class="col-sm-6 col-md-3 col-lg-6" onclick="window.location.href = 'request_operate.php'">
-                                        <div class="thumbnail text-center d-flex flex-column align-items-center justify-content-center" style="padding: 50px;">
-                                            <i class="fas fa-file fa-3x mb-3 icon-style"></i>
-                                            <div class="caption">
-                                                <h3>Operate</h3>
+                                        <div class="form-group form-float" style="margin-top: 30px;">
+                                            <div class="form-line">
+                                                <input type="text" class="form-control" name="name" required>
+                                                <label class="form-label">Business Name <span style="color: red;">*</span></label>
                                             </div>
                                         </div>
-                                    </div>
 
-                                    <div class="col-sm-6 col-md-3 col-lg-6" onclick="window.location.href = 'request_closure.php'">
-                                        <div class="thumbnail text-center d-flex flex-column align-items-center justify-content-center" style="padding: 50px;">
-                                            <i class="fas fa-file fa-3x mb-3 icon-style"></i>
-                                            <div class="caption">
-                                                <h3>Closure</h3>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <div class="col-sm-6 col-md-3 col-lg-6" onclick="window.location.href = 'request_cedula.php'">
-                                        <div class="thumbnail text-center d-flex flex-column align-items-center justify-content-center" style="padding: 50px;">
-                                            <i class="fas fa-file fa-3x mb-3 icon-style"></i>
-                                            <div class="caption">
-                                                <h3>Cedula</h3>
+                                        <div class="form-group form-float" style="margin-top: 30px;">
+                                            <div class="form-line">
+                                                <input type="text" class="form-control" name="price" required>
+                                                <label class="form-label">Business Price <span style="color: red;">*</span></label>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
-                            </div>
-                            <!-- Footer Buttons aligned to bottom right -->
-                            <div class="modal-footer d-flex justify-content-end">
-                                <button type="button" class="btn btn-link waves-effect" data-dismiss="modal">CLOSE</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <!-- END ADD MODAL -->
 
-                <div class="col-sm-6 col-md-3 col-lg-4" onclick="window.location.href = 'live_chat.php'">
-                    <div class="thumbnail text-center d-flex flex-column align-items-center justify-content-center" style="padding: 50px;">
-                        <i class="fas fa-comment fa-3x mb-3 icon-style"></i>
-                        <div class="caption">
-                            <h3>Live Chat</h3>
+                                <div style="display: flex; justify-content: end; gap: 5px; margin-top: 10px;">
+                                    <button class="btn bg-teal waves-effect" type="submit"> + Save</button>
+                                </div>
+                            </form>
                         </div>
-                    </div>
-                </div>
-                <div class="col-lg-2">
 
-                </div>
-                <div class="col-sm-6 col-md-3 col-lg-4" onclick="window.location.href = 'feedback.php'">
-                    <div class="thumbnail text-center d-flex flex-column align-items-center justify-content-center" style="padding: 50px;">
-                        <i class="fas fa-thumbs-up fa-3x mb-3 icon-style"></i>
-                        <div class="caption">
-                            <h3>Feedback</h3>
-                        </div>
                     </div>
                 </div>
-                <div class="col-sm-6 col-md-3 col-lg-4" onclick="window.location.href = 'about_us.php'">
-                    <div class="thumbnail text-center d-flex flex-column align-items-center justify-content-center" style="padding: 50px;">
-                        <i class="fas fa-book-open fa-3x mb-3 icon-style"></i>
-                        <div class="caption">
-                            <h3>About Us</h3>
+
+                <!-- RIGHT CARD -->
+                <div class="col-lg-8 col-md-8 col-sm-12 col-xs-12">
+                    <div class="card">
+                        <div class="header">
+                            <h2>BUSINESS LIST</h2>
+                        </div>
+                        <div class="body">
+                            <div class="table-responsive">
+                                <table class="table table-bordered table-striped table-hover js-basic-example dataTable">
+                                    <thead>
+                                        <tr>
+                                            <th>Code</th>
+                                            <th>Name</th>
+                                            <th>Price</th>
+                                            <th>Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>01234</td>
+                                            <td>Water Refilling</td>
+                                            <td>₱500.00</td>
+                                            <td>
+                                                <a href="" class="btn bg-teal waves-effect" style="margin-bottom: 5px;"><i class="fa-solid fa-pencil"></i> UPDATE</a>
+                                                <a href="" class="btn bg-teal waves-effect" style="margin-bottom: 5px;"><i class="fa-solid fa-trash"></i> DELETE</a>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
-            <!-- #END# Widgets -->
+            <!-- #END# Basic Validation -->
+        </div>
         </div>
     </section>
 
@@ -260,14 +246,22 @@
     <!-- Bootstrap Core Js -->
     <script src="plugins/bootstrap/js/bootstrap.js"></script>
 
-    <!-- Select Plugin Js -->
-    <script src="plugins/bootstrap-select/js/bootstrap-select.js"></script>
-
     <!-- Slimscroll Plugin Js -->
     <script src="plugins/jquery-slimscroll/jquery.slimscroll.js"></script>
 
     <!-- Waves Effect Plugin Js -->
     <script src="plugins/node-waves/waves.js"></script>
+
+    <!-- Jquery DataTable Plugin Js -->
+    <script src="plugins/jquery-datatable/jquery.dataTables.js"></script>
+    <script src="plugins/jquery-datatable/skin/bootstrap/js/dataTables.bootstrap.js"></script>
+    <script src="plugins/jquery-datatable/extensions/export/dataTables.buttons.min.js"></script>
+    <script src="plugins/jquery-datatable/extensions/export/buttons.flash.min.js"></script>
+    <script src="plugins/jquery-datatable/extensions/export/jszip.min.js"></script>
+    <script src="plugins/jquery-datatable/extensions/export/pdfmake.min.js"></script>
+    <script src="plugins/jquery-datatable/extensions/export/vfs_fonts.js"></script>
+    <script src="plugins/jquery-datatable/extensions/export/buttons.html5.min.js"></script>
+    <script src="plugins/jquery-datatable/extensions/export/buttons.print.min.js"></script>
 
     <!-- Jquery CountTo Plugin Js -->
     <script src="plugins/jquery-countto/jquery.countTo.js"></script>
@@ -290,7 +284,12 @@
     <script src="plugins/jquery-sparkline/jquery.sparkline.js"></script>
 
     <!-- Custom Js -->
+    <script src="plugins/chartjs/Chart.bundle.js"></script>
+
+    <!-- Custom Js -->
     <script src="js/admin.js"></script>
+    <script src="js/pages/tables/jquery-datatable.js"></script>
+    <script src="js/pages/charts/chartjs.js"></script>
     <script src="js/pages/index.js"></script>
 
     <!-- Demo Js -->

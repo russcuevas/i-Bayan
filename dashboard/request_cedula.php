@@ -344,7 +344,7 @@
 
                                 <div style="display: flex; justify-content: end; gap: 5px; margin-top: 10px;">
                                     <button class="btn bg-teal waves-effect" type="submit">Request</button>
-                                    <button class="btn btn-link waves-effect" type="button" onclick="window.location.href = 'certificate_closure.php'">Go back</button>
+                                    <button class="btn btn-link waves-effect" type="button" onclick="window.location.href = 'certificate_cedula.php'">Go back</button>
                                 </div>
                             </form>
                         </div>

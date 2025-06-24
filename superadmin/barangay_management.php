@@ -218,9 +218,9 @@
                                     </thead>
                                     <tbody>
                                         <tr>
-                                            <td>Russel Vincent Cuevas</td>
-                                            <td>Barangay Clearance</td>
-                                            <td>₱50.00</td>
+                                            <td>Calingatan</td>
+                                            <td>Sample Mission</td>
+                                            <td>Sample Vision</td>
                                             <td>
                                                 <a href="" class="btn bg-teal waves-effect" style="margin-bottom: 5px;"><i class="fa-solid fa-pencil"></i> UPDATE</a>
                                                 <a href="" class="btn bg-teal waves-effect" style="margin-bottom: 5px;"><i class="fa-solid fa-trash"></i> DELETE</a>

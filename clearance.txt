@@ -7,6 +7,7 @@ phone_number
 email
 password
 
+
 tbl_system_configuration
 email_config
 sms_config
@@ -26,10 +27,10 @@ created_by
 updated_by
 
 tbl_barangay_officials
-name
+profile_picture
+fullname
 position
-year
-barangay
+barangay -> foreign to tbl_barangay
 created_at
 updated_at
 
@@ -47,6 +48,7 @@ created_at
 updated_at
 
 tbl_business_trade
+code
 name
 price
 
@@ -139,7 +141,24 @@ for_barangay
 created_at
 updated_at
 
-tbl_certificates
+tbl_certificates_completed
+resident_id -> foreign to tbl_residents -> id
+document_number - randomized
+picked_up_by
+relationship
+certificate_type
+purpose
+fullname
+email
+gender
+contact
+valid_id
+total_amount_paid
+for_barangay
+created_at
+updated_at
+
+tbl_certificates_completed
 resident_id -> foreign to tbl_residents -> id
 document_number - randomized
 picked_up_by
@@ -156,8 +175,6 @@ is_resident
 is_barangay_clearance
 total_amount_paid
 for_barangay
-created_at
-updated_at
 
 tbl_feedback
 resident_id -> foreign to tbl_residents -> id
@@ -184,6 +201,7 @@ updated_at
 
 tbl_system_logs
 user_id
+action
 logged_in -> DATETIME
 logged_out -> DATETIME
 

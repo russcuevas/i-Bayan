@@ -13,6 +13,12 @@
                 </a>
             </li>
             <li>
+                <a href="barangay_officials.php">
+                    <i class="material-icons">admin_panel_settings</i>
+                    <span>Barangay Officials</span>
+                </a>
+            </li>
+            <li>
                 <a href="manage_residents.php">
                     <i class="material-icons">groups</i>
                     <span>Manage Residents</span>
@@ -20,7 +26,7 @@
             </li>
             <li>
                 <a href="resident_verifications.php">
-                    <i class="material-icons">check</i>
+                    <i class="material-icons">pending_actions</i>
                     <span>Resident Verifications</span>
                 </a>
             </li>
@@ -30,6 +36,7 @@
                     <span>Household List</span>
                 </a>
             </li>
+
             <li>
                 <a href="javascript:void(0);" class="menu-toggle">
                     <i class="material-icons">library_books</i>
@@ -50,6 +57,14 @@
                     </li>
                 </ul>
             </li>
+
+            <li>
+                <a href="completed_certificates.php">
+                    <i class="material-icons">task_alt</i>
+                    <span>Certificate Completed</span>
+                </a>
+            </li>
+
             <li>
                 <a href="live_chat.php">
                     <i class="material-icons">chat</i>

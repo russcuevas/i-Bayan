@@ -20,6 +20,9 @@
     <!-- Waves Effect Css -->
     <link href="../plugins/node-waves/waves.css" rel="stylesheet" />
 
+    <!-- JQuery DataTable Css -->
+    <link href="../plugins/jquery-datatable/skin/bootstrap/css/dataTables.bootstrap.css" rel="stylesheet">
+
     <!-- Animation Css -->
     <link href="../plugins/animate-css/animate.css" rel="stylesheet" />
 
@@ -87,6 +90,45 @@
         .icon-style {
             transition: color 0.3s ease;
         }
+
+        /* Tag List Styling */
+        .report-tags {
+            list-style-type: none;
+            padding-left: 0;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .report-tags li a {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background-color: #ffffff;
+            border: 2px solid #1a49cb;
+            color: #1a49cb;
+            padding: 8px 15px;
+            font-size: 14px;
+            font-weight: 600;
+            text-decoration: none;
+            border-radius: 30px;
+            transition: all 0.3s ease;
+        }
+
+        .report-tags li a:hover {
+            background-color: #1a49cb;
+            color: #ffffff;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+            transform: translateY(-2px);
+        }
+
+        .report-tags li a.active {
+            background-color: #1a49cb;
+            color: #ffffff;
+            border-color: #1a49cb;
+            box-shadow: 0 4px 12px rgba(26, 73, 203, 0.3);
+            transform: translateY(-1px);
+        }
     </style>
 </head>
 
@@ -141,47 +183,53 @@
 
     <section class="content">
         <div class="container-fluid">
+            <div class="block-header">
+                <ol style="font-size: 15px;" class="breadcrumb breadcrumb-col-red">
+                    <li><a href="index.php"><i style="font-size: 20px;" class="material-icons">home</i>
+                            Dashboard</a></li>
+                    <li class="active"><i style="font-size: 20px;" class="material-icons">description</i> Announcements
+                    </li>
+                </ol>
+            </div>
+            <!-- Basic Validation -->
             <div class="block-header text-left">
-                <h3 style="color: #1a49cb;">Dashboard</h3>
+                <h3 style="color: #1a49cb;">Generate Reports</h3>
             </div>
             <div class="row clearfix">
-                <div class="col-sm-6 col-md-3 col-lg-6" onclick="window.location.href = 'barangay_management.php'">
-                    <div class="thumbnail text-center d-flex flex-column align-items-center justify-content-center" style="padding: 50px;">
-                        <h1>12</h1>
-                        <div class="caption">
-                            <h3>Total Residents</h3>
+                <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+                    <div class="card">
+                        <div class="header">
+                            <h2>Categories</h2>
                         </div>
+                        <div class="body">
+                            <ul id="tagList" class="report-tags">
+                                <li><a href="reports/residents.php" class="active"><i class="fa-solid fa-users"></i> Residents</a></li>
+                                <li><a href="reports/household.php"><i class="fa-solid fa-house-user"></i> Household</a></li>
+                                <li><a href="reports/email_sent.php"><i class="fa-solid fa-envelope"></i> Email Sent</a></li>
+                                <li><a href="reports/announcement.php"><i class="fa-solid fa-bullhorn"></i> Announcement</a></li>
+                                <li><a href="reports/activity_logs.php"><i class="fa-solid fa-list-check"></i> Activity Logs</a></li>
+                            </ul>
+                        </div>
+
                     </div>
                 </div>
 
-                <div class="col-sm-6 col-md-3 col-lg-6" onclick="window.location.href = 'admin_management.php'">
-                    <div class="thumbnail text-center d-flex flex-column align-items-center justify-content-center" style="padding: 50px;">
-                        <h1>12</h1>
-                        <div class="caption">
-                            <h3>Pending Approvals</h3>
+                <!-- RIGHT CARD -->
+                <div class="col-lg-8 col-md-8 col-sm-12 col-xs-12">
+                    <div class="card">
+                        <div class="header">
+                            <h2>LIST</h2>
                         </div>
-                    </div>
-                </div>
-
-                <div class="col-sm-6 col-md-3 col-lg-6" onclick="window.location.href = 'family_profiling.php'">
-                    <div class="thumbnail text-center d-flex flex-column align-items-center justify-content-center" style="padding: 50px;">
-                        <h1>12</h1>
-                        <div class="caption">
-                            <h3>Certificate Requests</h3>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="col-sm-6 col-md-3 col-lg-6" onclick="window.location.href = 'family_profiling.php'">
-                    <div class="thumbnail text-center d-flex flex-column align-items-center justify-content-center" style="padding: 50px;">
-                        <h1>12</h1>
-                        <div class="caption">
-                            <h3>Certificate Completed</h3>
+                        <div class="body">
+                            <div class="table-responsive">
+                                <h1 style="text-align: center;">No selected categories</h1>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
-            <!-- #END# Widgets -->
+            <!-- #END# Basic Validation -->
+        </div>
         </div>
     </section>
 
@@ -193,14 +241,22 @@
     <!-- Bootstrap Core Js -->
     <script src="../plugins/bootstrap/js/bootstrap.js"></script>
 
-    <!-- Select Plugin Js -->
-    <script src="../plugins/bootstrap-select/js/bootstrap-select.js"></script>
-
     <!-- Slimscroll Plugin Js -->
     <script src="../plugins/jquery-slimscroll/jquery.slimscroll.js"></script>
 
     <!-- Waves Effect Plugin Js -->
     <script src="../plugins/node-waves/waves.js"></script>
+
+    <!-- Jquery DataTable Plugin Js -->
+    <script src="../plugins/jquery-datatable/jquery.dataTables.js"></script>
+    <script src="../plugins/jquery-datatable/skin/bootstrap/js/dataTables.bootstrap.js"></script>
+    <script src="../plugins/jquery-datatable/extensions/export/dataTables.buttons.min.js"></script>
+    <script src="../plugins/jquery-datatable/extensions/export/buttons.flash.min.js"></script>
+    <script src="../plugins/jquery-datatable/extensions/export/jszip.min.js"></script>
+    <script src="../plugins/jquery-datatable/extensions/export/pdfmake.min.js"></script>
+    <script src="../plugins/jquery-datatable/extensions/export/vfs_fonts.js"></script>
+    <script src="../plugins/jquery-datatable/extensions/export/buttons.html5.min.js"></script>
+    <script src="../plugins/jquery-datatable/extensions/export/buttons.print.min.js"></script>
 
     <!-- Jquery CountTo Plugin Js -->
     <script src="../plugins/jquery-countto/jquery.countTo.js"></script>
@@ -223,7 +279,12 @@
     <script src="../plugins/jquery-sparkline/jquery.sparkline.js"></script>
 
     <!-- Custom Js -->
+    <script src="../plugins/chartjs/Chart.bundle.js"></script>
+
+    <!-- Custom Js -->
     <script src="../js/admin.js"></script>
+    <script src="../js/pages/tables/jquery-datatable.js"></script>
+    <script src="../js/pages/charts/chartjs.js"></script>
     <script src="../js/pages/index.js"></script>
 
     <!-- Demo Js -->
