@@ -9,61 +9,87 @@ if (!isset($_SESSION['superadmin_id'])) {
 // database connection
 include '../database/connection.php';
 
-// add admin function
+// get the barangay for options
+$stmt = $conn->query("SELECT * FROM tbl_barangay ORDER BY id DESC");
+$barangays = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+// get admin id url
+$admin_id = $_GET['id'] ?? null;
+if (!$admin_id) {
+    header("Location: admin_management.php");
+    exit();
+}
+
+// fetch the admin data
+$stmt = $conn->prepare("SELECT * FROM tbl_admin WHERE id = ?");
+$stmt->execute([$admin_id]);
+$admin = $stmt->fetch(PDO::FETCH_ASSOC);
+
+if (!$admin) {
+    $_SESSION['error'] = "Admin not found.";
+    header("Location: admin_management.php");
+    exit();
+}
+
+// update admin functions
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $barangay_id = $_POST['barangay_id'];
+    $position = $_POST['position'];
+    $fullname = trim($_POST['fullname']);
+    $gender = $_POST['gender'];
+    $email = trim($_POST['email']);
+    $contact = trim($_POST['contact']);
+    $username = trim($_POST['username']);
+    $password = $_POST['password'] ?? '';
+
     try {
-        $barangay_id = $_POST['barangay_id'];
-        $position = $_POST['position'];
-        $fullname = trim($_POST['fullname']);
-        $gender = $_POST['gender'];
-        $email = trim($_POST['email']);
-        $contact = trim($_POST['contact']);
-        $username = trim($_POST['username']);
-        $password = $_POST['password'];
-        $status = 'offline';
-
-        // Hash password using sha1 (not recommended for production!)
-        $hashed_password = sha1($password);
-
-        // Check if username or email already exists
-        $check_stmt = $conn->prepare("SELECT * FROM tbl_admin WHERE username = :username OR email = :email");
-        $check_stmt->execute([':username' => $username, ':email' => $email]);
-
+        $check_stmt = $conn->prepare("SELECT * FROM tbl_admin WHERE (username = :username OR email = :email) AND id != :id");
+        $check_stmt->execute([':username' => $username, ':email' => $email, ':id' => $admin_id]);
         if ($check_stmt->rowCount() > 0) {
             $_SESSION['error'] = "Username or email already exists.";
         } else {
-            $stmt = $conn->prepare("INSERT INTO tbl_admin 
-                (barangay_id, position, fullname, gender, email, contact_number, username, password, status)
-                VALUES 
-                (:barangay_id, :position, :fullname, :gender, :email, :contact, :username, :password, :status)");
+            if (!empty($password)) {
+                // Hash new password
+                $hashed_password = sha1($password);
+                $sql = "UPDATE tbl_admin SET barangay_id = :barangay_id, position = :position, fullname = :fullname, gender = :gender, email = :email, contact_number = :contact, username = :username, password = :password WHERE id = :id";
+                $params = [
+                    ':barangay_id' => $barangay_id,
+                    ':position' => $position,
+                    ':fullname' => $fullname,
+                    ':gender' => $gender,
+                    ':email' => $email,
+                    ':contact' => $contact,
+                    ':username' => $username,
+                    ':password' => $hashed_password,
+                    ':id' => $admin_id
+                ];
+            } else {
+                // No password update
+                $sql = "UPDATE tbl_admin SET barangay_id = :barangay_id, position = :position, fullname = :fullname, gender = :gender, email = :email, contact_number = :contact, username = :username WHERE id = :id";
+                $params = [
+                    ':barangay_id' => $barangay_id,
+                    ':position' => $position,
+                    ':fullname' => $fullname,
+                    ':gender' => $gender,
+                    ':email' => $email,
+                    ':contact' => $contact,
+                    ':username' => $username,
+                    ':id' => $admin_id
+                ];
+            }
 
-            $stmt->execute([
-                ':barangay_id' => $barangay_id,
-                ':position' => $position,
-                ':fullname' => $fullname,
-                ':gender' => $gender,
-                ':email' => $email,
-                ':contact' => $contact,
-                ':username' => $username,
-                ':password' => $hashed_password,
-                ':status' => $status
-            ]);
+            $stmt = $conn->prepare($sql);
+            $stmt->execute($params);
 
-            $_SESSION['success'] = "Admin added successfully!";
+            $_SESSION['success'] = "Admin updated successfully!";
             header("Location: admin_management.php");
             exit();
         }
     } catch (PDOException $e) {
-        // Log error if needed: error_log($e->getMessage());
-        $_SESSION['error'] = "An error occurred while adding the admin. Please try again.";
+        $_SESSION['error'] = "Error updating admin: " . $e->getMessage();
     }
 }
-
-// Get barangay list
-$stmt = $conn->query("SELECT * FROM tbl_barangay ORDER BY id DESC");
-$barangays = $stmt->fetchAll(PDO::FETCH_ASSOC);
 ?>
-
 
 <!DOCTYPE html>
 <html>
@@ -215,11 +241,16 @@ $barangays = $stmt->fetchAll(PDO::FETCH_ASSOC);
         <div class="container-fluid">
             <div class="block-header">
                 <ol style="font-size: 15px;" class="breadcrumb breadcrumb-col-red">
-                    <li><a href="index.php"><i style="font-size: 20px;" class="material-icons">home</i>
-                            Dashboard</a></li>
-                    <li class="active"><i style="font-size: 20px;" class="material-icons">description</i> Admin Management
+                    <li>
+                        <a href="index.php">
+                            <i style="font-size: 20px;" class="material-icons">home</i> Dashboard
+                        </a>
                     </li>
-                    <li class="active"><i style="font-size: 20px;" class="material-icons">description</i> Add Admin
+                    <li class="active">
+                        <i style="font-size: 20px;" class="material-icons">description</i> Admin Management
+                    </li>
+                    <li class="active">
+                        <i style="font-size: 20px;" class="material-icons">description</i> Update Admin
                     </li>
                 </ol>
             </div>
@@ -228,25 +259,23 @@ $barangays = $stmt->fetchAll(PDO::FETCH_ASSOC);
                 <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
                     <div class="card">
                         <div class="header">
-                            <h2>ADD ADMIN</h2>
+                            <h2><?php echo $admin['fullname'] ?> Account</h2>
                         </div>
                         <div class="body">
-                            <form id="add_admin_validation" method="POST" enctype="multipart/form-data">
+                            <form id="update_admin_validation" method="POST" enctype="multipart/form-data">
                                 <div class="row">
-                                    <!-- Left Column: Request Info and Personal Info -->
+                                    <!-- Left Column -->
                                     <div class="col-md-6 pr-4">
-                                        <!-- Personal Information -->
-                                        <h4 class="bold span-or" style="font-weight: 900; color: #1a49cb;">Personal Information</h4>
-
+                                        <h4 class="bold" style="color: #1a49cb;">Personal Information</h4>
                                         <div class="row">
                                             <div class="col-lg-6">
                                                 <div class="form-group form-float">
                                                     <label class="form-label">Barangay <span style="color: red;">*</span></label>
                                                     <select class="form-control select-form select2" name="barangay_id" required>
-                                                        <option value="" disabled selected>SELECT BARANGAY</option>
+                                                        <option value="" disabled>SELECT BARANGAY</option>
                                                         <?php foreach ($barangays as $barangay): ?>
-                                                            <option value="<?= $barangay['id']; ?>">
-                                                                <?= htmlspecialchars($barangay['barangay_name']); ?>
+                                                            <option value="<?= $barangay['id']; ?>" <?= ($barangay['id'] == $admin['barangay_id']) ? 'selected' : '' ?>>
+                                                                <?= htmlspecialchars($barangay['barangay_name']) ?>
                                                             </option>
                                                         <?php endforeach; ?>
                                                     </select>
@@ -254,82 +283,73 @@ $barangays = $stmt->fetchAll(PDO::FETCH_ASSOC);
                                             </div>
                                             <div class="col-lg-6">
                                                 <div class="form-group form-float">
-                                                    <label class="form-label">Type <span style="color: red;">*</span></label>
+                                                    <label class="form-label">Position <span style="color: red;">*</span></label>
                                                     <select class="form-control select-form select2" name="position" required>
-                                                        <option value="" disabled selected>SELECT POSITION</option>
-                                                        <option value="administrator">Administrator</option>
-                                                        <option value="barangay official">Barangay Official</option>
-                                                        <option value="staff">Staff</option>
+                                                        <option value="" disabled>SELECT POSITION</option>
+                                                        <option value="administrator" <?= ($admin['position'] === 'administrator') ? 'selected' : '' ?>>Administrator</option>
+                                                        <option value="barangay official" <?= ($admin['position'] === 'barangay official') ? 'selected' : '' ?>>Barangay Official</option>
+                                                        <option value="staff" <?= ($admin['position'] === 'staff') ? 'selected' : '' ?>>Staff</option>
                                                     </select>
                                                 </div>
                                             </div>
                                         </div>
-
-                                        <div class="form-group form-float" style="margin-top: 30px;">
+                                        <div class="form-group form-float">
                                             <div class="form-line">
-                                                <input type="text" class="form-control" name="fullname" required>
+                                                <input type="text" class="form-control" name="fullname" required value="<?= htmlspecialchars($admin['fullname']) ?>">
                                                 <label class="form-label">Fullname <span style="color: red;">*</span></label>
                                             </div>
                                         </div>
-
-
                                         <div class="form-group">
-                                            <label for="gender">Gender <span style="color: red;">*</span></label><br>
-                                            <input type="radio" name="gender" id="male" value="Male" required checked>
+                                            <label>Gender <span style="color: red;">*</span></label><br>
+                                            <input type="radio" id="male" name="gender" value="Male" required <?= ($admin['gender'] === 'Male') ? 'checked' : '' ?>>
                                             <label for="male">Male</label>
-                                            <input type="radio" name="gender" id="female" value="Female" class="m-l-20">
+                                            <input type="radio" id="female" name="gender" value="Female" <?= ($admin['gender'] === 'Female') ? 'checked' : '' ?>>
                                             <label for="female">Female</label>
                                         </div>
-
                                         <div class="form-group form-float">
                                             <div class="form-line">
-                                                <input type="email" class="form-control" name="email" id="email" required>
+                                                <input type="email" class="form-control" name="email" required value="<?= htmlspecialchars($admin['email']) ?>">
                                                 <label class="form-label">Email <span style="color: red;">*</span></label>
                                             </div>
                                         </div>
-
                                         <div class="form-group form-float">
                                             <div class="form-line">
-                                                <input type="number" class="form-control" name="contact" required>
+                                                <input type="number" class="form-control" name="contact" required value="<?= htmlspecialchars($admin['contact_number']) ?>">
                                                 <label class="form-label">Mobile # <span style="color: red;">*</span></label>
                                             </div>
                                         </div>
                                     </div>
-
-                                    <!-- Right Column: Requirements and Pickup Info -->
+                                    <!-- Right Column -->
                                     <div class="col-md-6 pl-4">
-                                        <h4 class="bold span-or mb-4" style="font-weight: 900; color: #1a49cb;">Account Details</h4>
+                                        <h4 class="bold" style="color: #1a49cb;">Account Details</h4>
                                         <div class="form-group form-float" style="margin-top: 30px;">
                                             <div class="form-line">
-                                                <input type="text" class="form-control" name="username" id="username" required>
+                                                <input type="text" class="form-control" name="username" required value="<?= htmlspecialchars($admin['username']) ?>">
                                                 <label class="form-label">Username <span style="color: red;">*</span></label>
                                             </div>
                                         </div>
-
-
                                         <div class="form-group form-float" style="margin-top: 30px;">
                                             <div class="form-line">
-                                                <input type="password" class="form-control" name="password" required>
-                                                <label class="form-label">Password <span style="color: red;">*</span></label>
+                                                <input type="password" class="form-control" name="password">
+                                                <label class="form-label">Password <small>(leave blank to keep current)</small></label>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
-
                                 <!-- Buttons -->
                                 <div style="display: flex; justify-content: end; gap: 5px; margin-top: 10px;">
-                                    <button class="btn bg-teal waves-effect" type="submit">Save</button>
+                                    <button class="btn bg-teal waves-effect" type="submit">Update</button>
                                     <button class="btn btn-link waves-effect" type="button" onclick="window.location.href = 'admin_management.php'">Go back</button>
                                 </div>
                             </form>
-                        </div>
-
-                    </div>
-                </div>
-            </div>
+                        </div> <!-- .body -->
+                    </div> <!-- .card -->
+                </div> <!-- .col-lg-12 -->
+            </div> <!-- .row clearfix -->
             <!-- #END# Basic Validation -->
-        </div>
+        </div> <!-- .container-fluid -->
     </section>
+
 
     <!-- Jquery Core Js -->
     <script src="plugins/jquery/jquery.min.js"></script>
@@ -369,8 +389,9 @@ $barangays = $stmt->fetchAll(PDO::FETCH_ASSOC);
     <!-- Demo Js -->
     <script src="js/demo.js"></script>
 
+    <!-- UPDATE VALIDATION -->
     <script>
-        $('#add_admin_validation').validate({
+        $('#update_admin_validation').validate({
             rules: {
                 username: {
                     required: true,
@@ -382,7 +403,8 @@ $barangays = $stmt->fetchAll(PDO::FETCH_ASSOC);
                             type: 'username',
                             value: function() {
                                 return $('[name="username"]').val();
-                            }
+                            },
+                            id: <?= json_encode($admin['id']) ?>
                         }
                     }
                 },
@@ -396,7 +418,8 @@ $barangays = $stmt->fetchAll(PDO::FETCH_ASSOC);
                             type: 'email',
                             value: function() {
                                 return $('[name="email"]').val();
-                            }
+                            },
+                            id: <?= json_encode($admin['id']) ?>
                         }
                     }
                 }

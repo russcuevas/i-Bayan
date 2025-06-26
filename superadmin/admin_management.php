@@ -1,3 +1,26 @@
+<?php
+// session
+session_start();
+if (!isset($_SESSION['superadmin_id'])) {
+    header("Location: login.php");
+    exit();
+}
+
+// database connection
+include '../database/connection.php';
+
+// get admins with barangay names function
+$stmt = $conn->query("
+    SELECT a.*, b.barangay_name 
+    FROM tbl_admin a
+    LEFT JOIN tbl_barangay b ON a.barangay_id = b.id
+    ORDER BY a.id DESC
+");
+$admins = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+
+?>
+
 <!DOCTYPE html>
 <html>
 
@@ -176,17 +199,34 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <tr>
-                                            <td>Russel Vincent Cuevas</td>
-                                            <td>Calingatan</td>
-                                            <td>Staff</td>
-                                            <td>09495748302</td>
-                                            <td><span style="color: green">Online</span></td>
-                                            <td>
-                                                <a href="" class="btn bg-teal waves-effect" style="margin-bottom: 5px;"><i class="fa-solid fa-pencil"></i> UPDATE</a>
-                                                <a href="" class="btn bg-teal waves-effect" style="margin-bottom: 5px;"><i class="fa-solid fa-trash"></i> DELETE</a>
-                                            </td>
-                                        </tr>
+                                        <?php foreach ($admins as $admin): ?>
+                                            <tr>
+                                                <td><?php echo $admin['fullname'] ?></td>
+                                                <td><?php echo $admin['barangay_name'] ?></td>
+                                                <td><span style="text-transform: capitalize;"><?php echo $admin['position'] ?></span></td>
+                                                <td><?php echo $admin['contact_number'] ?></td>
+                                                <td>
+                                                    <?php
+                                                    $status = strtolower($admin['status']);
+                                                    $color = ($status === 'online') ? 'green' : 'red';
+                                                    ?>
+                                                    <span style="color: <?= $color ?>; text-transform: capitalize;">
+                                                        <?= htmlspecialchars($status) ?>
+                                                    </span>
+                                                </td>
+                                                <td>
+                                                    <a href="update_admin.php?id=<?php echo $admin['id'] ?>" class="btn bg-teal waves-effect" style="margin-bottom: 5px;">
+                                                        <i class="fa-solid fa-pencil"></i> UPDATE
+                                                    </a>
+                                                    <a href="#"
+                                                        data-id="<?php echo $admin['id']; ?>"
+                                                        class="btn bg-teal waves-effect btn-delete"
+                                                        style="margin-bottom: 5px;">
+                                                        <i class="fa-solid fa-trash"></i> DELETE
+                                                    </a>
+                                                </td>
+                                            </tr>
+                                        <?php endforeach ?>
                                     </tbody>
                                 </table>
                             </div>
@@ -256,6 +296,48 @@
     <!-- Demo Js -->
     <script src="js/demo.js"></script>
     <script src="plugins/sweetalert/sweetalert.min.js"></script>
+    <script>
+        <?php if (isset($_SESSION['success'])): ?>
+            swal({
+                type: 'success',
+                title: 'Success!',
+                text: '<?php echo $_SESSION['success']; ?>',
+                confirmButtonText: 'OK'
+            });
+            <?php unset($_SESSION['success']); ?>
+        <?php elseif (isset($_SESSION['error'])): ?>
+            swal({
+                type: 'error',
+                title: 'Oops...',
+                text: '<?php echo $_SESSION['error']; ?>',
+                confirmButtonText: 'OK'
+            });
+            <?php unset($_SESSION['error']); ?>
+        <?php endif; ?>
+    </script>
+
+    <!-- DELETE SCRIPT -->
+    <script>
+        $('.btn-delete').click(function(e) {
+            e.preventDefault();
+
+            var adminId = $(this).data('id');
+            var deleteUrl = `delete_admin.php?id=${adminId}`;
+
+            swal({
+                title: "Are you sure?",
+                text: "You will not be able to recover this data!",
+                type: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#DD6B55",
+                confirmButtonText: "Yes, delete it!",
+                closeOnConfirm: false
+            }, function() {
+                window.location.href = deleteUrl;
+            });
+        });
+    </script>
+
 </body>
 
 </html>
