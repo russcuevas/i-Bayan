@@ -17,7 +17,7 @@ sms_config
 
 //ADMIN
 
-[ -- NOW WORKING --
+[ -- FINISH --
     tbl_barangay
     barangay_name
     municipality -> mataasnakahoy
@@ -49,10 +49,12 @@ status
 created_at
 updated_at
 
-tbl_business_trade
-code
-name
-price
+[   -- NOW WORKING --
+    tbl_business_trade
+    code
+    name
+    price
+]
 
 
 // USERS

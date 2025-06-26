@@ -9,34 +9,53 @@ if (!isset($_SESSION['superadmin_id'])) {
 // database connection
 include '../database/connection.php';
 
-// add business trade functions
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $code = $_POST['code'] ?? '';
-    $name = $_POST['name'] ?? '';
-    $price = $_POST['price'] ?? '';
 
-    $stmt = $conn->prepare("INSERT INTO tbl_business_trade (code, name, price) VALUES (:code, :name, :price)");
-    $stmt->execute([
-        ':code' => $code,
-        ':name' => $name,
-        ':price' => $price
-    ]);
-    $_SESSION['success'] = "Business added successfully!";
-
-    header("Location: business_clearance.php");
+// id not found return to same page
+if (!isset($_GET['id'])) {
+    $_SESSION['error'] = 'Invalid barangay ID.';
+    header('Location: business_clearance.php');
     exit();
 }
-// function auto generated code
-function generateBusinessCode($conn)
-{
-    $lastCode = $conn->query("SELECT code FROM tbl_business_trade ORDER BY id DESC LIMIT 1")->fetchColumn();
-    $nextNum = $lastCode ? intval(substr($lastCode, 2)) + 1 : 1;
-    return 'BT' . str_pad($nextNum, 4, '0', STR_PAD_LEFT);
+
+
+// fetch business data
+$id = $_GET['id'];
+$stmt = $conn->prepare("SELECT * FROM tbl_business_trade WHERE id = :id");
+$stmt->execute([':id' => $id]);
+$business_trades = $stmt->fetch(PDO::FETCH_ASSOC);
+
+if (!$business_trades) {
+    $_SESSION['error'] = 'Business not found.';
+    header('Location: business_clearance.php');
+    exit();
 }
 
-$autoCode = generateBusinessCode($conn);
+// update business functions
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $code = $_POST['code'];
+    $name = $_POST['name'];
+    $price = $_POST['price'];
 
-// get business trade
+
+    $update_stmt = $conn->prepare("UPDATE tbl_business_trade 
+                                  SET code = :code, 
+                                      name = :name, 
+                                      price = :price 
+                                  WHERE id = :id");
+    $update_stmt->execute([
+        ':code' => $code,
+        ':name' => $name,
+        ':price' => $price,
+        ':id' => $id
+    ]);
+
+
+    $_SESSION['success'] = 'Business updated successfully!';
+    header('Location: business_clearance.php');
+    exit();
+}
+
+// get barangay functions
 $stmt = $conn->query("SELECT * FROM tbl_business_trade ORDER BY id DESC");
 $business_trade = $stmt->fetchAll(PDO::FETCH_ASSOC);
 ?>
@@ -200,7 +219,7 @@ $business_trade = $stmt->fetchAll(PDO::FETCH_ASSOC);
                 <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
                     <div class="card">
                         <div class="header">
-                            <h2>ADD BUSINESS PRICE</h2>
+                            <h2>UPDATE BUSINESS PRICE</h2>
                         </div>
                         <div class="body">
                             <form id="form_validation" method="POST" action="" enctype="multipart/form-data">
@@ -209,21 +228,21 @@ $business_trade = $stmt->fetchAll(PDO::FETCH_ASSOC);
                                     <div class="col-md-12 pr-4">
                                         <div class="form-group form-float" style="margin-top: 30px;">
                                             <div class="form-line">
-                                                <input type="text" class="form-control" name="code" style="background-color: #555; padding: 10px; color: #ccc !important" value="<?php echo $autoCode; ?>" readonly>
+                                                <input type="text" class="form-control" name="code" style="background-color: #555; padding: 10px; color: #ccc !important" value="<?= htmlspecialchars($business_trades['code']) ?>" readonly>
                                                 <label class="form-label">Business Code</label>
                                             </div>
                                         </div>
 
                                         <div class="form-group form-float" style="margin-top: 30px;">
                                             <div class="form-line">
-                                                <input type="text" class="form-control" name="name" required>
+                                                <input type="text" class="form-control" name="name" value="<?= htmlspecialchars($business_trades['name']) ?>" required>
                                                 <label class="form-label">Business Name <span style="color: red;">*</span></label>
                                             </div>
                                         </div>
 
                                         <div class="form-group form-float" style="margin-top: 30px;">
                                             <div class="form-line">
-                                                <input type="text" class="form-control" name="price" required>
+                                                <input type="text" class="form-control" name="price" value="<?= htmlspecialchars($business_trades['price']) ?>" required>
                                                 <label class="form-label">Business Price <span style="color: red;">*</span></label>
                                             </div>
                                         </div>
@@ -231,7 +250,9 @@ $business_trade = $stmt->fetchAll(PDO::FETCH_ASSOC);
                                 </div>
 
                                 <div style="display: flex; justify-content: end; gap: 5px; margin-top: 10px;">
-                                    <button class="btn bg-teal waves-effect" type="submit"> + Save</button>
+                                    <button class="btn bg-teal waves-effect" type="submit"> + Update</button>
+                                    <a href="business_clearance.php" class="btn bg-">Cancel</a>
+
                                 </div>
                             </form>
                         </div>
