@@ -163,7 +163,7 @@
                     </div>
                 </div>
 
-                <div class="col-sm-6 col-md-3 col-lg-6" onclick="window.location.href = 'family_profiling.php'">
+                <div class="col-sm-6 col-md-3 col-lg-6" data-toggle="modal" data-target="#requestCertificateModal">
                     <div class="thumbnail text-center d-flex flex-column align-items-center justify-content-center" style="padding: 50px;">
                         <h1>12</h1>
                         <div class="caption">
@@ -172,7 +172,61 @@
                     </div>
                 </div>
 
-                <div class="col-sm-6 col-md-3 col-lg-6" onclick="window.location.href = 'family_profiling.php'">
+                <div class="modal fade" id="requestCertificateModal" tabindex="-1" role="dialog" style="display: none;">
+                    <div class="modal-dialog modal-lg" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h4 class="modal-title" id="defaultModalLabel">View Requests</h4>
+                            </div>
+                            <div class="modal-body" style="max-height: 100vh; overflow-y: auto;">
+                                <div class="row">
+                                    <div class="col-sm-6 col-md-3 col-lg-6" onclick="window.location.href = 'certificate_issuance.php'">
+                                        <div class="thumbnail text-center d-flex flex-column align-items-center justify-content-center" style="padding: 50px;">
+                                            <i class="fas fa-file fa-3x mb-3 icon-style"></i>
+                                            <div class="caption">
+                                                <h3>Certificates</h3>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-sm-6 col-md-3 col-lg-6" onclick="window.location.href = 'certificate_operate.php'">
+                                        <div class="thumbnail text-center d-flex flex-column align-items-center justify-content-center" style="padding: 50px;">
+                                            <i class="fas fa-file fa-3x mb-3 icon-style"></i>
+                                            <div class="caption">
+                                                <h3>Operate</h3>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-sm-6 col-md-3 col-lg-6" onclick="window.location.href = 'certificate_closure.php'">
+                                        <div class="thumbnail text-center d-flex flex-column align-items-center justify-content-center" style="padding: 50px;">
+                                            <i class="fas fa-file fa-3x mb-3 icon-style"></i>
+                                            <div class="caption">
+                                                <h3>Closure</h3>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-sm-6 col-md-3 col-lg-6" onclick="window.location.href = 'certificate_cedula.php'">
+                                        <div class="thumbnail text-center d-flex flex-column align-items-center justify-content-center" style="padding: 50px;">
+                                            <i class="fas fa-file fa-3x mb-3 icon-style"></i>
+                                            <div class="caption">
+                                                <h3>Cedula</h3>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- Footer Buttons aligned to bottom right -->
+                            <div class="modal-footer d-flex justify-content-end">
+                                <button type="button" class="btn btn-link waves-effect" data-dismiss="modal">CLOSE</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- END ADD MODAL -->
+
+                <div class="col-sm-6 col-md-3 col-lg-6" onclick="window.location.href = 'certificate_completed.php'">
                     <div class="thumbnail text-center d-flex flex-column align-items-center justify-content-center" style="padding: 50px;">
                         <h1>12</h1>
                         <div class="caption">

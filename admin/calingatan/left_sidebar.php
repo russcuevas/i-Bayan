@@ -31,13 +31,12 @@
                     <span>Resident Verifications</span>
                 </a>
             </li>
-            <li>
+            <!-- <li>
                 <a href="family_profiling.php">
                     <i class="material-icons">house</i>
                     <span>Household List</span>
                 </a>
-            </li>
-
+            </li> -->
             <li>
                 <a href="javascript:void(0);" class="menu-toggle">
                     <i class="material-icons">library_books</i>
@@ -60,7 +59,7 @@
             </li>
 
             <li>
-                <a href="completed_certificates.php">
+                <a href="certificate_completed.php">
                     <i class="material-icons">task_alt</i>
                     <span>Certificate Completed</span>
                 </a>
