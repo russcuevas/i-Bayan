@@ -4,6 +4,7 @@ first_name
 last_name
 age
 phone_number
+username
 email
 password
 
@@ -15,16 +16,17 @@ sms_config
 
 
 //ADMIN
-tbl_barangay
-barangay_name
-municipality - mataasnakahoy
-zip - 4223
-mission
-vision
-created_at
-updated_at
-created_by
-updated_by
+
+[ -- NOW WORKING --
+    tbl_barangay
+    barangay_name
+    municipality -> mataasnakahoy
+    zip - 4223
+    mission -> nullable
+    vision -> nullable
+    created_at
+    updated_at
+]
 
 tbl_barangay_officials
 profile_picture
@@ -59,7 +61,7 @@ tbl_residents
 first_name
 middle_name
 last_name
-suffix
+suffix -> nullable
 gender
 civil_status
 date_of_birth
@@ -74,23 +76,30 @@ password
 email
 valid_id
 phone_number
-is_approved
+is_approved -> 0 default
 is_online
-type
+remarks -> nullable
 created_at
 updated_at
 
 tbl_residents_family_members
+resident_id -> foreign to tbl_residents -> id
 first_name
 middle_name
 last_name
 suffix -> nullable
+relationship
 gender
 date_of_birth
 birthplace
+age
 civil_status
 is_working
-is_approved
+is_approved -> 0 default
+is_barangay_voted
+years_in_barangay
+phone_number
+philhealth_number
 school -> nullable
 occupation -> nullable
 

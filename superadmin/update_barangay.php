@@ -8,6 +8,58 @@ if (!isset($_SESSION['superadmin_id'])) {
 
 // database connection
 include '../database/connection.php';
+
+
+// id not found return to same page
+if (!isset($_GET['id'])) {
+    $_SESSION['error'] = 'Invalid barangay ID.';
+    header('Location: barangay_management.php');
+    exit();
+}
+
+
+// fetch barangay data
+$id = $_GET['id'];
+$stmt = $conn->prepare("SELECT * FROM tbl_barangay WHERE id = :id");
+$stmt->execute([':id' => $id]);
+$barangay = $stmt->fetch(PDO::FETCH_ASSOC);
+
+if (!$barangay) {
+    $_SESSION['error'] = 'Barangay not found.';
+    header('Location: barangay_management.php');
+    exit();
+}
+
+// update barangay functions
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $barangay_name = $_POST['barangay_name'];
+    $mission = trim($_POST['mission']);
+    $vision = trim($_POST['vision']);
+
+    $mission = $mission === '' ? null : $mission;
+    $vision = $vision === '' ? null : $vision;
+
+
+    $updateStmt = $conn->prepare("UPDATE tbl_barangay 
+                                  SET barangay_name = :barangay_name, 
+                                      mission = :mission, 
+                                      vision = :vision 
+                                  WHERE id = :id");
+    $updateStmt->execute([
+        ':barangay_name' => $barangay_name,
+        ':mission' => $mission,
+        ':vision' => $vision,
+        ':id' => $id
+    ]);
+
+    $_SESSION['success'] = 'Barangay updated successfully!';
+    header('Location: barangay_management.php');
+    exit();
+}
+
+// get barangay functions
+$stmt = $conn->query("SELECT * FROM tbl_barangay ORDER BY id DESC");
+$barangays = $stmt->fetchAll(PDO::FETCH_ASSOC);
 ?>
 
 <!DOCTYPE html>
@@ -160,7 +212,7 @@ include '../database/connection.php';
                 <ol style="font-size: 15px;" class="breadcrumb breadcrumb-col-red">
                     <li><a href="index.php"><i style="font-size: 20px;" class="material-icons">home</i>
                             Dashboard</a></li>
-                    <li class="active"><i style="font-size: 20px;" class="material-icons">description</i> Business List
+                    <li class="active"><i style="font-size: 20px;" class="material-icons">description</i> Barangay Management
                     </li>
                 </ol>
             </div>
@@ -169,10 +221,10 @@ include '../database/connection.php';
                 <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
                     <div class="card">
                         <div class="header">
-                            <h2>ADD BUSINESS PRICE</h2>
+                            <h2>UPDATE BARANGAY</h2>
                         </div>
                         <div class="body">
-                            <form id="form_validation" method="POST" enctype="multipart/form-data">
+                            <form action="" id="form_validation" method="POST" enctype="multipart/form-data">
                                 <div class="row">
                                     <!-- LEFT COLUMN -->
                                     <div class="col-md-12 pr-4">
@@ -181,29 +233,31 @@ include '../database/connection.php';
                                         <input type="hidden" name="zip" value="4223">
                                         <div class="form-group form-float" style="margin-top: 30px;">
                                             <div class="form-line">
-                                                <input type="text" class="form-control" name="code" style="background-color: #555; padding: 10px; color: #ccc !important" value="01234" readonly>
-                                                <label class="form-label">Business Code</label>
+                                                <input type="text" class="form-control" name="barangay_name" value="<?= htmlspecialchars($barangay['barangay_name']) ?>" required>
+                                                <label class=" form-label">Barangay Name <span style="color: red;">*</span></label>
                                             </div>
                                         </div>
 
                                         <div class="form-group form-float" style="margin-top: 30px;">
                                             <div class="form-line">
-                                                <input type="text" class="form-control" name="name" required>
-                                                <label class="form-label">Business Name <span style="color: red;">*</span></label>
+                                                <textarea style="padding: 5px;" name="mission" cols="30" rows="5" class="form-control"><?= htmlspecialchars($barangay['mission']) ?></textarea>
+                                                <label class="form-label">Barangay Mission</label>
                                             </div>
                                         </div>
 
                                         <div class="form-group form-float" style="margin-top: 30px;">
                                             <div class="form-line">
-                                                <input type="text" class="form-control" name="price" required>
-                                                <label class="form-label">Business Price <span style="color: red;">*</span></label>
+                                                <textarea style="padding: 5px;" name="vision" cols="30" rows="5" class="form-control"><?= htmlspecialchars($barangay['vision']) ?></textarea>
+                                                <label class="form-label">Barangay Vision</label>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
 
                                 <div style="display: flex; justify-content: end; gap: 5px; margin-top: 10px;">
-                                    <button class="btn bg-teal waves-effect" type="submit"> + Save</button>
+                                    <button class="btn bg-teal waves-effect" type="submit"> + Update</button>
+                                    <a href="barangay_management.php" class="btn bg-">Cancel</a>
+
                                 </div>
                             </form>
                         </div>
@@ -215,29 +269,38 @@ include '../database/connection.php';
                 <div class="col-lg-8 col-md-8 col-sm-12 col-xs-12">
                     <div class="card">
                         <div class="header">
-                            <h2>BUSINESS LIST</h2>
+                            <h2>BARANGAY LIST</h2>
                         </div>
                         <div class="body">
                             <div class="table-responsive">
                                 <table class="table table-bordered table-striped table-hover js-basic-example dataTable">
                                     <thead>
                                         <tr>
-                                            <th>Code</th>
-                                            <th>Name</th>
-                                            <th>Price</th>
+                                            <th>Barangay</th>
+                                            <th>Mission</th>
+                                            <th>Vision</th>
                                             <th>Actions</th>
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <tr>
-                                            <td>01234</td>
-                                            <td>Water Refilling</td>
-                                            <td>₱500.00</td>
-                                            <td>
-                                                <a href="" class="btn bg-teal waves-effect" style="margin-bottom: 5px;"><i class="fa-solid fa-pencil"></i> UPDATE</a>
-                                                <a href="" class="btn bg-teal waves-effect" style="margin-bottom: 5px;"><i class="fa-solid fa-trash"></i> DELETE</a>
-                                            </td>
-                                        </tr>
+                                        <?php foreach ($barangays as $barangay): ?>
+                                            <tr>
+                                                <td><?php echo $barangay['barangay_name'] ?></td>
+                                                <td><?php echo $barangay['mission'] ?? 'No Mission'; ?></td>
+                                                <td><?php echo $barangay['vision'] ?? 'No Vision'; ?></td>
+                                                <td>
+                                                    <a href="update_barangay.php?id=<?php echo $barangay['id']; ?>" class="btn bg-teal waves-effect" style="margin-bottom: 5px;">
+                                                        <i class="fa-solid fa-pencil"></i> UPDATE
+                                                    </a>
+                                                    <a href="#"
+                                                        data-id="<?php echo $barangay['id']; ?>"
+                                                        class="btn bg-teal waves-effect btn-delete"
+                                                        style="margin-bottom: 5px;">
+                                                        <i class="fa-solid fa-trash"></i> DELETE
+                                                    </a>
+                                                </td>
+                                            </tr>
+                                        <?php endforeach ?>
                                     </tbody>
                                 </table>
                             </div>
@@ -307,6 +370,46 @@ include '../database/connection.php';
     <!-- Demo Js -->
     <script src="js/demo.js"></script>
     <script src="plugins/sweetalert/sweetalert.min.js"></script>
+    <script>
+        <?php if (isset($_SESSION['success'])): ?>
+            swal({
+                type: 'success',
+                title: 'Success!',
+                text: '<?php echo $_SESSION['success']; ?>',
+                confirmButtonText: 'OK'
+            });
+            <?php unset($_SESSION['success']); ?>
+        <?php elseif (isset($_SESSION['error'])): ?>
+            swal({
+                type: 'error',
+                title: 'Oops...',
+                text: '<?php echo $_SESSION['error']; ?>',
+                confirmButtonText: 'OK'
+            });
+            <?php unset($_SESSION['error']); ?>
+        <?php endif; ?>
+    </script>
+
+    <!-- DELETE SCRIPT -->
+    <script>
+        $('.btn-delete').click(function(e) {
+            e.preventDefault();
+            var barangayId = $(this).data('id');
+            var deleteUrl = `delete_barangay.php?id=${barangayId}`;
+
+            swal({
+                title: "Are you sure?",
+                text: "You will not be able to recover this data!",
+                type: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#DD6B55",
+                confirmButtonText: "Yes, delete it!",
+                closeOnConfirm: false
+            }, function() {
+                window.location.href = deleteUrl;
+            });
+        });
+    </script>
 </body>
 
 </html>

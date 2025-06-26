@@ -1,3 +1,10 @@
+<?php
+// session
+session_start();
+
+// database connection
+include '../database/connection.php';
+?>
 <!DOCTYPE html>
 <html>
 
@@ -34,6 +41,8 @@
     <link href="css/themes/all-themes.css" rel="stylesheet" />
     <!-- Sweetalert Css -->
     <link href="plugins/sweetalert/sweetalert.css" rel="stylesheet" />
+    <!-- Toastr Css -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/2.1.4/toastr.css" integrity="sha512-oe8OpYjBaDWPt2VmSFR+qYOdnTjeV9QPLJUeqZyprDEQvQLJ9C5PCFclxwNuvb/GQgQngdCXzKSFltuHD3eCxA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Poppins&display=swap');
 
@@ -86,6 +95,33 @@
 
         .icon-style {
             transition: color 0.3s ease;
+        }
+
+        /* Toast */
+        .toast-success {
+            background-color: #ffffff !important;
+            color: #1a49cb !important;
+            border-left: 5px solid #1a49cb;
+            font-family: 'Poppins', sans-serif;
+            font-weight: 600;
+        }
+
+        .toast-success .toast-message::before {
+            content: "\f00c";
+            font-family: "Font Awesome 6 Free";
+            font-weight: 900;
+            margin-right: 10px;
+            color: #1a49cb;
+        }
+
+
+        .toast {
+            border-radius: 6px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+        }
+
+        .toast-message {
+            font-size: 14px;
         }
     </style>
 </head>
@@ -163,7 +199,7 @@
                     </div>
                 </div>
 
-                <div class="col-sm-6 col-md-3 col-lg-4" onclick="window.location.href = 'family_profiling.php'">
+                <div class="col-sm-6 col-md-3 col-lg-4" onclick="window.location.href = 'emergency_update.php'">
                     <div class="thumbnail text-center d-flex flex-column align-items-center justify-content-center" style="padding: 50px;">
                         <h1>12</h1>
                         <div class="caption">
@@ -279,6 +315,32 @@
     <!-- Demo Js -->
     <script src="js/demo.js"></script>
     <script src="plugins/sweetalert/sweetalert.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/2.1.4/toastr.min.js" integrity="sha512-lbwH47l/tPXJYG9AcFNoJaTMhGvYWhVM9YI43CT+uteTRRaiLCui8snIgyAN8XWgNjNhCqlAUdzZptso6OCoFQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <?php if (isset($_GET['success'])): ?>
+        <script>
+            toastr.options = {
+                "closeButton": false,
+                "debug": false,
+                "newestOnTop": true,
+                "progressBar": true,
+                "positionClass": "toast-top-right",
+                "preventDuplicates": true,
+                "onclick": null,
+                "showDuration": "300",
+                "hideDuration": "1000",
+                "timeOut": "3000",
+                "extendedTimeOut": "1000",
+                "showEasing": "swing",
+                "hideEasing": "linear",
+                "showMethod": "fadeIn",
+                "hideMethod": "fadeOut"
+            };
+            toastr.success("Welcome superadmin!");
+        </script>
+    <?php endif; ?>
+
+
+
 </body>
 
 </html>

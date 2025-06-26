@@ -1,3 +1,43 @@
+<?php
+// session
+session_start();
+if (!isset($_SESSION['superadmin_id'])) {
+    header("Location: login.php");
+    exit();
+}
+
+// database connection
+include '../database/connection.php';
+
+// add barangay functions
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $barangay_name = $_POST['barangay_name'];
+    $municipality = $_POST['municipality'] ?? 'mataasnakahoy';
+    $zip = $_POST['zip'] ?? '4223';
+    $mission = !empty($_POST['mission']) ? $_POST['mission'] : null;
+    $vision = !empty($_POST['vision']) ? $_POST['vision'] : null;
+
+    $sql = "INSERT INTO tbl_barangay (barangay_name, municipality, zip, mission, vision)
+            VALUES (:barangay_name, :municipality, :zip, :mission, :vision)";
+
+    $stmt = $conn->prepare($sql);
+    $stmt->execute([
+        ':barangay_name' => $barangay_name,
+        ':municipality' => $municipality,
+        ':zip' => $zip,
+        ':mission' => $mission,
+        ':vision' => $vision
+    ]);
+
+    $_SESSION['success'] = "Barangay added successfully!";
+}
+
+// get barangay functions
+$stmt = $conn->query("SELECT * FROM tbl_barangay ORDER BY id DESC");
+$barangays = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+?>
+
 <!DOCTYPE html>
 <html>
 
@@ -160,7 +200,7 @@
                             <h2>ADD BARANGAY</h2>
                         </div>
                         <div class="body">
-                            <form id="form_validation" method="POST" enctype="multipart/form-data">
+                            <form action="" id="form_validation" method="POST" enctype="multipart/form-data">
                                 <div class="row">
                                     <!-- LEFT COLUMN -->
                                     <div class="col-md-12 pr-4">
@@ -217,15 +257,24 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <tr>
-                                            <td>Calingatan</td>
-                                            <td>Sample Mission</td>
-                                            <td>Sample Vision</td>
-                                            <td>
-                                                <a href="" class="btn bg-teal waves-effect" style="margin-bottom: 5px;"><i class="fa-solid fa-pencil"></i> UPDATE</a>
-                                                <a href="" class="btn bg-teal waves-effect" style="margin-bottom: 5px;"><i class="fa-solid fa-trash"></i> DELETE</a>
-                                            </td>
-                                        </tr>
+                                        <?php foreach ($barangays as $barangay): ?>
+                                            <tr>
+                                                <td><?php echo $barangay['barangay_name'] ?></td>
+                                                <td><?php echo $barangay['mission'] ?? 'No Mission'; ?></td>
+                                                <td><?php echo $barangay['vision'] ?? 'No Vision'; ?></td>
+                                                <td>
+                                                    <a href="update_barangay.php?id=<?php echo $barangay['id']; ?>" class="btn bg-teal waves-effect" style="margin-bottom: 5px;">
+                                                        <i class="fa-solid fa-pencil"></i> UPDATE
+                                                    </a>
+                                                    <a href="#"
+                                                        data-id="<?php echo $barangay['id']; ?>"
+                                                        class="btn bg-teal waves-effect btn-delete"
+                                                        style="margin-bottom: 5px;">
+                                                        <i class="fa-solid fa-trash"></i> DELETE
+                                                    </a>
+                                                </td>
+                                            </tr>
+                                        <?php endforeach ?>
                                     </tbody>
                                 </table>
                             </div>
@@ -295,6 +344,47 @@
     <!-- Demo Js -->
     <script src="js/demo.js"></script>
     <script src="plugins/sweetalert/sweetalert.min.js"></script>
+    <script>
+        <?php if (isset($_SESSION['success'])): ?>
+            swal({
+                type: 'success',
+                title: 'Success!',
+                text: '<?php echo $_SESSION['success']; ?>',
+                confirmButtonText: 'OK'
+            });
+            <?php unset($_SESSION['success']); ?>
+        <?php elseif (isset($_SESSION['error'])): ?>
+            swal({
+                type: 'error',
+                title: 'Oops...',
+                text: '<?php echo $_SESSION['error']; ?>',
+                confirmButtonText: 'OK'
+            });
+            <?php unset($_SESSION['error']); ?>
+        <?php endif; ?>
+    </script>
+
+    <!-- DELETE SCRIPT -->
+    <script>
+        $('.btn-delete').click(function(e) {
+            e.preventDefault();
+
+            var barangayId = $(this).data('id');
+            var deleteUrl = `delete_barangay.php?id=${barangayId}`;
+
+            swal({
+                title: "Are you sure?",
+                text: "You will not be able to recover this data!",
+                type: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#DD6B55",
+                confirmButtonText: "Yes, delete it!",
+                closeOnConfirm: false
+            }, function() {
+                window.location.href = deleteUrl;
+            });
+        });
+    </script>
 </body>
 
 </html>

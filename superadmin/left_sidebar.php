@@ -3,7 +3,11 @@
         <ul class="list">
             <li class="header" style="font-size: 12px">
                 WELCOME <br>
-                <span style="color: #1a49cb;">RUSSEL VINCENT CUEVAS</span> <br>
+                <span style="color: #1a49cb; text-transform: uppercase;">
+                    <?php
+                    echo htmlspecialchars($_SESSION['superadmin_name']);
+                    ?>
+                </span> <br>
                 <span style="color: #1a49cb;">MATAASNAKAHOY - SUPERADMIN</span>
             </li>
             <li class="active">
