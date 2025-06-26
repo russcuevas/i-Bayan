@@ -3,40 +3,38 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=Edge">
     <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
     <title>iBayan</title>
     <!-- Favicon-->
     <link rel="icon" href="img/logo.png" type="image/x-icon">
 
     <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css?family=Roboto:400,700&subset=latin,cyrillic-ext" rel="stylesheet"
-        type="text/css">
+    <link href="https://fonts.googleapis.com/css?family=Roboto:400,700&subset=latin,cyrillic-ext" rel="stylesheet" type="text/css">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" type="text/css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
     <!-- Bootstrap Core Css -->
     <link href="plugins/bootstrap/css/bootstrap.css" rel="stylesheet">
 
     <!-- Waves Effect Css -->
     <link href="plugins/node-waves/waves.css" rel="stylesheet" />
 
-    <!-- JQuery DataTable Css -->
-    <link href="plugins/jquery-datatable/skin/bootstrap/css/dataTables.bootstrap.css" rel="stylesheet">
-
     <!-- Animation Css -->
     <link href="plugins/animate-css/animate.css" rel="stylesheet" />
 
-    <!-- Morris Chart Css-->
-    <link href="plugins/morrisjs/morris.css" rel="stylesheet" />
+    <!-- JQuery DataTable Css -->
+    <link href="plugins/jquery-datatable/skin/bootstrap/css/dataTables.bootstrap.css" rel="stylesheet">
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 
     <!-- Custom Css -->
     <link href="css/style.css" rel="stylesheet">
     <link href="css/custom.css" rel="stylesheet">
+    <!-- Sweetalert Css -->
+    <link href="plugins/sweetalert/sweetalert.css" rel="stylesheet" />
 
     <!-- AdminBSB Themes. You can choose a theme from css/themes instead of get all themes -->
     <link href="css/themes/all-themes.css" rel="stylesheet" />
-    <!-- Sweetalert Css -->
-    <link href="plugins/sweetalert/sweetalert.css" rel="stylesheet" />
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Poppins&display=swap');
 
@@ -62,6 +60,7 @@
             -o-transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s !important;
             transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s !important;
         }
+
 
         /* HOMEPAGE */
         .thumbnail {
@@ -126,6 +125,7 @@
                         <div style="color: white;">iBayan</div>
                     </div>
                 </a>
+
             </div>
             <div class="collapse navbar-collapse" id="navbar-collapse">
                 <ul class="nav navbar-nav navbar-right">
@@ -136,7 +136,6 @@
             </div>
         </div>
     </nav>
-    <!-- #Top Bar -->
     <section>
         <?php include('left_sidebar.php') ?>
         <?php include('right_sidebar.php') ?>
@@ -148,82 +147,45 @@
                 <ol style="font-size: 15px;" class="breadcrumb breadcrumb-col-red">
                     <li><a href="index.php"><i style="font-size: 20px;" class="material-icons">home</i>
                             Dashboard</a></li>
-                    <li class="active"><i style="font-size: 20px;" class="material-icons">description</i> Barangay Management
+                    <li class="active"><i style="font-size: 20px;" class="material-icons">description</i> Certificate Completed
                     </li>
                 </ol>
             </div>
             <!-- Basic Validation -->
             <div class="row clearfix">
-                <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
                     <div class="card">
                         <div class="header">
-                            <h2>ADD BARANGAY</h2>
-                        </div>
-                        <div class="body">
-                            <form id="form_validation" method="POST" enctype="multipart/form-data">
-                                <div class="row">
-                                    <!-- LEFT COLUMN -->
-                                    <div class="col-md-12 pr-4">
-                                        <!-- hidden input -->
-                                        <input type="hidden" name="municipality" value="mataasnakahoy">
-                                        <input type="hidden" name="zip" value="4223">
-                                        <div class="form-group form-float" style="margin-top: 30px;">
-                                            <div class="form-line">
-                                                <input type="text" class="form-control" name="barangay_name" required>
-                                                <label class="form-label">Barangay Name <span style="color: red;">*</span></label>
-                                            </div>
-                                        </div>
-
-                                        <div class="form-group form-float" style="margin-top: 30px;">
-                                            <div class="form-line">
-                                                <textarea style="padding: 5px;" name="mission" cols="30" rows="5" class="form-control"></textarea>
-                                                <label class="form-label">Barangay Mission</label>
-                                            </div>
-                                        </div>
-
-                                        <div class="form-group form-float" style="margin-top: 30px;">
-                                            <div class="form-line">
-                                                <textarea style="padding: 5px;" name="vision" cols="30" rows="5" class="form-control"></textarea>
-                                                <label class="form-label">Barangay Vision</label>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div style="display: flex; justify-content: end; gap: 5px; margin-top: 10px;">
-                                    <button class="btn bg-teal waves-effect" type="submit"> + Save</button>
-                                </div>
-                            </form>
-                        </div>
-
-                    </div>
-                </div>
-
-                <!-- RIGHT CARD -->
-                <div class="col-lg-8 col-md-8 col-sm-12 col-xs-12">
-                    <div class="card">
-                        <div class="header">
-                            <h2>BARANGAY LIST</h2>
+                            <h2>CERTIFICATE COMPLETED</h2>
                         </div>
                         <div class="body">
                             <div class="table-responsive">
                                 <table class="table table-bordered table-striped table-hover js-basic-example dataTable">
                                     <thead>
                                         <tr>
-                                            <th>Barangay</th>
-                                            <th>Mission</th>
-                                            <th>Vision</th>
+                                            <th>Fullname</th>
+                                            <th>Certificate</th>
+                                            <th>Price</th>
+                                            <th>Purpose</th>
+                                            <th>Email</th>
+                                            <th>Mobile</th>
+                                            <th>Date</th>
+                                            <th>Status</th>
                                             <th>Actions</th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         <tr>
-                                            <td>Calingatan</td>
-                                            <td>Sample Mission</td>
-                                            <td>Sample Vision</td>
+                                            <td>Russel Vincent Cuevas</td>
+                                            <td>Barangay Clearance</td>
+                                            <td>₱50.00</td>
+                                            <td>Education</td>
+                                            <td>russelcuevas0@gmail.com</td>
+                                            <td>09495748301</td>
+                                            <td>March/06/2025</td>
+                                            <td>Completed</td>
                                             <td>
-                                                <a href="" class="btn bg-teal waves-effect" style="margin-bottom: 5px;"><i class="fa-solid fa-pencil"></i> UPDATE</a>
-                                                <a href="" class="btn bg-teal waves-effect" style="margin-bottom: 5px;"><i class="fa-solid fa-trash"></i> DELETE</a>
+                                                <a href="" class="btn bg-teal waves-effect" style="margin-bottom: 5px;"><i class="fa-solid fa-eye"></i> VIEW INFORMATION</a>
                                             </td>
                                         </tr>
                                     </tbody>
@@ -235,7 +197,6 @@
             </div>
             <!-- #END# Basic Validation -->
         </div>
-        </div>
     </section>
 
     <!-- Jquery Core Js -->
@@ -243,8 +204,11 @@
     <!-- Jquery Validation Plugin Css -->
     <script src="plugins/jquery-validation/jquery.validate.js"></script>
     <script src="js/pages/forms/form-validation.js"></script>
+
     <!-- Bootstrap Core Js -->
     <script src="plugins/bootstrap/js/bootstrap.js"></script>
+
+    <!-- Select Plugin Js -->
 
     <!-- Slimscroll Plugin Js -->
     <script src="plugins/jquery-slimscroll/jquery.slimscroll.js"></script>
@@ -263,38 +227,33 @@
     <script src="plugins/jquery-datatable/extensions/export/buttons.html5.min.js"></script>
     <script src="plugins/jquery-datatable/extensions/export/buttons.print.min.js"></script>
 
-    <!-- Jquery CountTo Plugin Js -->
-    <script src="plugins/jquery-countto/jquery.countTo.js"></script>
-
-    <!-- Morris Plugin Js -->
-    <script src="plugins/raphael/raphael.min.js"></script>
-    <script src="plugins/morrisjs/morris.js"></script>
-
-    <!-- ChartJs -->
-    <script src="plugins/chartjs/Chart.bundle.js"></script>
-
-    <!-- Flot Charts Plugin Js -->
-    <script src="plugins/flot-charts/jquery.flot.js"></script>
-    <script src="plugins/flot-charts/jquery.flot.resize.js"></script>
-    <script src="plugins/flot-charts/jquery.flot.pie.js"></script>
-    <script src="plugins/flot-charts/jquery.flot.categories.js"></script>
-    <script src="plugins/flot-charts/jquery.flot.time.js"></script>
-
-    <!-- Sparkline Chart Plugin Js -->
-    <script src="plugins/jquery-sparkline/jquery.sparkline.js"></script>
-
-    <!-- Custom Js -->
-    <script src="plugins/chartjs/Chart.bundle.js"></script>
-
     <!-- Custom Js -->
     <script src="js/admin.js"></script>
     <script src="js/pages/tables/jquery-datatable.js"></script>
-    <script src="js/pages/charts/chartjs.js"></script>
-    <script src="js/pages/index.js"></script>
-
+    <!-- SweetAlert Plugin Js -->
+    <script src="plugins/sweetalert/sweetalert.min.js"></script>
     <!-- Demo Js -->
     <script src="js/demo.js"></script>
-    <script src="plugins/sweetalert/sweetalert.min.js"></script>
+    <script>
+        <?php if (isset($_SESSION['success'])): ?>
+            swal({
+                type: 'success',
+                title: 'Success!',
+                text: '<?php echo $_SESSION['success']; ?>',
+                confirmButtonText: 'OK'
+            });
+            <?php unset($_SESSION['success']); ?>
+        <?php elseif (isset($_SESSION['error'])): ?>
+            swal({
+                type: 'error',
+                title: 'Oops...',
+                text: '<?php echo $_SESSION['error']; ?>',
+                confirmButtonText: 'OK'
+            });
+            <?php unset($_SESSION['error']); ?>
+        <?php endif; ?>
+    </script>
+
 </body>
 
 </html>

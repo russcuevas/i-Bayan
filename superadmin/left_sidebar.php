@@ -50,6 +50,14 @@
                     </li>
                 </ul>
             </li>
+
+            <li>
+                <a href="certificate_completed.php">
+                    <i class="material-icons">task_alt</i>
+                    <span>Certificate Completed</span>
+                </a>
+            </li>
+
             <li>
                 <a href="emergency_update.php">
                     <i class="material-icons">emergency</i>
