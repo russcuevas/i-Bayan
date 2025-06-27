@@ -1,3 +1,62 @@
+<?php
+// session
+session_start();
+if (!isset($_SESSION['superadmin_id'])) {
+    header("Location: login.php");
+    exit();
+}
+
+// database connection
+include '../database/connection.php';
+
+$superadmin_id = $_SESSION['superadmin_id'];
+
+// fetch profile data
+$stmt = $conn->prepare("SELECT * FROM tbl_superadmin WHERE id = :id");
+$stmt->execute([':id' => $superadmin_id]);
+$profile = $stmt->fetch(PDO::FETCH_ASSOC);
+
+// update profile function
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $first_name = $_POST['first_name'];
+    $last_name = $_POST['last_name'];
+    $age = $_POST['age'];
+    $phone_number = $_POST['phone_number'];
+    $email = $_POST['email'];
+    $password = $_POST['password'];
+
+    $check_email = $conn->prepare("SELECT * FROM tbl_superadmin WHERE email = :email AND id != :id");
+    $check_email->execute([
+        ':email' => $email,
+        ':id' => $superadmin_id
+    ]);
+
+    if ($check_email->rowCount() > 0) {
+        $_SESSION['error'] = "Email already exists.";
+    } else {
+        $password_hash = !empty($password) ? sha1($password) : $profile['password'];
+
+        $update = $conn->prepare("UPDATE tbl_superadmin SET first_name = :first_name, last_name = :last_name, age = :age, phone_number = :phone_number, email = :email, password = :password WHERE id = :id");
+        $update->execute([
+            ':first_name' => $first_name,
+            ':last_name' => $last_name,
+            ':age' => $age,
+            ':phone_number' => $phone_number,
+            ':email' => $email,
+            ':password' => $password_hash,
+            ':id' => $superadmin_id
+        ]);
+
+        $_SESSION['superadmin_name'] = $first_name . ' ' . $last_name;
+        $_SESSION['success'] = "Profile updated successfully!";
+        header("Location: edit_profile.php");
+        exit();
+    }
+}
+
+
+
+?>
 <!DOCTYPE html>
 <html>
 
@@ -131,49 +190,48 @@
                             <form id="form_validation" method="POST">
                                 <div class="form-group form-float mt-3" style="margin-top: 30px">
                                     <div class="form-line">
-                                        <input type="text" class="form-control" name="fullname" required>
+                                        <input type="text" class="form-control" name="first_name" required value="<?= htmlspecialchars($profile['first_name']) ?>">
                                         <label class="form-label">First Name</label>
                                     </div>
                                 </div>
 
                                 <div class="form-group form-float mt-3" style="margin-top: 30px">
                                     <div class="form-line">
-                                        <input type="text" class="form-control" name="lastname" required>
+                                        <input type="text" class="form-control" name="last_name" required value="<?= htmlspecialchars($profile['last_name']) ?>">
                                         <label class="form-label">Last Name</label>
                                     </div>
                                 </div>
 
                                 <div class="form-group form-float mt-3" style="margin-top: 30px">
                                     <div class="form-line">
-                                        <input type="text" class="form-control" name="age" required>
+                                        <input type="text" class="form-control" name="age" required value="<?= htmlspecialchars($profile['age']) ?>">
                                         <label class="form-label">Age</label>
                                     </div>
                                 </div>
 
                                 <div class="form-group form-float mt-3" style="margin-top: 30px">
                                     <div class="form-line">
-                                        <input type="text" class="form-control" name="phone_number" required>
+                                        <input type="text" class="form-control" name="phone_number" required value="<?= htmlspecialchars($profile['phone_number']) ?>">
                                         <label class="form-label">Phone number</label>
                                     </div>
                                 </div>
 
                                 <div class="form-group form-float mt-3" style="margin-top: 30px">
                                     <div class="form-line">
-                                        <input type="text" class="form-control" name="email" required>
+                                        <input type="text" class="form-control" name="email" required value="<?= htmlspecialchars($profile['email']) ?>">
                                         <label class="form-label">Email</label>
                                     </div>
                                 </div>
 
                                 <div class="form-group form-float mt-3" style="margin-top: 30px">
                                     <div class="form-line">
-                                        <input type="text" class="form-control" name="password" required>
+                                        <input type="password" class="form-control" name="password" placeholder="Leave blank to keep current password">
                                         <label class="form-label">Password</label>
                                     </div>
                                 </div>
 
                                 <div style="display: flex; justify-content: flex-end; gap: 10px;">
                                     <button type="submit" class="btn bg-teal waves-effect">Submit</button>
-                                    <button type="reset" class="btn btn-link waves-effect">Clear</button>
                                 </div>
                             </form>
                         </div>
@@ -228,6 +286,26 @@
     <!-- Demo Js -->
     <script src="js/demo.js"></script>
     <script src="plugins/sweetalert/sweetalert.min.js"></script>
+    <script>
+        <?php if (isset($_SESSION['success'])): ?>
+            swal({
+                type: 'success',
+                title: 'Success!',
+                text: '<?php echo $_SESSION['success']; ?>',
+                confirmButtonText: 'OK'
+            });
+            <?php unset($_SESSION['success']); ?>
+        <?php elseif (isset($_SESSION['error'])): ?>
+            swal({
+                type: 'error',
+                title: 'Oops...',
+                text: '<?php echo $_SESSION['error']; ?>',
+                confirmButtonText: 'OK'
+            });
+            <?php unset($_SESSION['error']); ?>
+        <?php endif; ?>
+    </script>
+
 
 </body>
 

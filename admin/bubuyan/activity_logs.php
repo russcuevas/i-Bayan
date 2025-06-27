@@ -1,11 +1,3 @@
-<?php
-// session
-session_start();
-
-include '../../database/connection.php';
-
-
-?>
 <!DOCTYPE html>
 <html>
 
@@ -156,89 +148,56 @@ include '../../database/connection.php';
                 <ol style="font-size: 15px;" class="breadcrumb breadcrumb-col-red">
                     <li><a href="index.php"><i style="font-size: 20px;" class="material-icons">home</i>
                             Dashboard</a></li>
-                    <li class="active"><i style="font-size: 20px;" class="material-icons">description</i> Barangay Officials
+                    <li class="active"><i style="font-size: 20px;" class="material-icons">description</i> Activity Logs
                     </li>
                 </ol>
             </div>
             <!-- Basic Validation -->
             <div class="row clearfix">
-                <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
                     <div class="card">
                         <div class="header">
-                            <h2>ADD BARANGAY OFFICIALS</h2>
+                            <h2>ACTIVITY LOGS</h2>
                         </div>
                         <div class="body">
-                            <form id="form_validation" method="POST" enctype="multipart/form-data">
-                                <div class="row">
-                                    <!-- LEFT COLUMN -->
-                                    <div class="col-md-12 pr-4">
-                                        <!-- hidden input -->
-                                        <input type="hidden" name="barangay" value="">
-
-                                        <div>
-                                            <img id="profilePreview" style="height: 100px;"
-                                                src="https://th.bing.com/th/id/R.8e2c571ff125b3531705198a15d3103c?rik=gzhbzBpXBa%2bxMA&riu=http%3a%2f%2fpluspng.com%2fimg-png%2fuser-png-icon-big-image-png-2240.png&ehk=VeWsrun%2fvDy5QDv2Z6Xm8XnIMXyeaz2fhR3AgxlvxAc%3d&risl=&pid=ImgRaw&r=0"
-                                                alt="Profile Picture Preview">
-                                        </div>
-
-                                        <div class="form-group form-float" style="margin-top: 30px;">
-                                            <div class="form-line">
-                                                <input type="file" class="form-control" name="profile_picture" id="profile_picture">
-                                                <label class="form-label">Profile Picture</label>
-                                            </div>
-                                        </div>
-
-                                        <div class="form-group form-float" style="margin-top: 30px;">
-                                            <div class="form-line">
-                                                <input type="text" class="form-control" name="fullname" required>
-                                                <label class="form-label">Fullname <span style="color: red;">*</span></label>
-                                            </div>
-                                        </div>
-
-                                        <div class="form-group form-float" style="margin-top: 30px;">
-                                            <div class="form-line">
-                                                <input type="text" class="form-control" name="position" required>
-                                                <label class="form-label">Position <span style="color: red;">*</span></label>
-                                            </div>
-                                        </div>
-                                    </div>
+                            <div style="margin-bottom: 15px;">
+                                <div class="btn-group">
+                                    <button type="button" class="btn bg-red dropdown-toggle waves-effect" data-toggle="dropdown" aria-expanded="false">
+                                        <i style="font-size: 15px !important;" class="material-icons">filter_alt</i>
+                                        Filter User Type <span class="caret"></span>
+                                    </button>
+                                    <ul class="dropdown-menu pull-right">
+                                        <li><a href="">All Types</a></li>
+                                        <li><a href="">Barangay Officials</a></li>
+                                        <li><a href="">Staff</a></li>
+                                        <li><a href="">Admin</a></li>
+                                        <li><a href="">Residents</a></li>
+                                    </ul>
                                 </div>
-
-                                <div style="display: flex; justify-content: end; gap: 5px; margin-top: 10px;">
-                                    <button class="btn bg-teal waves-effect" type="submit"> + Save</button>
+                                <div class="btn-group">
+                                    <a href="activity_logs.php" class="btn bg-red dropdown-toggle waves-effect">
+                                        <i style="font-size: 15px !important;" class="material-icons">refresh</i>
+                                        Refresh
+                                    </a>
                                 </div>
-                            </form>
-                        </div>
+                            </div>
 
-                    </div>
-                </div>
-
-                <!-- RIGHT CARD -->
-                <div class="col-lg-8 col-md-8 col-sm-12 col-xs-12">
-                    <div class="card">
-                        <div class="header">
-                            <h2>BARANGAY OFFICIAL LIST</h2>
-                        </div>
-                        <div class="body">
                             <div class="table-responsive">
                                 <table class="table table-bordered table-striped table-hover js-basic-example dataTable">
                                     <thead>
                                         <tr>
-                                            <th>Profile</th>
-                                            <th>Fullname</th>
-                                            <th>Position</th>
-                                            <th>Actions</th>
+                                            <th>Username</th>
+                                            <th>User Type</th>
+                                            <th>Action</th>
+                                            <th>Time</th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         <tr>
-                                            <td><img src="" alt="Sample"></td>
-                                            <td>Sample Fullname</td>
-                                            <td>Sample Position</td>
-                                            <td>
-                                                <a href="" class="btn bg-teal waves-effect" style="margin-bottom: 5px;"><i class="fa-solid fa-pencil"></i> UPDATE</a>
-                                                <a href="" class="btn bg-teal waves-effect" style="margin-bottom: 5px;"><i class="fa-solid fa-trash"></i> DELETE</a>
-                                            </td>
+                                            <td>Russel Vincent Cuevas</td>
+                                            <td>Sample</td>
+                                            <td>Sample Ratings</td>
+                                            <td>March/12/2025</td>
                                         </tr>
                                     </tbody>
                                 </table>
@@ -309,22 +268,6 @@ include '../../database/connection.php';
     <!-- Demo Js -->
     <script src="../js/demo.js"></script>
     <script src="../plugins/sweetalert/sweetalert.min.js"></script>
-
-    <!-- PREVIEW PROFILE -->
-    <script>
-        document.getElementById('profile_picture').addEventListener('change', function(event) {
-            const file = event.target.files[0];
-            const preview = document.getElementById('profilePreview');
-
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    preview.src = e.target.result;
-                };
-                reader.readAsDataURL(file);
-            }
-        });
-    </script>
 </body>
 
 </html>

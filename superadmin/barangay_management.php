@@ -259,18 +259,12 @@ $barangays = $stmt->fetchAll(PDO::FETCH_ASSOC);
                                     <tbody>
                                         <?php foreach ($barangays as $barangay): ?>
                                             <tr>
-                                                <td><?php echo $barangay['barangay_name'] ?></td>
+                                                <td><span style="text-transform: uppercase;"><?php echo $barangay['barangay_name'] ?></span></td>
                                                 <td><?php echo $barangay['mission'] ?? 'No Mission'; ?></td>
                                                 <td><?php echo $barangay['vision'] ?? 'No Vision'; ?></td>
                                                 <td>
                                                     <a href="update_barangay.php?id=<?php echo $barangay['id']; ?>" class="btn bg-teal waves-effect" style="margin-bottom: 5px;">
                                                         <i class="fa-solid fa-pencil"></i> UPDATE
-                                                    </a>
-                                                    <a href="#"
-                                                        data-id="<?php echo $barangay['id']; ?>"
-                                                        class="btn bg-teal waves-effect btn-delete"
-                                                        style="margin-bottom: 5px;">
-                                                        <i class="fa-solid fa-trash"></i> DELETE
                                                     </a>
                                                 </td>
                                             </tr>
@@ -364,27 +358,6 @@ $barangays = $stmt->fetchAll(PDO::FETCH_ASSOC);
         <?php endif; ?>
     </script>
 
-    <!-- DELETE SCRIPT -->
-    <script>
-        $('.btn-delete').click(function(e) {
-            e.preventDefault();
-
-            var barangayId = $(this).data('id');
-            var deleteUrl = `delete_barangay.php?id=${barangayId}`;
-
-            swal({
-                title: "Are you sure?",
-                text: "You will not be able to recover this data!",
-                type: "warning",
-                showCancelButton: true,
-                confirmButtonColor: "#DD6B55",
-                confirmButtonText: "Yes, delete it!",
-                closeOnConfirm: false
-            }, function() {
-                window.location.href = deleteUrl;
-            });
-        });
-    </script>
 </body>
 
 </html>

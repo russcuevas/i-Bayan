@@ -1,50 +1,40 @@
-<?php
-// session
-session_start();
-
-include '../../database/connection.php';
-
-
-?>
 <!DOCTYPE html>
 <html>
 
 <head>
     <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=Edge">
     <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
     <title>iBayan</title>
     <!-- Favicon-->
     <link rel="icon" href="../img/logo.png" type="image/x-icon">
 
     <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css?family=Roboto:400,700&subset=latin,cyrillic-ext" rel="stylesheet"
-        type="text/css">
+    <link href="https://fonts.googleapis.com/css?family=Roboto:400,700&subset=latin,cyrillic-ext" rel="stylesheet" type="text/css">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" type="text/css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
     <!-- Bootstrap Core Css -->
     <link href="../plugins/bootstrap/css/bootstrap.css" rel="stylesheet">
 
     <!-- Waves Effect Css -->
     <link href="../plugins/node-waves/waves.css" rel="stylesheet" />
 
-    <!-- JQuery DataTable Css -->
-    <link href="../plugins/jquery-datatable/skin/bootstrap/css/dataTables.bootstrap.css" rel="stylesheet">
-
     <!-- Animation Css -->
     <link href="../plugins/animate-css/animate.css" rel="stylesheet" />
 
-    <!-- Morris Chart Css-->
-    <link href="../plugins/morrisjs/morris.css" rel="stylesheet" />
+    <!-- JQuery DataTable Css -->
+    <link href="../plugins/jquery-datatable/skin/bootstrap/css/dataTables.bootstrap.css" rel="stylesheet">
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 
     <!-- Custom Css -->
     <link href="../css/style.css" rel="stylesheet">
     <link href="../css/custom.css" rel="stylesheet">
+    <!-- Sweetalert Css -->
+    <link href="../plugins/sweetalert/sweetalert.css" rel="stylesheet" />
 
     <!-- AdminBSB Themes. You can choose a theme from css/themes instead of get all themes -->
     <link href="../css/themes/all-themes.css" rel="stylesheet" />
-    <!-- Sweetalert Css -->
-    <link href="../plugins/sweetalert/sweetalert.css" rel="stylesheet" />
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Poppins&display=swap');
 
@@ -70,6 +60,7 @@ include '../../database/connection.php';
             -o-transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s !important;
             transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s !important;
         }
+
 
         /* HOMEPAGE */
         .thumbnail {
@@ -134,6 +125,7 @@ include '../../database/connection.php';
                         <div style="color: white;">iBayan</div>
                     </div>
                 </a>
+
             </div>
             <div class="collapse navbar-collapse" id="navbar-collapse">
                 <ul class="nav navbar-nav navbar-right">
@@ -144,7 +136,6 @@ include '../../database/connection.php';
             </div>
         </div>
     </nav>
-    <!-- #Top Bar -->
     <section>
         <?php include('left_sidebar.php') ?>
         <?php include('right_sidebar.php') ?>
@@ -156,88 +147,47 @@ include '../../database/connection.php';
                 <ol style="font-size: 15px;" class="breadcrumb breadcrumb-col-red">
                     <li><a href="index.php"><i style="font-size: 20px;" class="material-icons">home</i>
                             Dashboard</a></li>
-                    <li class="active"><i style="font-size: 20px;" class="material-icons">description</i> Barangay Officials
+                    <li class="active"><i style="font-size: 20px;" class="material-icons">description</i> Certificate Issuance
                     </li>
                 </ol>
             </div>
             <!-- Basic Validation -->
             <div class="row clearfix">
-                <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
                     <div class="card">
                         <div class="header">
-                            <h2>ADD BARANGAY OFFICIALS</h2>
-                        </div>
-                        <div class="body">
-                            <form id="form_validation" method="POST" enctype="multipart/form-data">
-                                <div class="row">
-                                    <!-- LEFT COLUMN -->
-                                    <div class="col-md-12 pr-4">
-                                        <!-- hidden input -->
-                                        <input type="hidden" name="barangay" value="">
-
-                                        <div>
-                                            <img id="profilePreview" style="height: 100px;"
-                                                src="https://th.bing.com/th/id/R.8e2c571ff125b3531705198a15d3103c?rik=gzhbzBpXBa%2bxMA&riu=http%3a%2f%2fpluspng.com%2fimg-png%2fuser-png-icon-big-image-png-2240.png&ehk=VeWsrun%2fvDy5QDv2Z6Xm8XnIMXyeaz2fhR3AgxlvxAc%3d&risl=&pid=ImgRaw&r=0"
-                                                alt="Profile Picture Preview">
-                                        </div>
-
-                                        <div class="form-group form-float" style="margin-top: 30px;">
-                                            <div class="form-line">
-                                                <input type="file" class="form-control" name="profile_picture" id="profile_picture">
-                                                <label class="form-label">Profile Picture</label>
-                                            </div>
-                                        </div>
-
-                                        <div class="form-group form-float" style="margin-top: 30px;">
-                                            <div class="form-line">
-                                                <input type="text" class="form-control" name="fullname" required>
-                                                <label class="form-label">Fullname <span style="color: red;">*</span></label>
-                                            </div>
-                                        </div>
-
-                                        <div class="form-group form-float" style="margin-top: 30px;">
-                                            <div class="form-line">
-                                                <input type="text" class="form-control" name="position" required>
-                                                <label class="form-label">Position <span style="color: red;">*</span></label>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div style="display: flex; justify-content: end; gap: 5px; margin-top: 10px;">
-                                    <button class="btn bg-teal waves-effect" type="submit"> + Save</button>
-                                </div>
-                            </form>
-                        </div>
-
-                    </div>
-                </div>
-
-                <!-- RIGHT CARD -->
-                <div class="col-lg-8 col-md-8 col-sm-12 col-xs-12">
-                    <div class="card">
-                        <div class="header">
-                            <h2>BARANGAY OFFICIAL LIST</h2>
+                            <h2>CERTIFICATE CEDULA STATUS</h2>
                         </div>
                         <div class="body">
                             <div class="table-responsive">
                                 <table class="table table-bordered table-striped table-hover js-basic-example dataTable">
                                     <thead>
                                         <tr>
-                                            <th>Profile</th>
                                             <th>Fullname</th>
-                                            <th>Position</th>
+                                            <th>Certificate</th>
+                                            <th>Price</th>
+                                            <th>Purpose</th>
+                                            <th>Email</th>
+                                            <th>Mobile</th>
+                                            <th>Date</th>
+                                            <th>Status</th>
                                             <th>Actions</th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         <tr>
-                                            <td><img src="" alt="Sample"></td>
-                                            <td>Sample Fullname</td>
-                                            <td>Sample Position</td>
+                                            <td>Russel Vincent Cuevas</td>
+                                            <td>Barangay Clearance</td>
+                                            <td>₱50.00</td>
+                                            <td>Education</td>
+                                            <td>russelcuevas0@gmail.com</td>
+                                            <td>09495748301</td>
+                                            <td>March/06/2025</td>
+                                            <td>Pending</td>
                                             <td>
-                                                <a href="" class="btn bg-teal waves-effect" style="margin-bottom: 5px;"><i class="fa-solid fa-pencil"></i> UPDATE</a>
-                                                <a href="" class="btn bg-teal waves-effect" style="margin-bottom: 5px;"><i class="fa-solid fa-trash"></i> DELETE</a>
+                                                <a href="" class="btn bg-teal waves-effect" style="margin-bottom: 5px;"><i class="fa-solid fa-pencil"></i> UPDATE STATUS</a>
+                                                <a href="" class="btn bg-teal waves-effect" style="margin-bottom: 5px;"><i class="fa-solid fa-eye"></i> VIEW INFORMATION</a>
+                                                <a href="" class="btn bg-teal waves-effect" style="margin-bottom: 5px;"><i class="fa-solid fa-ban"></i> CANCEL REQUEST</a>
                                             </td>
                                         </tr>
                                     </tbody>
@@ -249,7 +199,6 @@ include '../../database/connection.php';
             </div>
             <!-- #END# Basic Validation -->
         </div>
-        </div>
     </section>
 
     <!-- Jquery Core Js -->
@@ -257,8 +206,11 @@ include '../../database/connection.php';
     <!-- Jquery Validation Plugin Css -->
     <script src="../plugins/jquery-validation/jquery.validate.js"></script>
     <script src="../js/pages/forms/form-validation.js"></script>
+
     <!-- Bootstrap Core Js -->
     <script src="../plugins/bootstrap/js/bootstrap.js"></script>
+
+    <!-- Select Plugin Js -->
 
     <!-- Slimscroll Plugin Js -->
     <script src="../plugins/jquery-slimscroll/jquery.slimscroll.js"></script>
@@ -277,54 +229,33 @@ include '../../database/connection.php';
     <script src="../plugins/jquery-datatable/extensions/export/buttons.html5.min.js"></script>
     <script src="../plugins/jquery-datatable/extensions/export/buttons.print.min.js"></script>
 
-    <!-- Jquery CountTo Plugin Js -->
-    <script src="../plugins/jquery-countto/jquery.countTo.js"></script>
-
-    <!-- Morris Plugin Js -->
-    <script src="../plugins/raphael/raphael.min.js"></script>
-    <script src="../plugins/morrisjs/morris.js"></script>
-
-    <!-- ChartJs -->
-    <script src="../plugins/chartjs/Chart.bundle.js"></script>
-
-    <!-- Flot Charts Plugin Js -->
-    <script src="../plugins/flot-charts/jquery.flot.js"></script>
-    <script src="../plugins/flot-charts/jquery.flot.resize.js"></script>
-    <script src="../plugins/flot-charts/jquery.flot.pie.js"></script>
-    <script src="../plugins/flot-charts/jquery.flot.categories.js"></script>
-    <script src="../plugins/flot-charts/jquery.flot.time.js"></script>
-
-    <!-- Sparkline Chart Plugin Js -->
-    <script src="../plugins/jquery-sparkline/jquery.sparkline.js"></script>
-
-    <!-- Custom Js -->
-    <script src="../plugins/chartjs/Chart.bundle.js"></script>
-
     <!-- Custom Js -->
     <script src="../js/admin.js"></script>
     <script src="../js/pages/tables/jquery-datatable.js"></script>
-    <script src="../js/pages/charts/chartjs.js"></script>
-    <script src="../js/pages/index.js"></script>
-
+    <!-- SweetAlert Plugin Js -->
+    <script src="../plugins/sweetalert/sweetalert.min.js"></script>
     <!-- Demo Js -->
     <script src="../js/demo.js"></script>
-    <script src="../plugins/sweetalert/sweetalert.min.js"></script>
-
-    <!-- PREVIEW PROFILE -->
     <script>
-        document.getElementById('profile_picture').addEventListener('change', function(event) {
-            const file = event.target.files[0];
-            const preview = document.getElementById('profilePreview');
-
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    preview.src = e.target.result;
-                };
-                reader.readAsDataURL(file);
-            }
-        });
+        <?php if (isset($_SESSION['success'])): ?>
+            swal({
+                type: 'success',
+                title: 'Success!',
+                text: '<?php echo $_SESSION['success']; ?>',
+                confirmButtonText: 'OK'
+            });
+            <?php unset($_SESSION['success']); ?>
+        <?php elseif (isset($_SESSION['error'])): ?>
+            swal({
+                type: 'error',
+                title: 'Oops...',
+                text: '<?php echo $_SESSION['error']; ?>',
+                confirmButtonText: 'OK'
+            });
+            <?php unset($_SESSION['error']); ?>
+        <?php endif; ?>
     </script>
+
 </body>
 
 </html>

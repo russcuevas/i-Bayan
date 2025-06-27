@@ -233,7 +233,7 @@ $barangays = $stmt->fetchAll(PDO::FETCH_ASSOC);
                                         <input type="hidden" name="zip" value="4223">
                                         <div class="form-group form-float" style="margin-top: 30px;">
                                             <div class="form-line">
-                                                <input type="text" class="form-control" name="barangay_name" value="<?= htmlspecialchars($barangay['barangay_name']) ?>" required>
+                                                <input type="text" style="background-color: #555; padding: 10px; color: white !important; text-transform: lowercase;" class="form-control" name="barangay_name" value="<?= htmlspecialchars($barangay['barangay_name']) ?>" readonly>
                                                 <label class=" form-label">Barangay Name <span style="color: red;">*</span></label>
                                             </div>
                                         </div>
@@ -285,18 +285,12 @@ $barangays = $stmt->fetchAll(PDO::FETCH_ASSOC);
                                     <tbody>
                                         <?php foreach ($barangays as $barangay): ?>
                                             <tr>
-                                                <td><?php echo $barangay['barangay_name'] ?></td>
+                                                <td><span style="text-transform: uppercase;"><?php echo $barangay['barangay_name'] ?></span></td>
                                                 <td><?php echo $barangay['mission'] ?? 'No Mission'; ?></td>
                                                 <td><?php echo $barangay['vision'] ?? 'No Vision'; ?></td>
                                                 <td>
                                                     <a href="update_barangay.php?id=<?php echo $barangay['id']; ?>" class="btn bg-teal waves-effect" style="margin-bottom: 5px;">
                                                         <i class="fa-solid fa-pencil"></i> UPDATE
-                                                    </a>
-                                                    <a href="#"
-                                                        data-id="<?php echo $barangay['id']; ?>"
-                                                        class="btn bg-teal waves-effect btn-delete"
-                                                        style="margin-bottom: 5px;">
-                                                        <i class="fa-solid fa-trash"></i> DELETE
                                                     </a>
                                                 </td>
                                             </tr>
@@ -388,27 +382,6 @@ $barangays = $stmt->fetchAll(PDO::FETCH_ASSOC);
             });
             <?php unset($_SESSION['error']); ?>
         <?php endif; ?>
-    </script>
-
-    <!-- DELETE SCRIPT -->
-    <script>
-        $('.btn-delete').click(function(e) {
-            e.preventDefault();
-            var barangayId = $(this).data('id');
-            var deleteUrl = `delete_barangay.php?id=${barangayId}`;
-
-            swal({
-                title: "Are you sure?",
-                text: "You will not be able to recover this data!",
-                type: "warning",
-                showCancelButton: true,
-                confirmButtonColor: "#DD6B55",
-                confirmButtonText: "Yes, delete it!",
-                closeOnConfirm: false
-            }, function() {
-                window.location.href = deleteUrl;
-            });
-        });
     </script>
 </body>
 

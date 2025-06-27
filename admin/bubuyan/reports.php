@@ -1,11 +1,3 @@
-<?php
-// session
-session_start();
-
-include '../../database/connection.php';
-
-
-?>
 <!DOCTYPE html>
 <html>
 
@@ -98,6 +90,45 @@ include '../../database/connection.php';
         .icon-style {
             transition: color 0.3s ease;
         }
+
+        /* Tag List Styling */
+        .report-tags {
+            list-style-type: none;
+            padding-left: 0;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .report-tags li a {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background-color: #ffffff;
+            border: 2px solid #1a49cb;
+            color: #1a49cb;
+            padding: 8px 15px;
+            font-size: 14px;
+            font-weight: 600;
+            text-decoration: none;
+            border-radius: 30px;
+            transition: all 0.3s ease;
+        }
+
+        .report-tags li a:hover {
+            background-color: #1a49cb;
+            color: #ffffff;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+            transform: translateY(-2px);
+        }
+
+        .report-tags li a.active {
+            background-color: #1a49cb;
+            color: #ffffff;
+            border-color: #1a49cb;
+            box-shadow: 0 4px 12px rgba(26, 73, 203, 0.3);
+            transform: translateY(-1px);
+        }
     </style>
 </head>
 
@@ -156,58 +187,28 @@ include '../../database/connection.php';
                 <ol style="font-size: 15px;" class="breadcrumb breadcrumb-col-red">
                     <li><a href="index.php"><i style="font-size: 20px;" class="material-icons">home</i>
                             Dashboard</a></li>
-                    <li class="active"><i style="font-size: 20px;" class="material-icons">description</i> Barangay Officials
+                    <li class="active"><i style="font-size: 20px;" class="material-icons">description</i> Reports
                     </li>
                 </ol>
             </div>
             <!-- Basic Validation -->
+            <div class="block-header text-left">
+                <h3 style="color: #1a49cb;">Generate Reports</h3>
+            </div>
             <div class="row clearfix">
                 <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
                     <div class="card">
                         <div class="header">
-                            <h2>ADD BARANGAY OFFICIALS</h2>
+                            <h2>CATEGORIES</h2>
                         </div>
                         <div class="body">
-                            <form id="form_validation" method="POST" enctype="multipart/form-data">
-                                <div class="row">
-                                    <!-- LEFT COLUMN -->
-                                    <div class="col-md-12 pr-4">
-                                        <!-- hidden input -->
-                                        <input type="hidden" name="barangay" value="">
-
-                                        <div>
-                                            <img id="profilePreview" style="height: 100px;"
-                                                src="https://th.bing.com/th/id/R.8e2c571ff125b3531705198a15d3103c?rik=gzhbzBpXBa%2bxMA&riu=http%3a%2f%2fpluspng.com%2fimg-png%2fuser-png-icon-big-image-png-2240.png&ehk=VeWsrun%2fvDy5QDv2Z6Xm8XnIMXyeaz2fhR3AgxlvxAc%3d&risl=&pid=ImgRaw&r=0"
-                                                alt="Profile Picture Preview">
-                                        </div>
-
-                                        <div class="form-group form-float" style="margin-top: 30px;">
-                                            <div class="form-line">
-                                                <input type="file" class="form-control" name="profile_picture" id="profile_picture">
-                                                <label class="form-label">Profile Picture</label>
-                                            </div>
-                                        </div>
-
-                                        <div class="form-group form-float" style="margin-top: 30px;">
-                                            <div class="form-line">
-                                                <input type="text" class="form-control" name="fullname" required>
-                                                <label class="form-label">Fullname <span style="color: red;">*</span></label>
-                                            </div>
-                                        </div>
-
-                                        <div class="form-group form-float" style="margin-top: 30px;">
-                                            <div class="form-line">
-                                                <input type="text" class="form-control" name="position" required>
-                                                <label class="form-label">Position <span style="color: red;">*</span></label>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div style="display: flex; justify-content: end; gap: 5px; margin-top: 10px;">
-                                    <button class="btn bg-teal waves-effect" type="submit"> + Save</button>
-                                </div>
-                            </form>
+                            <ul id="tagList" class="report-tags">
+                                <li><a href="reports/residents.php" class="active"><i class="fa-solid fa-users"></i> Residents</a></li>
+                                <li><a href="reports/household.php"><i class="fa-solid fa-house-user"></i> Household</a></li>
+                                <li><a href="reports/email_sent.php"><i class="fa-solid fa-envelope"></i> Email Sent</a></li>
+                                <li><a href="reports/announcement.php"><i class="fa-solid fa-bullhorn"></i> Announcement</a></li>
+                                <li><a href="reports/activity_logs.php"><i class="fa-solid fa-list-check"></i> Activity Logs</a></li>
+                            </ul>
                         </div>
 
                     </div>
@@ -217,31 +218,11 @@ include '../../database/connection.php';
                 <div class="col-lg-8 col-md-8 col-sm-12 col-xs-12">
                     <div class="card">
                         <div class="header">
-                            <h2>BARANGAY OFFICIAL LIST</h2>
+                            <h2>LIST</h2>
                         </div>
                         <div class="body">
                             <div class="table-responsive">
-                                <table class="table table-bordered table-striped table-hover js-basic-example dataTable">
-                                    <thead>
-                                        <tr>
-                                            <th>Profile</th>
-                                            <th>Fullname</th>
-                                            <th>Position</th>
-                                            <th>Actions</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr>
-                                            <td><img src="" alt="Sample"></td>
-                                            <td>Sample Fullname</td>
-                                            <td>Sample Position</td>
-                                            <td>
-                                                <a href="" class="btn bg-teal waves-effect" style="margin-bottom: 5px;"><i class="fa-solid fa-pencil"></i> UPDATE</a>
-                                                <a href="" class="btn bg-teal waves-effect" style="margin-bottom: 5px;"><i class="fa-solid fa-trash"></i> DELETE</a>
-                                            </td>
-                                        </tr>
-                                    </tbody>
-                                </table>
+                                <h1 style="text-align: center;">Please select categories</h1>
                             </div>
                         </div>
                     </div>
@@ -309,22 +290,6 @@ include '../../database/connection.php';
     <!-- Demo Js -->
     <script src="../js/demo.js"></script>
     <script src="../plugins/sweetalert/sweetalert.min.js"></script>
-
-    <!-- PREVIEW PROFILE -->
-    <script>
-        document.getElementById('profile_picture').addEventListener('change', function(event) {
-            const file = event.target.files[0];
-            const preview = document.getElementById('profilePreview');
-
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    preview.src = e.target.result;
-                };
-                reader.readAsDataURL(file);
-            }
-        });
-    </script>
 </body>
 
 </html>
