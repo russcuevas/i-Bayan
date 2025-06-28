@@ -2,10 +2,78 @@
 // session
 session_start();
 
+$barangay = basename(__DIR__);
+$session_key = "admin_id_$barangay";
+
+// if not logged in
+if (!isset($_SESSION[$session_key])) {
+    header("Location: ../login.php");
+    exit();
+}
+
+// details welcome
+$barangay_name_key = "barangay_name_$barangay";
+$admin_name_key = "admin_name_$barangay";
+$admin_position_key = "admin_position_$barangay";
+
+// get barangay id
+$barangay_id_key = "barangay_id_$barangay";
+$barangay_id = $_SESSION[$barangay_id_key] ?? '';
+
+// database connection
 include '../../database/connection.php';
 
+// add barangay official function
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $fullname = $_POST['fullname'] ?? '';
+    $position = $_POST['position'] ?? '';
+    $barangay = $_POST['barangay'] ?? '';
+
+    // Handle image upload
+    $profile_picture_path = null;
+
+    if (isset($_FILES['profile_picture']) && $_FILES['profile_picture']['error'] === UPLOAD_ERR_OK) {
+        $upload_dir = 'profile_picture/';
+        $file_tmp = $_FILES['profile_picture']['tmp_name'];
+        $file_name = basename($_FILES['profile_picture']['name']);
+        $file_ext = strtolower(pathinfo($file_name, PATHINFO_EXTENSION));
+        $allowed_exts = ['jpg', 'jpeg', 'png', 'gif', 'webp'];
+
+        if (in_array($file_ext, $allowed_exts)) {
+            $new_filename = uniqid('official_', true) . '.' . $file_ext;
+            $destination = $upload_dir . $new_filename;
+
+            if (move_uploaded_file($file_tmp, $destination)) {
+                $profile_picture_path = $destination;
+            }
+        }
+    }
+
+    $stmt = $conn->prepare("
+        INSERT INTO tbl_barangay_officials 
+        (profile_picture, fullname, position, barangay, created_at, updated_at) 
+        VALUES (:profile_picture, :fullname, :position, :barangay, NOW(), NOW())
+    ");
+
+    $stmt->execute([
+        ':profile_picture' => $profile_picture_path,
+        ':fullname'        => $fullname,
+        ':position'        => $position,
+        ':barangay'        => $barangay,
+    ]);
+
+    $_SESSION['success'] = "Barangay official added successfully!";
+    header("Location: " . $_SERVER['PHP_SELF']);
+    exit();
+}
+
+//get barangay official function
+$stmt = $conn->prepare("SELECT * FROM tbl_barangay_officials WHERE barangay = :barangay ORDER BY fullname ASC");
+$stmt->execute([':barangay' => $barangay_id]);
+$officials = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 ?>
+
 <!DOCTYPE html>
 <html>
 
@@ -168,16 +236,17 @@ include '../../database/connection.php';
                             <h2>ADD BARANGAY OFFICIALS</h2>
                         </div>
                         <div class="body">
+
                             <form id="form_validation" method="POST" enctype="multipart/form-data">
                                 <div class="row">
                                     <!-- LEFT COLUMN -->
                                     <div class="col-md-12 pr-4">
                                         <!-- hidden input -->
-                                        <input type="hidden" name="barangay" value="">
+                                        <input type="hidden" name="barangay" value="<?php echo htmlspecialchars($barangay_id); ?>">
 
                                         <div>
                                             <img id="profilePreview" style="height: 100px;"
-                                                src="https://th.bing.com/th/id/R.8e2c571ff125b3531705198a15d3103c?rik=gzhbzBpXBa%2bxMA&riu=http%3a%2f%2fpluspng.com%2fimg-png%2fuser-png-icon-big-image-png-2240.png&ehk=VeWsrun%2fvDy5QDv2Z6Xm8XnIMXyeaz2fhR3AgxlvxAc%3d&risl=&pid=ImgRaw&r=0"
+                                                src="profile_picture/default_profile.png"
                                                 alt="Profile Picture Preview">
                                         </div>
 
@@ -231,15 +300,30 @@ include '../../database/connection.php';
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <tr>
-                                            <td><img src="" alt="Sample"></td>
-                                            <td>Sample Fullname</td>
-                                            <td>Sample Position</td>
-                                            <td>
-                                                <a href="" class="btn bg-teal waves-effect" style="margin-bottom: 5px;"><i class="fa-solid fa-pencil"></i> UPDATE</a>
-                                                <a href="" class="btn bg-teal waves-effect" style="margin-bottom: 5px;"><i class="fa-solid fa-trash"></i> DELETE</a>
-                                            </td>
-                                        </tr>
+                                        <?php foreach ($officials as $official): ?>
+                                            <tr>
+                                                <td>
+                                                    <img
+                                                        src="<?php echo $official['profile_picture'] ? htmlspecialchars($official['profile_picture']) : 'profile_picture/default_profile.png'; ?>"
+                                                        alt="Profile Picture"
+                                                        style="height: 60px; width: 60px; object-fit: cover;">
+                                                </td>
+
+                                                <td><?php echo $official['fullname'] ?></td>
+                                                <td><?php echo $official['position'] ?></td>
+                                                <td>
+                                                    <a href="update_b_officials.php?id=<?php echo $official['id']; ?>" class="btn bg-teal waves-effect" style="margin-bottom: 5px;">
+                                                        <i class="fa-solid fa-pencil"></i> UPDATE
+                                                    </a>
+                                                    <a href="#"
+                                                        data-id="<?php echo $official['id']; ?>"
+                                                        class="btn bg-teal waves-effect btn-delete"
+                                                        style="margin-bottom: 5px;">
+                                                        <i class="fa-solid fa-trash"></i> DELETE
+                                                    </a>
+                                                </td>
+                                            </tr>
+                                        <?php endforeach ?>
                                     </tbody>
                                 </table>
                             </div>
@@ -309,6 +393,47 @@ include '../../database/connection.php';
     <!-- Demo Js -->
     <script src="../js/demo.js"></script>
     <script src="../plugins/sweetalert/sweetalert.min.js"></script>
+    <script>
+        <?php if (isset($_SESSION['success'])): ?>
+            swal({
+                type: 'success',
+                title: 'Success!',
+                text: '<?php echo $_SESSION['success']; ?>',
+                confirmButtonText: 'OK'
+            });
+            <?php unset($_SESSION['success']); ?>
+        <?php elseif (isset($_SESSION['error'])): ?>
+            swal({
+                type: 'error',
+                title: 'Oops...',
+                text: '<?php echo $_SESSION['error']; ?>',
+                confirmButtonText: 'OK'
+            });
+            <?php unset($_SESSION['error']); ?>
+        <?php endif; ?>
+    </script>
+
+    <!-- DELETE SCRIPT -->
+    <script>
+        $('.btn-delete').click(function(e) {
+            e.preventDefault();
+
+            var barangayOfficialId = $(this).data('id');
+            var deleteUrl = `delete_b_officials.php?id=${barangayOfficialId}`;
+
+            swal({
+                title: "Are you sure?",
+                text: "You will not be able to recover this data!",
+                type: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#DD6B55",
+                confirmButtonText: "Yes, delete it!",
+                closeOnConfirm: false
+            }, function() {
+                window.location.href = deleteUrl;
+            });
+        });
+    </script>
 
     <!-- PREVIEW PROFILE -->
     <script>

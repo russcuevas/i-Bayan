@@ -1,4 +1,5 @@
 <?php
+// session
 session_start();
 
 $barangay = basename(__DIR__);

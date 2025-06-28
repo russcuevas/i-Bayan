@@ -1,6 +1,7 @@
 <?php
-// session
 session_start();
+
+include '../../database/connection.php';
 
 $barangay = basename(__DIR__);
 $session_key = "admin_id_$barangay";
@@ -11,6 +12,7 @@ if (!isset($_SESSION[$session_key])) {
     exit();
 }
 
+
 // details welcome
 $barangay_name_key = "barangay_name_$barangay";
 $admin_name_key = "admin_name_$barangay";
@@ -20,18 +22,39 @@ $admin_position_key = "admin_position_$barangay";
 $barangay_id_key = "barangay_id_$barangay";
 $barangay_id = $_SESSION[$barangay_id_key] ?? '';
 
-// database connection
-include '../../database/connection.php';
+//get barangay official function
+$stmt = $conn->prepare("SELECT * FROM tbl_barangay_officials WHERE barangay = :barangay ORDER BY fullname ASC");
+$stmt->execute([':barangay' => $barangay_id]);
+$officials = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-// add barangay official function
+// Validate and get official ID
+if (!isset($_GET['id']) || !is_numeric($_GET['id'])) {
+    $_SESSION['error'] = "Invalid official ID.";
+    header("Location: barangay_officials.php");
+    exit();
+}
+
+$official_id = (int) $_GET['id'];
+
+// Fetch current data
+$stmt = $conn->prepare("SELECT * FROM tbl_barangay_officials WHERE id = :id");
+$stmt->execute([':id' => $official_id]);
+$official = $stmt->fetch(PDO::FETCH_ASSOC);
+
+if (!$official) {
+    $_SESSION['error'] = "Official not found.";
+    header("Location: barangay_officials.php");
+    exit();
+}
+
+// Update logic
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $fullname = $_POST['fullname'] ?? '';
     $position = $_POST['position'] ?? '';
     $barangay = $_POST['barangay'] ?? '';
+    $profile_picture_path = $official['profile_picture']; // Default to existing
 
-    // Handle image upload
-    $profile_picture_path = null;
-
+    // Handle new image
     if (isset($_FILES['profile_picture']) && $_FILES['profile_picture']['error'] === UPLOAD_ERR_OK) {
         $upload_dir = 'profile_picture/';
         $file_tmp = $_FILES['profile_picture']['tmp_name'];
@@ -50,28 +73,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     $stmt = $conn->prepare("
-        INSERT INTO tbl_barangay_officials 
-        (profile_picture, fullname, position, barangay, created_at, updated_at) 
-        VALUES (:profile_picture, :fullname, :position, :barangay, NOW(), NOW())
+        UPDATE tbl_barangay_officials 
+        SET profile_picture = :profile_picture, fullname = :fullname, position = :position, updated_at = NOW()
+        WHERE id = :id
     ");
 
     $stmt->execute([
         ':profile_picture' => $profile_picture_path,
         ':fullname'        => $fullname,
         ':position'        => $position,
-        ':barangay'        => $barangay,
+        ':id'              => $official_id
     ]);
 
-    $_SESSION['success'] = "Barangay official added successfully!";
-    header("Location: " . $_SERVER['PHP_SELF']);
+    $_SESSION['success'] = "Barangay official updated successfully!";
+    header("Location: barangay_officials.php");
     exit();
 }
-
-//get barangay official function
-$stmt = $conn->prepare("SELECT * FROM tbl_barangay_officials WHERE barangay = :barangay ORDER BY fullname ASC");
-$stmt->execute([':barangay' => $barangay_id]);
-$officials = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
 ?>
 
 <!DOCTYPE html>
@@ -233,7 +250,7 @@ $officials = $stmt->fetchAll(PDO::FETCH_ASSOC);
                 <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
                     <div class="card">
                         <div class="header">
-                            <h2>ADD BARANGAY OFFICIALS</h2>
+                            <h2>UPDATE BARANGAY OFFICIALS</h2>
                         </div>
                         <div class="body">
 
@@ -242,31 +259,32 @@ $officials = $stmt->fetchAll(PDO::FETCH_ASSOC);
                                     <!-- LEFT COLUMN -->
                                     <div class="col-md-12 pr-4">
                                         <!-- hidden input -->
-                                        <input type="hidden" name="barangay" value="<?php echo htmlspecialchars($barangay_id); ?>">
+                                        <input type="hidden" name="barangay" value="<?php echo htmlspecialchars($official['barangay']); ?>">
 
                                         <div>
-                                            <img id="profilePreview" style="height: 100px;"
-                                                src="profile_picture/default_profile.png"
-                                                alt="Profile Picture Preview">
+                                            <img src="<?php echo $official['profile_picture'] ?: 'profile_picture/default_profile.png'; ?>"
+                                                alt="Profile" style="height: 100px;"><br>
+                                            <label>Profile:</label>
+
                                         </div>
 
                                         <div class="form-group form-float" style="margin-top: 30px;">
                                             <div class="form-line">
                                                 <input type="file" class="form-control" name="profile_picture" id="profile_picture">
-                                                <label class="form-label">Profile Picture</label>
+                                                <label class="form-label">Upload New Picture</label>
                                             </div>
                                         </div>
 
                                         <div class="form-group form-float" style="margin-top: 30px;">
                                             <div class="form-line">
-                                                <input type="text" class="form-control" name="fullname" required>
+                                                <input type="text" class="form-control" name="fullname" value="<?php echo htmlspecialchars($official['fullname']); ?>" required>
                                                 <label class="form-label">Fullname <span style="color: red;">*</span></label>
                                             </div>
                                         </div>
 
                                         <div class="form-group form-float" style="margin-top: 30px;">
                                             <div class="form-line">
-                                                <input type="text" class="form-control" name="position" required>
+                                                <input type="text" class="form-control" name="position" value="<?php echo htmlspecialchars($official['position']); ?>" required>
                                                 <label class="form-label">Position <span style="color: red;">*</span></label>
                                             </div>
                                         </div>
@@ -315,12 +333,7 @@ $officials = $stmt->fetchAll(PDO::FETCH_ASSOC);
                                                     <a href="update_b_officials.php?id=<?php echo $official['id']; ?>" class="btn bg-teal waves-effect" style="margin-bottom: 5px;">
                                                         <i class="fa-solid fa-pencil"></i> UPDATE
                                                     </a>
-                                                    <a href="#"
-                                                        data-id="<?php echo $official['id']; ?>"
-                                                        class="btn bg-teal waves-effect btn-delete"
-                                                        style="margin-bottom: 5px;">
-                                                        <i class="fa-solid fa-trash"></i> DELETE
-                                                    </a>
+                                                    <a href="" class="btn bg-teal waves-effect" style="margin-bottom: 5px;"><i class="fa-solid fa-trash"></i> DELETE</a>
                                                 </td>
                                             </tr>
                                         <?php endforeach ?>
@@ -412,29 +425,6 @@ $officials = $stmt->fetchAll(PDO::FETCH_ASSOC);
             <?php unset($_SESSION['error']); ?>
         <?php endif; ?>
     </script>
-
-    <!-- DELETE SCRIPT -->
-    <script>
-        $('.btn-delete').click(function(e) {
-            e.preventDefault();
-
-            var barangayOfficialId = $(this).data('id');
-            var deleteUrl = `delete_b_officials.php?id=${barangayOfficialId}`;
-
-            swal({
-                title: "Are you sure?",
-                text: "You will not be able to recover this data!",
-                type: "warning",
-                showCancelButton: true,
-                confirmButtonColor: "#DD6B55",
-                confirmButtonText: "Yes, delete it!",
-                closeOnConfirm: false
-            }, function() {
-                window.location.href = deleteUrl;
-            });
-        });
-    </script>
-
     <!-- PREVIEW PROFILE -->
     <script>
         document.getElementById('profile_picture').addEventListener('change', function(event) {
