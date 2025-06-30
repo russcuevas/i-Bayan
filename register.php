@@ -1,3 +1,90 @@
+<?php
+session_start();
+include 'database/connection.php';
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $first_name = $_POST['first_name'] ?? '';
+    $middle_name = $_POST['middle_name'] ?? '';
+    $last_name = $_POST['last_name'] ?? '';
+    $suffix = $_POST['suffix'] ?? null;
+    $gender = $_POST['gender'] ?? '';
+    $date_of_birth = $_POST['date_of_birth'] ?? '';
+    $birthplace = $_POST['birthplace'] ?? '';
+    $is_working = $_POST['is_working'] ?? 3;
+    $school = $_POST['school'] ?? null;
+    $occupation = $_POST['occupation'] ?? null;
+    $barangay_address = $_POST['barangay_address'] ?? null;
+    $purok = $_POST['purok'] ?? '';
+    $username = $_POST['username'] ?? '';
+    $password = password_hash($_POST['password'], PASSWORD_DEFAULT);
+    $email = $_POST['email'] ?? '';
+    $phone_number = $_POST['phone_number'] ?? '';
+    $created_at = $updated_at = date('Y-m-d H:i:s');
+
+    $valid_id_path = null;
+    if (isset($_FILES['valid_id']) && $_FILES['valid_id']['error'] === UPLOAD_ERR_OK) {
+        $fileTmp = $_FILES['valid_id']['tmp_name'];
+        $fileName = basename($_FILES['valid_id']['name']);
+        $targetDir = 'public/valid_id/';
+        $targetFile = $targetDir . time() . '_' . $fileName;
+
+        if (move_uploaded_file($fileTmp, $targetFile)) {
+            $valid_id_path = $targetFile;
+        } else {
+            $_SESSION['error'] = "Failed to upload Valid ID.";
+            header("Location: " . $_SERVER['PHP_SELF']);
+            exit();
+        }
+    } else {
+        $_SESSION['error'] = "Valid ID file is required.";
+        header("Location: " . $_SERVER['PHP_SELF']);
+        exit();
+    }
+
+    $stmt = $conn->prepare("INSERT INTO tbl_residents (
+        first_name, middle_name, last_name, suffix, gender, civil_status, date_of_birth,
+        birthplace, is_working, school, occupation, barangay_address, purok,
+        username, password, email, valid_id, phone_number, is_approved,
+        is_online, created_at, updated_at
+    ) VALUES (
+        :first_name, :middle_name, :last_name, :suffix, :gender, 'Single', :date_of_birth,
+        :birthplace, :is_working, :school, :occupation, :barangay_address, :purok,
+        :username, :password, :email, :valid_id, :phone_number, 0,
+        'offline', :created_at, :updated_at
+    )");
+
+    $stmt->execute([
+        ':first_name' => $first_name,
+        ':middle_name' => $middle_name,
+        ':last_name' => $last_name,
+        ':suffix' => $suffix,
+        ':gender' => $gender,
+        ':date_of_birth' => $date_of_birth,
+        ':birthplace' => $birthplace,
+        ':is_working' => $is_working,
+        ':school' => $school,
+        ':occupation' => $occupation,
+        ':barangay_address' => $barangay_address,
+        ':purok' => $purok,
+        ':username' => $username,
+        ':password' => $password,
+        ':email' => $email,
+        ':valid_id' => $valid_id_path,
+        ':phone_number' => $phone_number,
+        ':created_at' => $created_at,
+        ':updated_at' => $updated_at,
+    ]);
+
+    $_SESSION['success'] = "Registration successfully please wait for the approval of the admin check your email";
+    header("Location: " . $_SERVER['PHP_SELF']);
+    exit();
+}
+
+// Get barangay list
+$stmt = $conn->query("SELECT * FROM tbl_barangay ORDER BY id DESC");
+$barangays = $stmt->fetchAll(PDO::FETCH_ASSOC);
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -11,6 +98,11 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <link rel="stylesheet" href="assets/css/login.css">
+    <!-- Select -->
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+    <!-- Sweetalert -->
+    <link rel="stylesheet" href="assets/css/sweetalert.css">
+
     <style>
         .lgu-logo-wrapper {
             background-origin: content-box;
@@ -32,7 +124,7 @@
     <?php include 'components/navbar.php' ?>
 
     <div class="user-form" style="padding: 20px;">
-        <form id="w0" action="" method="post">
+        <form id="w0" action="" method="post" enctype="multipart/form-data" class="needs-validation" novalidate>
             <div class="container-fluid">
                 <div class="row">
                     <div class="">
@@ -49,22 +141,22 @@
                                         </h6>
                                         <div class="mb-3 field-sysuser-sys_firstname required">
                                             <label class="form-label" for="sysuser-sys_firstname">First Name <span style="color: red;">*</span></label>
-                                            <input type="text" id="sysuser-sys_firstname" class="form-control text-input" style="font-weight: 900" name="" maxlength="500" placeholder="First name" required>
+                                            <input type="text" id="sysuser-sys_firstname" class="form-control text-input" style="font-weight: 900" name="first_name" maxlength="500" placeholder="First name" required>
                                             <div class="invalid-feedback"></div>
                                         </div>
                                         <div class="mb-3 field-sysuser-sys_middlename">
                                             <label class="form-label" for="sysuser-sys_middlename">Middle Name</label>
-                                            <input type="text" id="sysuser-sys_middlename" class="form-control text-input" style="font-weight: 900" name="" maxlength="500" placeholder="Middle name">
+                                            <input type="text" id="sysuser-sys_middlename" class="form-control text-input" style="font-weight: 900" name="middle_name" maxlength="500" placeholder="Middle name" required>
                                             <div class="invalid-feedback"></div>
                                         </div>
                                         <div class="mb-3 field-sysuser-sys_lastname required">
                                             <label class="form-label" for="sysuser-sys_lastname">Last Name <span style="color: red;">*</span></label>
-                                            <input type="text" id="sysuser-sys_lastname" class="form-control text-input" style="font-weight: 900" name="" maxlength="500" placeholder="Last name" required>
+                                            <input type="text" id="sysuser-sys_lastname" class="form-control text-input" style="font-weight: 900" name="last_name" maxlength="500" placeholder="Last name" required>
                                             <div class="invalid-feedback"></div>
                                         </div>
                                         <div class="mb-3 field-sysuser-sys_ext_name">
                                             <label class="form-label" for="sysuser-sys_ext_name">Extension Name</label>
-                                            <input type="text" id="sysuser-sys_ext_name" class="form-control text-input" style="font-weight: 900" name="" maxlength="50" placeholder="e.g. Jr, III">
+                                            <input type="text" id="sysuser-sys_ext_name" class="form-control text-input" style="font-weight: 900" name="suffix" maxlength="50" placeholder="e.g. Jr, III">
                                             <div class="invalid-feedback"></div>
                                         </div>
 
@@ -84,7 +176,7 @@
                                                 <div class="form-group form-float">
                                                     <div class="form-line">
                                                         <label class="form-label">Date of birth <span style="color: red;">*</span></label>
-                                                        <input type="date" style="font-weight: 900" class="form-control" name="birthday" required>
+                                                        <input type="date" style="font-weight: 900" class="form-control" name="date_of_birth" required>
                                                     </div>
                                                 </div>
                                             </div>
@@ -118,7 +210,7 @@
                                                 <div class="form-group form-float">
                                                     <div class="form-line">
                                                         <label class="form-label">Occupation <span style="color: red;">*</span></label>
-                                                        <input type="text" style="font-weight: 900" class="form-control" name="occupation" required>
+                                                        <input type="text" style="font-weight: 900" class="form-control" name="occupation">
                                                     </div>
                                                 </div>
                                             </div>
@@ -130,7 +222,7 @@
                                                 <div class="form-group form-float">
                                                     <div class="form-line">
                                                         <label class="form-label">School <span style="color: red;">*</span></label>
-                                                        <input type="text" style="font-weight: 900" class="form-control" name="school" required>
+                                                        <input type="text" style="font-weight: 900" class="form-control" name="school">
                                                     </div>
                                                 </div>
                                             </div>
@@ -138,27 +230,18 @@
 
                                         <div class="mb-3 field-sysuser-sys_barangay">
                                             <label class="form-label" for="sysuser-sys_barangay">Address <span style="color: red;">*</span></label>
-                                            <select class="form-select" aria-label=".form-select-lg example" style="font-weight: 900;">
-                                                <option selected>SELECT BARANGAY</option>
-                                                <option value="1">One</option>
-                                                <option value="2">Two</option>
-                                                <option value="3">Three</option>
+                                            <select class="form-control select-form select2" name="barangay_address" required>
+                                                <option value="" disabled selected>SELECT BARANGAY</option>
+                                                <?php foreach ($barangays as $barangay): ?>
+                                                    <option value="<?= $barangay['id']; ?>">
+                                                        <?= strtoupper(htmlspecialchars($barangay['barangay_name'])) ?>
+                                                    </option>
+                                                <?php endforeach; ?>
+
                                             </select>
                                             <div class="mb-3 mt-3 field-sysuser-sys_purok required">
                                                 <div class="input-group">
-                                                    <input type="text" id="sysuser-sys_purok" style="font-weight: 900" class="form-control" name="" maxlength="500" placeholder="Purok" required>
-                                                    <div class="invalid-feedback"></div>
-                                                </div>
-                                            </div>
-                                            <div class="mb-3 field-sysuser-sys_municipality required">
-                                                <div class="input-group">
-                                                    <input type="text" id="sysuser-sys_municipality" style="font-weight: 900; background-color: #F2F6FE;" class="form-control" name="" placeholder="Mataasnakahoy" readonly>
-                                                    <div class="invalid-feedback"></div>
-                                                </div>
-                                            </div>
-                                            <div class="mb-3 field-sysuser-sys_zip_code required">
-                                                <div class="input-group">
-                                                    <input type="text" id="sysuser-sys_zip_code" style="font-weight: 900; background-color: #F2F6FE;" class="form-control" name="" placeholder="4223" readonly>
+                                                    <input type="text" id="sysuser-sys_purok" style="font-weight: 900" class="form-control" name="purok" maxlength="500" placeholder="Purok" required>
                                                     <div class="invalid-feedback"></div>
                                                 </div>
                                             </div>
@@ -177,40 +260,35 @@
                                         </h6>
                                         <div class="mb-3 field-sysuser-sys_username required">
                                             <label class="form-label" for="sysuser-sys_username">Account <span style="color: red;">*</span></label>
-                                            <input type="text" id="sysuser-sys_username" style="font-weight: 900" class="form-control" name="" maxlength="500" placeholder="Username" required>
+                                            <input type="text" id="username" style="font-weight: 900" class="form-control" name="username" maxlength="500" placeholder="Username" required>
+                                            <small id="username-feedback" class="text-danger"></small>
 
                                             <div class="invalid-feedback"></div>
                                         </div>
                                         <div class="mb-3 field-sysuser-sys_password required">
 
                                             <div class="input-group">
-                                                <input type="password" id="sysuser-sys_password" style="font-weight: 900" class="form-control" name="" maxlength="500" placeholder="Password" required>
+                                                <input type="password" id="sysuser-sys_password" style="font-weight: 900" class="form-control" name="password" maxlength="500" placeholder="Password" required>
                                                 <div class="invalid-feedback"></div>
                                             </div>
                                         </div>
-                                        <div class="mb-3 field-sysuser-password_repeat required">
 
-                                            <div class="input-group">
-                                                <input type="password" id="sysuser-password_repeat" style="font-weight: 900" class="form-control" name="" placeholder="Verify Password" required>
-                                                <div class="invalid-feedback"></div>
-                                            </div>
-                                        </div>
                                         <div class="mb-3 field-sysuser-sys_email_address required">
                                             <label class="form-label" for="sysuser-sys_email_address">Email Address <span style="color: red;">*</span></label>
-                                            <input type="text" id="sysuser-sys_email_address" style="font-weight: 900" class="form-control" name="" maxlength="500" placeholder="Email address" required>
-
+                                            <input type="text" id="email" style="font-weight: 900" class="form-control" name="email" maxlength="500" placeholder="Email address" required>
+                                            <small id="email-feedback" class="text-danger"></small>
                                             <div class="invalid-feedback"></div>
                                         </div>
 
                                         <div class="mb-3 field-sysuser-sys_valid_id required">
                                             <label class="form-label" for="sysuser-sys_valid_id">Valid ID <span style="color: red;">*</span></label>
-                                            <input type="file" id="sysuser-sys_valid_id" style="font-weight: 900" class="form-control" name="" maxlength="500" placeholder="Email address" required>
+                                            <input type="file" id="sysuser-sys_valid_id" style="font-weight: 900" class="form-control" name="valid_id" maxlength="500" placeholder="Email address" required>
 
                                             <div class="invalid-feedback"></div>
                                         </div>
                                         <div class="mb-3 field-sysuser-sys_contact_number">
                                             <label class="form-label" for="sysuser-sys_contact_number">Phone number <span style="color: red;">*</span></label>
-                                            <input type="text" id="sysuser-sys_contact_number" class="form-control text-input" style="font-weight: 900" name="" maxlength="500" placeholder="Phone number">
+                                            <input type="text" id="sysuser-sys_contact_number" class="form-control text-input" style="font-weight: 900" name="phone_number" maxlength="500" placeholder="Phone number">
                                             <div class="invalid-feedback"></div>
                                         </div>
                                     </div>
@@ -249,7 +327,9 @@
                                 </div>
                                 <br>
                                 <div class="float-end">
-                                    <a class="btn bold" href="login.php" style="background-color: #D9D9D9; font-weight: 900;">BACK</a> <button type="submit" class="btn btn-primary bold"><strong>REGISTER</strong></button>
+                                    <a class="btn bold" href="login.php" style="background-color: #D9D9D9; font-weight: 900;">BACK</a>
+                                    <button type="submit" class="btn btn-primary bold"><strong>REGISTER</strong>
+                                    </button>
                                 </div>
                             </div>
                         </div>
@@ -274,9 +354,34 @@
     </div>
 
     <?php include 'components/footer.php' ?>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js" integrity="sha384-IQsoLXl5PILFhosVNubq5LC7Qb9DXgDA9i+tQ8Zj3iwWAwPtgFTxbJ8NT4GN1R8p" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.min.js" integrity="sha384-cVKIPhGWiC2Al4u+LWgxfKTRIcfu0JTxR+EQDz/bgldoEyl4H0zUF0QKbrJ0EcQF" crossorigin="anonymous"></script>
     <script src="assets/js/time.js"></script>
+    <!-- Select Plugin Js -->
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+    <!-- Sweetalert -->
+    <script src="assets/js/sweetalert.js"></script>
+    <script>
+        <?php if (isset($_SESSION['success'])): ?>
+            swal({
+                type: 'success',
+                title: 'Success!',
+                text: '<?php echo $_SESSION['success']; ?>',
+                confirmButtonText: 'OK'
+            });
+            <?php unset($_SESSION['success']); ?>
+        <?php elseif (isset($_SESSION['error'])): ?>
+            swal({
+                type: 'error',
+                title: 'Oops...',
+                text: '<?php echo $_SESSION['error']; ?>',
+                confirmButtonText: 'OK'
+            });
+            <?php unset($_SESSION['error']); ?>
+        <?php endif; ?>
+    </script>
+
     <script>
         (function() {
             'use strict';
@@ -292,6 +397,89 @@
             });
         })();
     </script>
+
+    <script>
+        $(document).ready(function() {
+            let usernameValid = false;
+            let emailValid = false;
+
+            // Username Check
+            $('#username').on('blur', function() {
+                const username = $(this).val();
+                const feedback = $('#username-feedback');
+                if (username.length > 0) {
+                    $.post('validation/check_useremail.php', {
+                        username: username
+                    }, function(response) {
+                        if (response.status === 'exists') {
+                            feedback.text(response.message).css('color', 'red');
+                            usernameValid = false;
+                            $('#username').addClass('is-invalid').removeClass('is-valid');
+                        } else if (response.status === 'available') {
+                            feedback.text('');
+                            usernameValid = true;
+                            $('#username').removeClass('is-invalid').addClass('is-valid');
+                        } else {
+                            feedback.text('');
+                            usernameValid = false;
+                            $('#username').removeClass('is-invalid is-valid');
+                        }
+                    }, 'json');
+                } else {
+                    feedback.text('');
+                    usernameValid = false;
+                    $('#username').removeClass('is-invalid is-valid');
+                }
+            });
+
+            // Email Check
+            $('#email').on('blur', function() {
+                const email = $(this).val();
+                const feedback = $('#email-feedback');
+                if (email.length > 0) {
+                    $.post('validation/check_useremail.php', {
+                        email: email
+                    }, function(response) {
+                        if (response.status === 'exists') {
+                            feedback.text(response.message).css('color', 'red');
+                            emailValid = false;
+                            $('#email').addClass('is-invalid').removeClass('is-valid');
+                        } else if (response.status === 'available') {
+                            feedback.text('');
+                            emailValid = true;
+                            $('#email').removeClass('is-invalid').addClass('is-valid');
+                        } else {
+                            feedback.text('');
+                            emailValid = false;
+                            $('#email').removeClass('is-invalid is-valid');
+                        }
+                    }, 'json');
+                } else {
+                    feedback.text('');
+                    emailValid = false;
+                    $('#email').removeClass('is-invalid is-valid');
+                }
+            });
+
+            $('form.needs-validation').on('submit', function(e) {
+                if (!usernameValid || !emailValid) {
+                    e.preventDefault();
+                    e.stopPropagation();
+
+                    if (!usernameValid) {
+                        $('#username-feedback').text('Please provide a valid, available username.').css('color', 'red');
+                        $('#username').addClass('is-invalid');
+                    }
+
+                    if (!emailValid) {
+                        $('#email-feedback').text('Please provide a valid, available email.').css('color', 'red');
+                        $('#email').addClass('is-invalid');
+                    }
+                }
+            });
+        });
+    </script>
+
 
     <!-- CURRENT STATUS SCRIPT -->
     <script>
@@ -310,6 +498,15 @@
                     occupationDiv.style.display = 'none';
                     schoolDiv.style.display = 'none';
                 }
+            });
+        });
+    </script>
+
+    <!-- SELECT SCRIPT -->
+    <script>
+        $(document).ready(function() {
+            $('.select2').select2({
+                allowClear: true
             });
         });
     </script>

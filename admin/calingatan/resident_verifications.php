@@ -1,3 +1,35 @@
+<?php
+// session
+session_start();
+
+$barangay = basename(__DIR__);
+$session_key = "admin_id_$barangay";
+
+// if not logged in
+if (!isset($_SESSION[$session_key])) {
+    header("Location: ../login.php");
+    exit();
+}
+
+// details welcome
+$barangay_name_key = "barangay_name_$barangay";
+$admin_name_key = "admin_name_$barangay";
+$admin_position_key = "admin_position_$barangay";
+
+// database connection
+include '../../database/connection.php';
+
+// fetching residents where in same of the barangay of the admin
+$admin_id = $_SESSION[$session_key];
+$admin_stmt = $conn->prepare("SELECT barangay_id FROM tbl_admin WHERE id = ?");
+$admin_stmt->execute([$admin_id]);
+$admin_barangay_id = $admin_stmt->fetchColumn();
+
+$stmt = $conn->prepare("SELECT * FROM tbl_residents WHERE barangay_address = :barangay_address");
+$stmt->execute([':barangay_address' => $admin_barangay_id]);
+$residents = $stmt->fetchAll(PDO::FETCH_ASSOC);
+?>
+
 <!DOCTYPE html>
 <html>
 
@@ -166,6 +198,7 @@
                                         <tr>
                                             <th>Fullname</th>
                                             <th>Gender</th>
+                                            <th>Purok</th>
                                             <th>Mobile</th>
                                             <th>Email</th>
                                             <th>Status</th>
@@ -173,16 +206,32 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <tr>
-                                            <td>Russel Vincent Cuevas</td>
-                                            <td>Male</td>
-                                            <td>09495748302</td>
-                                            <td>russelcuevas0@gmail.com</td>
-                                            <td><span style="color: orange">Pending</span></td>
-                                            <td>
-                                                <a href="" class="btn bg-teal waves-effect" style="margin-bottom: 5px;"><i class="fa-solid fa-id-card"></i> VIEW INFORMATION</a>
-                                            </td>
-                                        </tr>
+                                        <?php foreach ($residents as $resident): ?>
+                                            <tr>
+                                                <td><?= htmlspecialchars($resident['first_name'] . ' ' . $resident['middle_name'] . ' ' . $resident['last_name'] . ' ' . $resident['suffix']) ?></td>
+                                                <td><?= htmlspecialchars($resident['gender']) ?></td>
+                                                <td><?= htmlspecialchars($resident['purok']) ?></td>
+                                                <td><?= htmlspecialchars($resident['phone_number']) ?></td>
+                                                <td><?= htmlspecialchars($resident['email']) ?></td>
+
+                                                <td>
+                                                    <span style="color: <?= $resident['is_approved'] == 1 ? 'green' : 'orange' ?>">
+                                                        <?= $resident['is_approved'] == 1 ? 'Verified' : 'Pending' ?>
+                                                    </span>
+                                                </td>
+                                                <td>
+                                                    <a href="view_resident_verifications.php?id=<?= $resident['id'] ?>" class="btn bg-teal waves-effect" style="margin-bottom: 5px;">
+                                                        <i class="fa-solid fa-id-card"></i> VIEW INFORMATION
+                                                    </a>
+                                                    <a href="update_resident_verifications.php?id=<?= $resident['id'] ?>" class="btn bg-teal waves-effect" style="margin-bottom: 5px;">
+                                                        <i class="fa-solid fa-pencil"></i> UPDATE
+                                                    </a>
+                                                    <a href="delete_resident_verifications.php?id=<?= $resident['id'] ?>" onclick="return confirm('Are you sure?')" class="btn bg-teal waves-effect" style="margin-bottom: 5px;">
+                                                        <i class="fa-solid fa-trash"></i> DELETE
+                                                    </a>
+                                                </td>
+                                            </tr>
+                                        <?php endforeach; ?>
                                     </tbody>
                                 </table>
                             </div>
