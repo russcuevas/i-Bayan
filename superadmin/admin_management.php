@@ -202,7 +202,7 @@ $admins = $stmt->fetchAll(PDO::FETCH_ASSOC);
                                         <?php foreach ($admins as $admin): ?>
                                             <tr>
                                                 <td><?php echo $admin['fullname'] ?></td>
-                                                <td><?php echo $admin['barangay_name'] ?></td>
+                                                <td><span style="text-transform: uppercase;"><?php echo $admin['barangay_name'] ?></span></td>
                                                 <td><span style="text-transform: capitalize;"><?php echo $admin['position'] ?></span></td>
                                                 <td><?php echo $admin['contact_number'] ?></td>
                                                 <td>

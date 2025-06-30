@@ -9,28 +9,28 @@ if (!isset($_SESSION['superadmin_id'])) {
 // database connection
 include '../database/connection.php';
 
-// add barangay functions
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $barangay_name = $_POST['barangay_name'];
-    $municipality = $_POST['municipality'] ?? 'mataasnakahoy';
-    $zip = $_POST['zip'] ?? '4223';
-    $mission = !empty($_POST['mission']) ? $_POST['mission'] : null;
-    $vision = !empty($_POST['vision']) ? $_POST['vision'] : null;
+// add barangay functions not included for features
+// if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+//     $barangay_name = $_POST['barangay_name'];
+//     $municipality = $_POST['municipality'] ?? 'mataasnakahoy';
+//     $zip = $_POST['zip'] ?? '4223';
+//     $mission = !empty($_POST['mission']) ? $_POST['mission'] : null;
+//     $vision = !empty($_POST['vision']) ? $_POST['vision'] : null;
 
-    $sql = "INSERT INTO tbl_barangay (barangay_name, municipality, zip, mission, vision)
-            VALUES (:barangay_name, :municipality, :zip, :mission, :vision)";
+//     $sql = "INSERT INTO tbl_barangay (barangay_name, municipality, zip, mission, vision)
+//             VALUES (:barangay_name, :municipality, :zip, :mission, :vision)";
 
-    $stmt = $conn->prepare($sql);
-    $stmt->execute([
-        ':barangay_name' => $barangay_name,
-        ':municipality' => $municipality,
-        ':zip' => $zip,
-        ':mission' => $mission,
-        ':vision' => $vision
-    ]);
+//     $stmt = $conn->prepare($sql);
+//     $stmt->execute([
+//         ':barangay_name' => $barangay_name,
+//         ':municipality' => $municipality,
+//         ':zip' => $zip,
+//         ':mission' => $mission,
+//         ':vision' => $vision
+//     ]);
 
-    $_SESSION['success'] = "Barangay added successfully!";
-}
+//     $_SESSION['success'] = "Barangay added successfully!";
+// }
 
 // get barangay functions
 $stmt = $conn->query("SELECT * FROM tbl_barangay ORDER BY id DESC");
@@ -194,7 +194,8 @@ $barangays = $stmt->fetchAll(PDO::FETCH_ASSOC);
             </div>
             <!-- Basic Validation -->
             <div class="row clearfix">
-                <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+                <!-- NOT INCLUDED FOR FEATURES PURPOSE -->
+                <!-- <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
                     <div class="card">
                         <div class="header">
                             <h2>ADD BARANGAY</h2>
@@ -202,9 +203,7 @@ $barangays = $stmt->fetchAll(PDO::FETCH_ASSOC);
                         <div class="body">
                             <form action="" id="form_validation" method="POST" enctype="multipart/form-data">
                                 <div class="row">
-                                    <!-- LEFT COLUMN -->
                                     <div class="col-md-12 pr-4">
-                                        <!-- hidden input -->
                                         <input type="hidden" name="municipality" value="mataasnakahoy">
                                         <input type="hidden" name="zip" value="4223">
                                         <div class="form-group form-float" style="margin-top: 30px;">
@@ -237,10 +236,10 @@ $barangays = $stmt->fetchAll(PDO::FETCH_ASSOC);
                         </div>
 
                     </div>
-                </div>
+                </div> -->
 
                 <!-- RIGHT CARD -->
-                <div class="col-lg-8 col-md-8 col-sm-12 col-xs-12">
+                <div class="col-lg-12 col-md-8 col-sm-12 col-xs-12">
                     <div class="card">
                         <div class="header">
                             <h2>BARANGAY LIST</h2>
@@ -250,6 +249,7 @@ $barangays = $stmt->fetchAll(PDO::FETCH_ASSOC);
                                 <table class="table table-bordered table-striped table-hover js-basic-example dataTable">
                                     <thead>
                                         <tr>
+                                            <th>#</th>
                                             <th>Barangay</th>
                                             <th>Mission</th>
                                             <th>Vision</th>
@@ -257,8 +257,10 @@ $barangays = $stmt->fetchAll(PDO::FETCH_ASSOC);
                                         </tr>
                                     </thead>
                                     <tbody>
+                                        <?php $count = 1; ?>
                                         <?php foreach ($barangays as $barangay): ?>
                                             <tr>
+                                                <td><?php echo $count++; ?></td>
                                                 <td><span style="text-transform: uppercase;"><?php echo $barangay['barangay_name'] ?></span></td>
                                                 <td><?php echo $barangay['mission'] ?? 'No Mission'; ?></td>
                                                 <td><?php echo $barangay['vision'] ?? 'No Vision'; ?></td>
@@ -271,6 +273,7 @@ $barangays = $stmt->fetchAll(PDO::FETCH_ASSOC);
                                         <?php endforeach ?>
                                     </tbody>
                                 </table>
+
                             </div>
                         </div>
                     </div>

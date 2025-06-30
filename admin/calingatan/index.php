@@ -197,7 +197,7 @@ include '../../database/connection.php';
                 <h3 style="color: #1a49cb;">Dashboard</h3>
             </div>
             <div class="row clearfix">
-                <div class="col-sm-6 col-md-3 col-lg-6" onclick="window.location.href = 'barangay_management.php'">
+                <div class="col-sm-6 col-md-3 col-lg-6" onclick="window.location.href = 'manage_residents.php'">
                     <div class="thumbnail text-center d-flex flex-column align-items-center justify-content-center" style="padding: 50px;">
                         <h1>12</h1>
                         <div class="caption">
@@ -206,7 +206,7 @@ include '../../database/connection.php';
                     </div>
                 </div>
 
-                <div class="col-sm-6 col-md-3 col-lg-6" onclick="window.location.href = 'admin_management.php'">
+                <div class="col-sm-6 col-md-3 col-lg-6" onclick="window.location.href = 'resident_verifications.php'">
                     <div class="thumbnail text-center d-flex flex-column align-items-center justify-content-center" style="padding: 50px;">
                         <h1>12</h1>
                         <div class="caption">

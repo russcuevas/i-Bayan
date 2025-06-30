@@ -26,6 +26,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $admin = $stmt->fetch(PDO::FETCH_ASSOC);
 
     if ($admin) {
+
+        $update_status_stmt = $conn->prepare("UPDATE tbl_admin SET status = 'online' WHERE id = :id");
+        $update_status_stmt->execute([':id' => $admin['id']]);
+
         $barangay_id = $admin['barangay_id'];
         $stmt_barangay = $conn->prepare("SELECT barangay_name FROM tbl_barangay WHERE id = :id");
         $stmt_barangay->execute([':id' => $barangay_id]);
