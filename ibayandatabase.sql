@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jun 26, 2025 at 05:55 PM
+-- Generation Time: Jul 04, 2025 at 05:33 AM
 -- Server version: 10.4.27-MariaDB
 -- PHP Version: 8.2.0
 
@@ -42,6 +42,14 @@ CREATE TABLE `tbl_admin` (
   `updated_at` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+--
+-- Dumping data for table `tbl_admin`
+--
+
+INSERT INTO `tbl_admin` (`id`, `barangay_id`, `username`, `password`, `email`, `fullname`, `gender`, `contact_number`, `position`, `status`, `created_at`, `updated_at`) VALUES
+(7, 37, 'zyrellcali', 'f7c3bc1d808e04732adf679965ccc34ca7ae3441', 'zyrellhidalgo0@gmail.com', 'Zyrell Hidalgo', 'Female', '09495748300', 'staff', 'online', '2025-06-27 10:53:38', '2025-06-27 10:53:38'),
+(8, 36, 'shainebubuyan', 'f7c3bc1d808e04732adf679965ccc34ca7ae3441', 'shainebubuyan@gmail.com', 'Shaine Inciong', 'Female', '09495748300', 'barangay official', 'offline', '2025-06-27 15:53:04', '2025-06-27 15:53:04');
+
 -- --------------------------------------------------------
 
 --
@@ -64,22 +72,45 @@ CREATE TABLE `tbl_barangay` (
 --
 
 INSERT INTO `tbl_barangay` (`id`, `barangay_name`, `municipality`, `zip`, `mission`, `vision`, `created_at`, `updated_at`) VALUES
-(28, 'BARANGAY I', 'mataasnakahoy', '4223', NULL, NULL, '2025-06-26 22:11:56', '2025-06-26 22:11:56'),
-(29, 'BARANGAY II', 'mataasnakahoy', '4223', NULL, NULL, '2025-06-26 22:12:02', '2025-06-26 22:12:02'),
-(30, 'BARANGAY II-A', 'mataasnakahoy', '4223', NULL, NULL, '2025-06-26 22:12:16', '2025-06-26 22:12:16'),
-(31, 'BARANGAY III', 'mataasnakahoy', '4223', NULL, NULL, '2025-06-26 22:12:25', '2025-06-26 22:12:25'),
-(32, 'BARANGAY IV', 'mataasnakahoy', '4223', NULL, NULL, '2025-06-26 22:12:36', '2025-06-26 22:12:36'),
-(35, 'BARANGAY BAYORBOR', 'mataasnakahoy', '4223', NULL, NULL, '2025-06-26 22:12:49', '2025-06-26 22:12:49'),
-(36, 'BARANGAY BUBUYAN', 'mataasnakahoy', '4223', NULL, NULL, '2025-06-26 22:13:16', '2025-06-26 22:13:16'),
-(37, 'BARANGAY CALINGATAN', 'mataasnakahoy', '4223', NULL, NULL, '2025-06-26 22:13:32', '2025-06-26 22:13:32'),
-(38, 'BARANGAY KINALAGLAGAN', 'mataasnakahoy', '4223', NULL, NULL, '2025-06-26 22:13:51', '2025-06-26 22:13:51'),
-(39, 'BARANGAY LOOB', 'mataasnakahoy', '4223', NULL, NULL, '2025-06-26 22:14:05', '2025-06-26 22:14:05'),
-(40, 'BARANGAY LUMANGLIPA', 'mataasnakahoy', '4223', NULL, NULL, '2025-06-26 22:14:13', '2025-06-26 22:14:13'),
-(41, 'BARANGAY UPA', 'mataasnakahoy', '4223', NULL, NULL, '2025-06-26 22:14:26', '2025-06-26 22:14:26'),
-(42, 'BARANGAY MANGGAHAN', 'mataasnakahoy', '4223', NULL, NULL, '2025-06-26 22:14:32', '2025-06-26 22:14:32'),
-(43, 'BARANGAY NANGKAAN', 'mataasnakahoy', '4223', NULL, NULL, '2025-06-26 22:14:44', '2025-06-26 22:14:44'),
-(44, 'BARANGAY SAN SEBASTIAN', 'mataasnakahoy', '4223', NULL, NULL, '2025-06-26 22:14:50', '2025-06-26 22:14:50'),
-(45, 'BARANGAY SANTOL', 'mataasnakahoy', '4223', NULL, NULL, '2025-06-26 22:15:14', '2025-06-26 22:15:14');
+(28, 'i', 'mataasnakahoy', '4223', NULL, NULL, '2025-06-26 22:11:56', '2025-06-28 01:00:07'),
+(29, 'ii', 'mataasnakahoy', '4223', NULL, NULL, '2025-06-26 22:12:02', '2025-06-28 01:00:02'),
+(30, 'ii-a', 'mataasnakahoy', '4223', NULL, NULL, '2025-06-26 22:12:16', '2025-06-28 00:59:56'),
+(31, 'iii', 'mataasnakahoy', '4223', NULL, NULL, '2025-06-26 22:12:25', '2025-06-28 00:59:51'),
+(32, 'iv', 'mataasnakahoy', '4223', NULL, NULL, '2025-06-26 22:12:36', '2025-06-28 00:59:43'),
+(35, 'bayorbor', 'mataasnakahoy', '4223', NULL, NULL, '2025-06-26 22:12:49', '2025-06-28 01:00:12'),
+(36, 'bubuyan', 'mataasnakahoy', '4223', NULL, NULL, '2025-06-26 22:13:16', '2025-06-28 00:32:38'),
+(37, 'calingatan', 'mataasnakahoy', '4223', NULL, NULL, '2025-06-26 22:13:32', '2025-06-28 00:25:05'),
+(38, 'kinalaglagan', 'mataasnakahoy', '4223', NULL, NULL, '2025-06-26 22:13:51', '2025-06-28 00:58:27'),
+(39, 'loob', 'mataasnakahoy', '4223', NULL, NULL, '2025-06-26 22:14:05', '2025-06-28 00:46:32'),
+(40, 'lumanglipa', 'mataasnakahoy', '4223', NULL, NULL, '2025-06-26 22:14:13', '2025-06-28 00:46:25'),
+(41, 'upa', 'mataasnakahoy', '4223', NULL, NULL, '2025-06-26 22:14:26', '2025-06-28 00:45:35'),
+(42, 'manggahan', 'mataasnakahoy', '4223', NULL, NULL, '2025-06-26 22:14:32', '2025-06-28 00:46:17'),
+(43, 'nangkaan', 'mataasnakahoy', '4223', NULL, NULL, '2025-06-26 22:14:44', '2025-06-28 00:46:02'),
+(44, 'san-sebastian', 'mataasnakahoy', '4223', NULL, NULL, '2025-06-26 22:14:50', '2025-06-28 14:21:32'),
+(45, 'santol', 'mataasnakahoy', '4223', NULL, NULL, '2025-06-26 22:15:14', '2025-06-28 00:45:43');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `tbl_barangay_officials`
+--
+
+CREATE TABLE `tbl_barangay_officials` (
+  `id` int(11) NOT NULL,
+  `profile_picture` varchar(255) DEFAULT NULL,
+  `fullname` varchar(255) DEFAULT NULL,
+  `position` varchar(100) DEFAULT NULL,
+  `barangay` int(11) DEFAULT NULL,
+  `created_at` datetime DEFAULT current_timestamp(),
+  `updated_at` datetime DEFAULT current_timestamp() ON UPDATE current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `tbl_barangay_officials`
+--
+
+INSERT INTO `tbl_barangay_officials` (`id`, `profile_picture`, `fullname`, `position`, `barangay`, `created_at`, `updated_at`) VALUES
+(3, 'profile_picture/official_6862a7459dca19.82195854.jpg', 'Sample Cali', 'Sample Cali Captain', 37, '2025-06-28 14:11:38', '2025-06-30 23:03:33');
 
 -- --------------------------------------------------------
 
@@ -177,6 +208,47 @@ INSERT INTO `tbl_business_trade` (`id`, `code`, `name`, `price`, `created_at`, `
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `tbl_residents`
+--
+
+CREATE TABLE `tbl_residents` (
+  `id` int(11) NOT NULL,
+  `first_name` varchar(100) NOT NULL,
+  `middle_name` varchar(100) NOT NULL,
+  `last_name` varchar(100) NOT NULL,
+  `suffix` varchar(20) DEFAULT NULL,
+  `gender` varchar(100) NOT NULL,
+  `civil_status` varchar(100) NOT NULL,
+  `date_of_birth` date NOT NULL,
+  `birthplace` varchar(255) NOT NULL,
+  `is_working` varchar(255) NOT NULL,
+  `school` varchar(255) DEFAULT NULL,
+  `occupation` varchar(255) DEFAULT NULL,
+  `barangay_address` int(11) NOT NULL,
+  `purok` varchar(100) NOT NULL,
+  `username` varchar(100) NOT NULL,
+  `password` varchar(255) NOT NULL,
+  `email` varchar(100) NOT NULL,
+  `valid_id` varchar(255) NOT NULL,
+  `phone_number` varchar(20) NOT NULL,
+  `is_approved` tinyint(1) NOT NULL DEFAULT 0,
+  `is_online` enum('offline','online') DEFAULT 'offline',
+  `remarks` text DEFAULT NULL,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `tbl_residents`
+--
+
+INSERT INTO `tbl_residents` (`id`, `first_name`, `middle_name`, `last_name`, `suffix`, `gender`, `civil_status`, `date_of_birth`, `birthplace`, `is_working`, `school`, `occupation`, `barangay_address`, `purok`, `username`, `password`, `email`, `valid_id`, `phone_number`, `is_approved`, `is_online`, `remarks`, `created_at`, `updated_at`) VALUES
+(3, 'Sample Calingatan', 'Resident', 'Cuevas', '', 'Male', 'Single', '2001-12-26', 'Granja Lipa City', '1', '', 'Software Developer', 37, '4', 'samplecaliresident', '$2y$10$ilo6RnLxgFGO88PdojqFCugaT1ripJCC/JUL6JDsEUrgzC16DyLre', 'samplecali@gmail.com', 'public/valid_id/1751298398_me.jpg', '09495748300', 0, 'offline', NULL, '2025-06-30 09:46:38', '2025-07-04 02:13:35'),
+(6, 'Sample', 'Bubuyan', 'Resident', '', 'Male', 'Single', '2001-12-26', 'Bubuyan', '2', 'La Purisima Concepcion Academy', '', 36, '4', 'samplebubuyanresident', '$2y$10$5JMa9DJkaUSxE0GqPWXAluIpNSdDtOK25s2IU03rprqBFkLBGHieG', 'russelcuevas01@gmail.com', 'public/valid_id/1751299142_me.jpg', '09495748302', 0, 'offline', NULL, '2025-06-30 09:59:02', '2025-07-04 03:28:09');
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `tbl_superadmin`
 --
 
@@ -196,7 +268,7 @@ CREATE TABLE `tbl_superadmin` (
 --
 
 INSERT INTO `tbl_superadmin` (`id`, `first_name`, `last_name`, `age`, `phone_number`, `username`, `email`, `password`) VALUES
-(1, 'Zyrell Superadmin', 'Hidalgo', 22, '09495748301', 'zyrellhidalgo', 'zyrellhidalgo@gmail.com', 'f7c3bc1d808e04732adf679965ccc34ca7ae3441');
+(1, 'Zyrell Superadmin', 'Hidalgo', 22, '09495748301', 'zyrellsuperadmin', 'zyrellhidalgo@gmail.com', 'f7c3bc1d808e04732adf679965ccc34ca7ae3441');
 
 --
 -- Indexes for dumped tables
@@ -218,11 +290,27 @@ ALTER TABLE `tbl_barangay`
   ADD PRIMARY KEY (`id`);
 
 --
+-- Indexes for table `tbl_barangay_officials`
+--
+ALTER TABLE `tbl_barangay_officials`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `barangay` (`barangay`);
+
+--
 -- Indexes for table `tbl_business_trade`
 --
 ALTER TABLE `tbl_business_trade`
   ADD PRIMARY KEY (`id`),
   ADD UNIQUE KEY `code` (`code`);
+
+--
+-- Indexes for table `tbl_residents`
+--
+ALTER TABLE `tbl_residents`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `username` (`username`),
+  ADD UNIQUE KEY `email` (`email`),
+  ADD KEY `fk_barangay` (`barangay_address`);
 
 --
 -- Indexes for table `tbl_superadmin`
@@ -240,7 +328,7 @@ ALTER TABLE `tbl_superadmin`
 -- AUTO_INCREMENT for table `tbl_admin`
 --
 ALTER TABLE `tbl_admin`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
 -- AUTO_INCREMENT for table `tbl_barangay`
@@ -249,10 +337,22 @@ ALTER TABLE `tbl_barangay`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=46;
 
 --
+-- AUTO_INCREMENT for table `tbl_barangay_officials`
+--
+ALTER TABLE `tbl_barangay_officials`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+
+--
 -- AUTO_INCREMENT for table `tbl_business_trade`
 --
 ALTER TABLE `tbl_business_trade`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=79;
+
+--
+-- AUTO_INCREMENT for table `tbl_residents`
+--
+ALTER TABLE `tbl_residents`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- AUTO_INCREMENT for table `tbl_superadmin`
@@ -269,6 +369,18 @@ ALTER TABLE `tbl_superadmin`
 --
 ALTER TABLE `tbl_admin`
   ADD CONSTRAINT `tbl_admin_ibfk_1` FOREIGN KEY (`barangay_id`) REFERENCES `tbl_barangay` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Constraints for table `tbl_barangay_officials`
+--
+ALTER TABLE `tbl_barangay_officials`
+  ADD CONSTRAINT `tbl_barangay_officials_ibfk_1` FOREIGN KEY (`barangay`) REFERENCES `tbl_barangay` (`id`);
+
+--
+-- Constraints for table `tbl_residents`
+--
+ALTER TABLE `tbl_residents`
+  ADD CONSTRAINT `fk_barangay` FOREIGN KEY (`barangay_address`) REFERENCES `tbl_barangay` (`id`) ON DELETE CASCADE;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
