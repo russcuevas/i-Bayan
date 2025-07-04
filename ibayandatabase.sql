@@ -196,7 +196,7 @@ CREATE TABLE `tbl_superadmin` (
 --
 
 INSERT INTO `tbl_superadmin` (`id`, `first_name`, `last_name`, `age`, `phone_number`, `username`, `email`, `password`) VALUES
-(1, 'Russel Vincent', 'Cuevas', 24, '09495748302', 'russelsuperadmin', 'russelcuevas0@gmail.com', 'f7c3bc1d808e04732adf679965ccc34ca7ae3441');
+(1, 'Zyrell Superadmin', 'Hidalgo', 22, '09495748301', 'zyrellhidalgo', 'zyrellhidalgo@gmail.com', 'f7c3bc1d808e04732adf679965ccc34ca7ae3441');
 
 --
 -- Indexes for dumped tables

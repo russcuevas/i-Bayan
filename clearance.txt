@@ -1,4 +1,5 @@
 //SUPERADMIN
+
 tbl_superadmin
 first_name
 last_name
@@ -120,7 +121,8 @@ business_address
 owner_name
 email
 contact
-for_barangay
+for_barangay -> foreign to tbl_barangay -> id
+ -> foreign to tbl_barangay -> id
 valid_id
 birth_certificate
 is_resident
@@ -148,7 +150,8 @@ gross
 total_price
 interest
 total_amount_paid
-for_barangay
+for_barangay -> foreign to tbl_barangay -> id
+
 created_at
 updated_at
 
@@ -165,7 +168,7 @@ gender
 contact
 valid_id
 total_amount_paid
-for_barangay
+for_barangay -> foreign to tbl_barangay -> id
 created_at
 updated_at
 
@@ -185,13 +188,14 @@ birth_certificate
 is_resident
 is_barangay_clearance
 total_amount_paid
-for_barangay
+for_barangay -> foreign to tbl_barangay -> id
+
 
 tbl_feedback
 resident_id -> foreign to tbl_residents -> id
 message
 rating
-barangay
+barangay -> foreign to tbl_barangay -> id
 created_at
 
 tbl_announcement
@@ -199,7 +203,7 @@ announcement_title
 announcement_content
 announcement_venue -> nullable
 announcement_image -> nullable
-barangay
+barangay -> foreign to tbl_barangay -> id
 status
 created_at
 updated_at

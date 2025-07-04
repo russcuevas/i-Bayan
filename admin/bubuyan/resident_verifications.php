@@ -174,10 +174,10 @@
                                     </thead>
                                     <tbody>
                                         <tr>
-                                            <td>Russel Vincent Cuevas</td>
+                                            <td>Zyrell Hidalgo</td>
                                             <td>Male</td>
-                                            <td>09495748302</td>
-                                            <td>russelcuevas0@gmail.com</td>
+                                            <td>09495748300</td>
+                                            <td>zyrellhidalgo@gmail.com</td>
                                             <td><span style="color: orange">Pending</span></td>
                                             <td>
                                                 <a href="" class="btn bg-teal waves-effect" style="margin-bottom: 5px;"><i class="fa-solid fa-id-card"></i> VIEW INFORMATION</a>

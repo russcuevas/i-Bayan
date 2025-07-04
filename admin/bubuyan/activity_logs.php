@@ -194,7 +194,7 @@
                                     </thead>
                                     <tbody>
                                         <tr>
-                                            <td>Russel Vincent Cuevas</td>
+                                            <td>Zyrell Hidalgo</td>
                                             <td>Sample</td>
                                             <td>Sample Ratings</td>
                                             <td>March/12/2025</td>

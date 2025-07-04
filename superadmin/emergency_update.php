@@ -172,7 +172,7 @@
                                     </thead>
                                     <tbody>
                                         <tr>
-                                            <td>Russel Vincent Cuevas</td>
+                                            <td>Zyrell Hidalgo</td>
                                             <td>Barangay Clearance</td>
                                             <td>₱50.00</td>
                                             <td>

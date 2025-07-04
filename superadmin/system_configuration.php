@@ -160,7 +160,7 @@
                 <div class="col-md-12 col-sm-12">
                     <div class="card">
                         <div class="body text-left">
-                            <h3>EMAIL CONFIGURATION: russelcuevas0@gmail.com</h3>
+                            <h3>EMAIL CONFIGURATION: zyrellhidalgo@gmail.com</h3>
                             <h3>SMS # CONFIGURATION: 09495748301</h3>
                             <div style="text-align: end !important;">
                                 <a href="#" class="btn bg-teal waves-effect" style="margin-right: 5px; margin-top: 5px">

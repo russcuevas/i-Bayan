@@ -181,11 +181,11 @@
                                     </thead>
                                     <tbody>
                                         <tr>
-                                            <td>Russel Vincent Cuevas</td>
+                                            <td>Zyrell Hidalgo</td>
                                             <td>Barangay Clearance</td>
                                             <td>₱50.00</td>
                                             <td>Education</td>
-                                            <td>russelcuevas0@gmail.com</td>
+                                            <td>zyrellhidalgo@gmail.com</td>
                                             <td>09495748301</td>
                                             <td>March/06/2025</td>
                                             <td>Pending</td>

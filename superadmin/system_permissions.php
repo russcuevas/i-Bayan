@@ -175,9 +175,9 @@
                                     </thead>
                                     <tbody>
                                         <tr>
-                                            <td>Russel Vincent Cuevas</td>
+                                            <td>Zyrell Hidalgo</td>
                                             <td>Admin</td>
-                                            <td>09495748302</td>
+                                            <td>09495748300</td>
                                             <td><span style="color: green">Online</span></td>
                                             <td>
                                                 <a href="" class="btn bg-teal waves-effect" style="margin-bottom: 5px;"><i class="fa-solid fa-pencil"></i> UPDATE</a>
@@ -185,9 +185,9 @@
                                             </td>
                                         </tr>
                                         <tr>
-                                            <td>Russel Vincent Cuevas</td>
+                                            <td>Zyrell Hidalgo</td>
                                             <td>Superadmin</td>
-                                            <td>09495748302</td>
+                                            <td>09495748300</td>
                                             <td><span style="color: green">Online</span></td>
                                             <td>
                                                 <a href="" class="btn bg-teal waves-effect" style="margin-bottom: 5px;"><i class="fa-solid fa-pencil"></i> UPDATE</a>
@@ -195,9 +195,9 @@
                                             </td>
                                         </tr>
                                         <tr>
-                                            <td>Russel Vincent Cuevas</td>
+                                            <td>Zyrell Hidalgo</td>
                                             <td>Residents</td>
-                                            <td>09495748302</td>
+                                            <td>09495748300</td>
                                             <td><span style="color: green">Online</span></td>
                                             <td>
                                                 <a href="" class="btn bg-teal waves-effect" style="margin-bottom: 5px;"><i class="fa-solid fa-pencil"></i> UPDATE</a>

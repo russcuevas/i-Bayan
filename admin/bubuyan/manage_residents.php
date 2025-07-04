@@ -187,9 +187,9 @@
                                     </thead>
                                     <tbody>
                                         <tr>
-                                            <td>Russel Vincent Cuevas</td>
+                                            <td>Zyrell Hidalgo</td>
                                             <td>Calingatan</td>
-                                            <td>09495748302</td>
+                                            <td>09495748300</td>
                                             <td><span style="color: green">Verified</span></td>
                                             <td>
                                                 <a href="" class="btn bg-teal waves-effect" style="margin-bottom: 5px;"><i class="fa-solid fa-id-card"></i> VIEW INFORMATION</a>
