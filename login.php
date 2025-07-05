@@ -1,7 +1,64 @@
 <?php
 session_start();
+
+foreach ($_SESSION as $key => $value) {
+    if (strpos($key, 'resident_id_') === 0) {
+        $barangay = str_replace('resident_id_', '', $key);
+        header("Location: dashboard/$barangay/index.php");
+        exit();
+    }
+}
+
 include 'database/connection.php';
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $username = $_POST['username'] ?? '';
+    $password = $_POST['password'] ?? '';
+    $hashed_password = sha1($password);
+
+    $stmt = $conn->prepare("SELECT * FROM tbl_residents WHERE username = :username AND password = :password AND is_approved = 0");
+    $stmt->execute([
+        ':username' => $username,
+        ':password' => $hashed_password
+    ]);
+
+    $resident = $stmt->fetch(PDO::FETCH_ASSOC);
+
+    if ($resident) {
+        // Get barangay info
+        $barangay_id = $resident['barangay_address'];
+        $stmt_b = $conn->prepare("SELECT barangay_name FROM tbl_barangay WHERE id = ?");
+        $stmt_b->execute([$barangay_id]);
+        $barangay = $stmt_b->fetch(PDO::FETCH_ASSOC);
+
+        if ($barangay) {
+            $barangay_name_raw = $barangay['barangay_name'];
+            $barangay_key = strtolower(str_replace([' ', '-', '/'], '_', $barangay_name_raw));
+
+            $_SESSION["resident_id_$barangay_key"] = $resident['id'];
+            $_SESSION["resident_name_$barangay_key"] = $resident['first_name'] . ' ' . $resident['last_name'];
+            $_SESSION["barangay_id_$barangay_key"] = $barangay_id;
+            $_SESSION["barangay_name_$barangay_key"] = $barangay_name_raw;
+
+            $redirect_path = "dashboard/$barangay_key/index.php";
+            if (file_exists($redirect_path)) {
+                header("Location: $redirect_path?success");
+                exit();
+            } else {
+                $_SESSION['error'] = "Barangay dashboard not found.";
+            }
+        } else {
+            $_SESSION['error'] = "Barangay not found.";
+        }
+    } else {
+        $_SESSION['error'] = "Invalid credentials";
+    }
+
+    header("Location: login.php");
+    exit();
+}
 ?>
+
 
 <!DOCTYPE html>
 <html lang="en">
@@ -13,6 +70,7 @@ include 'database/connection.php';
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+    <link rel="stylesheet" href="assets/css/sweetalert.css">
     <link rel="stylesheet" href="assets/css/login.css">
 </head>
 
@@ -22,7 +80,7 @@ include 'database/connection.php';
         <img src="images/logo.png" alt="Municipality Seal" class="login-seal">
         <h3 class="mt-3 mb-3" style="font-weight: 900;">Welcome back!</h3>
 
-        <form class="needs-validation" novalidate>
+        <form class="needs-validation" action="" method="POST" novalidate>
             <div class="form-group position-relative mb-3 text-start">
                 <input type="text" class="form-control rounded-pill px-4" style="font-weight: 900" id="username" name="username" placeholder="Username" required>
                 <div class="invalid-feedback ms-2">
@@ -92,6 +150,7 @@ include 'database/connection.php';
     <?php include 'components/footer.php' ?>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js"></script>
+    <script src="assets/js/sweetalert.js"></script>
     <script src="assets/js/time.js"></script>
 
     <script>

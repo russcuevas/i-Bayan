@@ -7,7 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
-    <link rel="stylesheet" href="css/chatlinks.css">
+    <link rel="stylesheet" href="../css/chatlinks.css">
     <style>
         .lgu-logo-wrapper {
             background-origin: content-box;
@@ -124,15 +124,15 @@
 
 
     <div class="relative flex items-center justify-center d-md-none">
-        <img class="mt-0 img-fluid" src="images/city-mobile.png" alt="" style="max-width: 100%; height: auto; color: transparent;">
+        <img class="mt-0 img-fluid" src="../images/city-mobile.png" alt="" style="max-width: 100%; height: auto; color: transparent;">
     </div>
     <div class="relative flex items-center justify-center d-none d-md-block">
-        <img class="mt-0 img-fluid" src="images/city-desktop.png" alt="" style="max-width: 100%; height: auto; color: transparent;">
+        <img class="mt-0 img-fluid" src="../images/city-desktop.png" alt="" style="max-width: 100%; height: auto; color: transparent;">
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js" integrity="sha384-IQsoLXl5PILFhosVNubq5LC7Qb9DXgDA9i+tQ8Zj3iwWAwPtgFTxbJ8NT4GN1R8p" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.min.js" integrity="sha384-cVKIPhGWiC2Al4u+LWgxfKTRIcfu0JTxR+EQDz/bgldoEyl4H0zUF0QKbrJ0EcQF" crossorigin="anonymous"></script>
-    <script src="assets/js/time.js"></script>
+    <script src="../assets/js/time.js"></script>
     <script>
         function scrollToBottom() {
             const chatMessages = document.querySelector('.chat-messages');
