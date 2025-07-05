@@ -29,28 +29,32 @@ sms_config
     updated_at
 ]
 
-tbl_barangay_officials
-profile_picture
-fullname
-position
-barangay -> foreign to tbl_barangay
-created_at
-updated_at
+[ -- FINISH --
+    tbl_barangay_officials
+    profile_picture
+    fullname
+    position
+    barangay -> foreign to tbl_barangay
+    created_at
+    updated_at
+]
 
-tbl_admin
-barangay_id -> foreign to tbl_barangay -> id
-username
-password
-email
-fullname
-gender
-contact_number
-position - staff,
-status
-created_at
-updated_at
+[ -- FINISH --
+    tbl_admin
+    barangay_id -> foreign to tbl_barangay -> id
+    username
+    password
+    email
+    fullname
+    gender
+    contact_number
+    position - staff,
+    status
+    created_at
+    updated_at
+]
 
-[   -- NOW WORKING --
+[   -- FINISH --
     tbl_business_trade
     code
     name
@@ -59,52 +63,55 @@ updated_at
 
 
 // USERS
+[   -- NOW WORKING --
+    tbl_residents
+    first_name
+    middle_name
+    last_name
+    suffix -> nullable
+    gender
+    civil_status
+    date_of_birth
+    birthplace
+    is_working
+    school -> nullable
+    occupation -> nullable
+    barangay_address -> foreign to tbl_barangay -> id
+    purok
+    username
+    password
+    email
+    valid_id
+    phone_number
+    is_approved -> 0 default
+    is_online default offline
+    remarks -> nullable
+    created_at
+    updated_at
+]
 
-tbl_residents
-first_name
-middle_name
-last_name
-suffix -> nullable
-gender
-civil_status
-date_of_birth
-birthplace
-is_working
-school -> nullable
-occupation -> nullable
-barangay_address -> foreign to tbl_barangay -> id
-purok
-username
-password
-email
-valid_id
-phone_number
-is_approved -> 0 default
-is_online default offline
-remarks -> nullable
-created_at
-updated_at
-
-tbl_residents_family_members
-resident_id -> foreign to tbl_residents -> id
-first_name
-middle_name
-last_name
-suffix -> nullable
-relationship
-gender
-date_of_birth
-birthplace
-age
-civil_status
-is_working
-is_approved -> 0 default
-is_barangay_voted
-years_in_barangay
-phone_number
-philhealth_number
-school -> nullable
-occupation -> nullable
+[  -- NOW WORKING --
+    tbl_residents_family_members
+    resident_id -> foreign to tbl_residents -> id
+    first_name
+    middle_name
+    last_name
+    suffix -> nullable
+    relationship
+    gender
+    date_of_birth
+    birthplace
+    age
+    civil_status
+    is_working
+    is_approved -> 0 default
+    is_barangay_voted -> 0 default
+    years_in_barangay
+    phone_number
+    philhealth_number
+    school -> nullable
+    occupation -> nullable
+]
 
 
 clearance to operate

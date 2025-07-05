@@ -1,3 +1,8 @@
+<?php
+session_start();
+include 'database/connection.php';
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -19,14 +24,14 @@
 
         <form class="needs-validation" novalidate>
             <div class="form-group position-relative mb-3 text-start">
-                <input type="text" class="form-control rounded-pill px-4" style="font-weight: 900" id="username" placeholder="Username" required>
+                <input type="text" class="form-control rounded-pill px-4" style="font-weight: 900" id="username" name="username" placeholder="Username" required>
                 <div class="invalid-feedback ms-2">
                     Please enter your username.
                 </div>
             </div>
 
             <div class="form-group position-relative mb-3 text-start">
-                <input type="password" class="form-control rounded-pill px-4" style="font-weight: 900" id="password" placeholder="Password" required>
+                <input type="password" class="form-control rounded-pill px-4" style="font-weight: 900" id="password" name="password" placeholder="Password" required>
                 <div class="invalid-feedback ms-2">
                     Please enter your password.
                 </div>

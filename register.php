@@ -1,7 +1,12 @@
 <?php
+// session
 session_start();
+
+// database connection
 include 'database/connection.php';
 
+
+// register function
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $first_name = $_POST['first_name'] ?? '';
     $middle_name = $_POST['middle_name'] ?? '';
@@ -16,7 +21,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $barangay_address = $_POST['barangay_address'] ?? null;
     $purok = $_POST['purok'] ?? '';
     $username = $_POST['username'] ?? '';
-    $password = password_hash($_POST['password'], PASSWORD_DEFAULT);
+    $password = sha1($_POST['password']);
     $email = $_POST['email'] ?? '';
     $phone_number = $_POST['phone_number'] ?? '';
     $created_at = $updated_at = date('Y-m-d H:i:s');
@@ -75,12 +80,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         ':updated_at' => $updated_at,
     ]);
 
-    $_SESSION['success'] = "Registration successfully please wait for the approval of the admin check your email";
+    $_SESSION['success'] = "Registration successfully you can now logged in to proceed in the next step";
     header("Location: " . $_SERVER['PHP_SELF']);
     exit();
 }
 
-// Get barangay list
+// get barangay list
 $stmt = $conn->query("SELECT * FROM tbl_barangay ORDER BY id DESC");
 $barangays = $stmt->fetchAll(PDO::FETCH_ASSOC);
 ?>

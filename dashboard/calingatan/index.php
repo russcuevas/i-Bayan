@@ -1,3 +1,7 @@
+<?php
+session_start();
+include '../../database/connection.php';
+?>
 <!DOCTYPE html>
 <html>
 
@@ -7,7 +11,7 @@
     <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
     <title>iBayan</title>
     <!-- Favicon-->
-    <link rel="icon" href="img/logo.png" type="image/x-icon">
+    <link rel="icon" href="../img/logo.png" type="image/x-icon">
 
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css?family=Roboto:400,700&subset=latin,cyrillic-ext" rel="stylesheet"
@@ -15,25 +19,25 @@
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" type="text/css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <!-- Bootstrap Core Css -->
-    <link href="plugins/bootstrap/css/bootstrap.css" rel="stylesheet">
+    <link href="../plugins/bootstrap/css/bootstrap.css" rel="stylesheet">
 
     <!-- Waves Effect Css -->
-    <link href="plugins/node-waves/waves.css" rel="stylesheet" />
+    <link href="../plugins/node-waves/waves.css" rel="stylesheet" />
 
     <!-- Animation Css -->
-    <link href="plugins/animate-css/animate.css" rel="stylesheet" />
+    <link href="../plugins/animate-css/animate.css" rel="stylesheet" />
 
     <!-- Morris Chart Css-->
-    <link href="plugins/morrisjs/morris.css" rel="stylesheet" />
+    <link href="../plugins/morrisjs/morris.css" rel="stylesheet" />
 
     <!-- Custom Css -->
-    <link href="css/style.css" rel="stylesheet">
-    <link href="css/custom.css" rel="stylesheet">
+    <link href="../css/style.css" rel="stylesheet">
+    <link href="../css/custom.css" rel="stylesheet">
 
     <!-- AdminBSB Themes. You can choose a theme from css/themes instead of get all themes -->
-    <link href="css/themes/all-themes.css" rel="stylesheet" />
+    <link href="../css/themes/all-themes.css" rel="stylesheet" />
     <!-- Sweetalert Css -->
-    <link href="plugins/sweetalert/sweetalert.css" rel="stylesheet" />
+    <link href="../plugins/sweetalert/sweetalert.css" rel="stylesheet" />
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Poppins&display=swap');
 
@@ -118,7 +122,7 @@
                 <a href="javascript:void(0);" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar-collapse" aria-expanded="false"></a>
                 <a href="javascript:void(0);" class="bars"></a>
                 <a id="app-title" style="display:flex;align-items:center;" class="navbar-brand" href="index.php">
-                    <img id="bcas-logo" style="width:45px;display:inline;margin-right:10px;" src="img/logo.png" />
+                    <img id="bcas-logo" style="width:45px;display:inline;margin-right:10px;" src="../img/logo.png" />
                     <div>
                         <div style="color: white;">iBayan</div>
                     </div>
@@ -139,6 +143,7 @@
         <?php include('right_sidebar.php') ?>
     </section>
 
+    <!-- if verified show this content -->
     <section class="content">
         <div class="container-fluid">
             <div class="block-header text-center" style="margin-bottom: 50px !important;">
@@ -251,51 +256,74 @@
             <!-- #END# Widgets -->
         </div>
     </section>
+    <!-- end content -->
 
+    <!-- if not verified show -->
+    <section class="content">
+        <div class="container-fluid">
+            <div class="block-header text-center" style="margin-bottom: 50px !important;">
+                <h3 style="color: #1a49cb;">Welcome!</h3>
+                <h3 style="color: #1a49cb;">Resident System for Mataasnakahoy Barangays</h3>
+            </div>
+            <!-- Widgets -->
+            <p><span style="color: red;">Notice:</span> Please complete the procedure add an family member to complete your registration</p>
+            <div class="row clearfix">
+                <div class="col-sm-6 col-md-3 col-lg-4" onclick="window.location.href = 'family_profiling.php'">
+                    <div class="thumbnail text-center d-flex flex-column align-items-center justify-content-center" style="padding: 50px;">
+                        <i class="fas fa-users fa-3x mb-3 icon-style"></i>
+                        <div class="caption">
+                            <h3>Family Profiling</h3>
+                        </div>
+                    </div>
+                </div>
+                <!-- #END# Widgets -->
+            </div>
+    </section>
+    <!-- end not verified -->
     <!-- Jquery Core Js -->
-    <script src="plugins/jquery/jquery.min.js"></script>
+    <script src="../plugins/jquery/jquery.min.js"></script>
     <!-- Jquery Validation Plugin Css -->
-    <script src="plugins/jquery-validation/jquery.validate.js"></script>
-    <script src="js/pages/forms/form-validation.js"></script>
+    <script src="../plugins/jquery-validation/jquery.validate.js"></script>
+    <script src="../js/pages/forms/form-validation.js"></script>
     <!-- Bootstrap Core Js -->
-    <script src="plugins/bootstrap/js/bootstrap.js"></script>
+    <script src="../plugins/bootstrap/js/bootstrap.js"></script>
 
     <!-- Select Plugin Js -->
-    <script src="plugins/bootstrap-select/js/bootstrap-select.js"></script>
+    <script src="../plugins/bootstrap-select/js/bootstrap-select.js"></script>
 
     <!-- Slimscroll Plugin Js -->
-    <script src="plugins/jquery-slimscroll/jquery.slimscroll.js"></script>
+    <script src="../plugins/jquery-slimscroll/jquery.slimscroll.js"></script>
 
     <!-- Waves Effect Plugin Js -->
-    <script src="plugins/node-waves/waves.js"></script>
+    <script src="../plugins/node-waves/waves.js"></script>
 
     <!-- Jquery CountTo Plugin Js -->
-    <script src="plugins/jquery-countto/jquery.countTo.js"></script>
+    <script src="../plugins/jquery-countto/jquery.countTo.js"></script>
 
     <!-- Morris Plugin Js -->
-    <script src="plugins/raphael/raphael.min.js"></script>
-    <script src="plugins/morrisjs/morris.js"></script>
+    <script src="../plugins/raphael/raphael.min.js"></script>
+    <script src="../plugins/morrisjs/morris.js"></script>
 
     <!-- ChartJs -->
-    <script src="plugins/chartjs/Chart.bundle.js"></script>
+    <script src="../plugins/chartjs/Chart.bundle.js"></script>
 
     <!-- Flot Charts Plugin Js -->
-    <script src="plugins/flot-charts/jquery.flot.js"></script>
-    <script src="plugins/flot-charts/jquery.flot.resize.js"></script>
-    <script src="plugins/flot-charts/jquery.flot.pie.js"></script>
-    <script src="plugins/flot-charts/jquery.flot.categories.js"></script>
-    <script src="plugins/flot-charts/jquery.flot.time.js"></script>
+    <script src="../plugins/flot-charts/jquery.flot.js"></script>
+    <script src="../plugins/flot-charts/jquery.flot.resize.js"></script>
+    <script src="../plugins/flot-charts/jquery.flot.pie.js"></script>
+    <script src="../plugins/flot-charts/jquery.flot.categories.js"></script>
+    <script src="../plugins/flot-charts/jquery.flot.time.js"></script>
 
     <!-- Sparkline Chart Plugin Js -->
-    <script src="plugins/jquery-sparkline/jquery.sparkline.js"></script>
+    <script src="../plugins/jquery-sparkline/jquery.sparkline.js"></script>
 
     <!-- Custom Js -->
-    <script src="js/admin.js"></script>
-    <script src="js/pages/index.js"></script>
+    <script src="../js/admin.js"></script>
+    <script src="../js/pages/index.js"></script>
 
     <!-- Demo Js -->
-    <script src="js/demo.js"></script>
-    <script src="plugins/sweetalert/sweetalert.min.js"></script>
+    <script src="../js/demo.js"></script>
+    <script src="../plugins/sweetalert/sweetalert.min.js"></script>
 </body>
 
 </html>
