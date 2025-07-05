@@ -37,6 +37,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
             $_SESSION["resident_id_$barangay_key"] = $resident['id'];
             $_SESSION["resident_name_$barangay_key"] = $resident['first_name'] . ' ' . $resident['last_name'];
+            $_SESSION["is_verified_$barangay_key"] = $resident['is_verified'];
+
             $_SESSION["barangay_id_$barangay_key"] = $barangay_id;
             $_SESSION["barangay_name_$barangay_key"] = $barangay_name_raw;
 
