@@ -13,7 +13,6 @@ if (!isset($_SESSION[$session_key])) {
 }
 
 $resident_name = $_SESSION["resident_name_$barangay"] ?? 'Resident';
-$is_verified = $_SESSION["is_verified_$barangay"] ?? 0;
 
 ?>
 
@@ -312,13 +311,13 @@ $is_verified = $_SESSION["is_verified_$barangay"] ?? 0;
                     <h3 style="color: #1a49cb;">Resident System for Mataasnakahoy Barangays</h3>
                 </div>
                 <!-- Widgets -->
-                <p><span style="color: red;">Notice:</span> Please complete the steps to make verified add an family member to complete your registration</p>
+                <p><span style="color: red;">NOTICE:</span> Please complete the steps to make your account verified add an family member to complete your registration</p>
                 <div class="row clearfix">
                     <div class="col-sm-6 col-md-3 col-lg-4" onclick="window.location.href = 'family_profiling.php'">
                         <div class="thumbnail text-center d-flex flex-column align-items-center justify-content-center" style="padding: 50px;">
                             <i class="fas fa-users fa-3x mb-3 icon-style"></i>
                             <div class="caption">
-                                <h3>Family Profiling</h3>
+                                <h3>Click here to add <br> Family Profiling</h3>
                             </div>
                         </div>
                     </div>

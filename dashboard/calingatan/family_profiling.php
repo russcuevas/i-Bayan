@@ -1,3 +1,93 @@
+<?php
+session_start();
+include '../../database/connection.php';
+
+$barangay = basename(__DIR__);
+$session_key = "resident_id_$barangay";
+
+if (!isset($_SESSION[$session_key])) {
+    header("Location: ../../login.php");
+    exit();
+}
+
+$resident_name = $_SESSION["resident_name_$barangay"] ?? 'Resident';
+$resident_id = $_SESSION["resident_id_$barangay"] ?? null;
+
+if ($_SERVER["REQUEST_METHOD"] === "POST" && $resident_id) {
+    $relationship = $_POST['relationship'];
+    $barangay_address = $_POST['barangay_address'] ?? null;
+    $first_name = $_POST['first_name'];
+    $middle_name = $_POST['middle_name'];
+    $last_name = $_POST['last_name'];
+    $suffix = $_POST['suffix'] ?? null;
+    $gender = $_POST['gender'];
+    $date_of_birth = $_POST['birthday'];
+    $birthplace = $_POST['birthplace'];
+    $age = $_POST['age'];
+    $civil_status = $_POST['civil_status'];
+    $is_working = $_POST['is_working'];
+    $occupation = $_POST['occupation'] ?? null;
+    $school = $_POST['school'] ?? null;
+    $is_barangay_voted = ($_POST['botante'] === 'yes') ? 1 : 0;
+    $years_in_barangay = $_POST['gaano_katagal'];
+    $phone_number = $_POST['mobile'] ?? null;
+    $philhealth_number = $_POST['philhealth'] ?? null;
+
+    $stmt = $conn->prepare("INSERT INTO tbl_residents_family_members (
+        resident_id, barangay_address, first_name, middle_name, last_name, suffix, relationship, gender, date_of_birth, birthplace, age,
+        civil_status, is_working, is_approved, is_barangay_voted, years_in_barangay, phone_number, philhealth_number, school, occupation
+    ) VALUES (
+        :resident_id, :barangay_address, :first_name, :middle_name, :last_name, :suffix, :relationship, :gender, :date_of_birth, :birthplace, :age,
+        :civil_status, :is_working, 0, :is_barangay_voted, :years_in_barangay, :phone_number, :philhealth_number, :school, :occupation
+    )");
+
+    $success = $stmt->execute([
+        ':resident_id' => $resident_id,
+        ':barangay_address' => $barangay_address,
+        ':first_name' => $first_name,
+        ':middle_name' => $middle_name,
+        ':last_name' => $last_name,
+        ':suffix' => $suffix,
+        ':relationship' => $relationship,
+        ':gender' => $gender,
+        ':date_of_birth' => $date_of_birth,
+        ':birthplace' => $birthplace,
+        ':age' => $age,
+        ':civil_status' => $civil_status,
+        ':is_working' => $is_working,
+        ':is_barangay_voted' => $is_barangay_voted,
+        ':years_in_barangay' => $years_in_barangay,
+        ':phone_number' => $phone_number,
+        ':philhealth_number' => $philhealth_number,
+        ':school' => $school,
+        ':occupation' => $occupation
+    ]);
+
+    if ($success) {
+        $_SESSION['success'] = "Family members added succesfully please check account owner email and wait for the approval of the admin";
+        header("Location: family_profiling.php");
+        exit();
+    } else {
+        $_SESSION['error'] = "Error adding family members";
+        header("Location: family_profiling.php");
+        exit();
+    }
+}
+
+
+// fetch family members
+$family_members = [];
+
+if ($resident_id) {
+    $stmt = $conn->prepare("SELECT * FROM tbl_residents_family_members WHERE resident_id = :resident_id");
+    $stmt->execute([':resident_id' => $resident_id]);
+    $family_members = $stmt->fetchAll(PDO::FETCH_ASSOC);
+}
+
+
+?>
+
+
 <!DOCTYPE html>
 <html>
 
@@ -130,12 +220,25 @@
                         </div>
                         <div class="body">
                             <ul id="family-profiling-list">
-                                <li>Example Family Member 1</li>
-                                <li>Example Family Member 2</li>
+                                <?php if (!empty($family_members)): ?>
+                                    <?php foreach ($family_members as $member): ?>
+                                        <li>
+                                            <?= htmlspecialchars($member['first_name'] . ' ' . $member['middle_name'] . ' ' . $member['last_name']) ?>
+                                            (<span style="text-transform: capitalize;"><?= htmlspecialchars($member['relationship']) ?></span>)
+                                            -
+                                            <span style="font-weight: bold; color: <?= $member['is_approved'] ? 'green' : 'red' ?>;">
+                                                <?= $member['is_approved'] ? 'Verified' : 'Not Verified' ?>
+                                            </span>
+                                        </li>
+                                    <?php endforeach; ?>
+                                <?php else: ?>
+                                    <li>No family members found.</li>
+                                <?php endif; ?>
                             </ul>
                         </div>
                     </div>
                 </div>
+
 
                 <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12">
                     <div class="card">
@@ -143,7 +246,10 @@
                             <h2>ADD FAMILY MEMBERS</h2>
                         </div>
                         <div class="body">
-                            <form id="add_family_profiling" method="POST" style="margin-top: 20px;">
+                            <form id="add_family_profiling" action="" method="POST" style="margin-top: 20px;">
+                                <input type="hidden" name="resident_id" value="<?= htmlspecialchars($_SESSION["resident_id_" . basename(__DIR__)] ?? '') ?>">
+                                <input type="hidden" name="barangay_address" value="<?= htmlspecialchars($_SESSION["barangay_id_" . basename(__DIR__)] ?? '') ?>">
+
                                 <h4 class="bold span-or mb-4" style="font-weight: 900; color: #1a49cb;">
                                     Relationship to Family Member
                                 </h4> <br>
@@ -205,10 +311,10 @@
                                         <div class="form-group">
                                             <label for="gender">Gender <span style="color: red;">*</span></label><br>
 
-                                            <input type="radio" name="gender" id="male" value="male" checked>
+                                            <input type="radio" name="gender" id="male" value="Male" checked>
                                             <label for="male">Male</label>
 
-                                            <input type="radio" name="gender" id="female" value="female" class="m-l-20">
+                                            <input type="radio" name="gender" id="female" value="Female" class="m-l-20">
                                             <label for="female">Female</label>
 
                                         </div>
@@ -273,7 +379,7 @@
                                     <div class="col-md-12">
                                         <div class="form-group form-float">
                                             <div class="form-line">
-                                                <input type="text" class="form-control" name="occupation" required>
+                                                <input type="text" class="form-control" name="occupation">
                                                 <label class="form-label">Occupation <span style="color: red;">*</span></label>
                                             </div>
                                         </div>
@@ -285,7 +391,7 @@
                                     <div class="col-md-12">
                                         <div class="form-group form-float">
                                             <div class="form-line">
-                                                <input type="text" class="form-control" name="school" required>
+                                                <input type="text" class="form-control" name="school">
                                                 <label class="form-label">School <span style="color: red;">*</span></label>
                                             </div>
                                         </div>

@@ -80,6 +80,48 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         ':updated_at' => $updated_at,
     ]);
 
+    $resident_id = $conn->lastInsertId(); // Get the new resident's ID
+
+    // Calculate age from date_of_birth
+    $dob = new DateTime($date_of_birth);
+    $today = new DateTime();
+    $age = $dob->diff($today)->y;
+
+    $stmtFamily = $conn->prepare("INSERT INTO tbl_residents_family_members (
+        resident_id, barangay_address, first_name, middle_name, last_name, suffix, relationship, gender,
+        date_of_birth, birthplace, age, civil_status, is_working, is_approved,
+        is_barangay_voted, years_in_barangay, phone_number, philhealth_number, school, occupation
+    ) VALUES (
+        :resident_id, :barangay_address, :first_name, :middle_name, :last_name, :suffix, :relationship, :gender,
+        :date_of_birth, :birthplace, :age, :civil_status, :is_working, 0,
+        :is_barangay_voted, :years_in_barangay, :phone_number, NULL, :school, :occupation
+    )");
+
+
+
+    $stmtFamily->execute([
+        ':resident_id' => $resident_id,
+        ':barangay_address' => $barangay_address,
+        ':first_name' => $first_name,
+        ':middle_name' => $middle_name,
+        ':last_name' => $last_name,
+        ':suffix' => $suffix,
+        ':relationship' => 'Account Owner',
+        ':gender' => $gender,
+        ':date_of_birth' => $date_of_birth,
+        ':birthplace' => $birthplace,
+        ':age' => $age,
+        ':civil_status' => null,
+        ':is_working' => $is_working,
+        ':is_barangay_voted' => 0,
+        ':years_in_barangay' => 0,
+        ':phone_number' => $phone_number,
+        ':school' => $school,
+        ':occupation' => $occupation
+    ]);
+
+
+
     $_SESSION['success'] = "Registration successfully you can now logged in to proceed in the next step";
     header("Location: " . $_SERVER['PHP_SELF']);
     exit();

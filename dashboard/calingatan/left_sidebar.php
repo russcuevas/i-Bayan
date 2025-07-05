@@ -21,14 +21,16 @@ $is_verified = $_SESSION["is_verified_$barangay"] ?? 0;
                 </a>
             </li>
 
-            <li>
-                <a href="family_profiling.php">
-                    <i class="material-icons">groups</i>
-                    <span>Family Profiling</span>
-                </a>
-            </li>
+
 
             <?php if ($is_verified): ?>
+                <li>
+                    <a href="family_profiling.php">
+                        <i class="material-icons">groups</i>
+                        <span>Family Profiling</span>
+                    </a>
+                </li>
+
                 <li>
                     <a href="javascript:void(0);" class="menu-toggle">
                         <i class="material-icons">library_books</i>
