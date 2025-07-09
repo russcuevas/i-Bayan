@@ -26,9 +26,31 @@ $admin_stmt->execute([$admin_id]);
 $admin_barangay_id = $admin_stmt->fetchColumn();
 
 // fetch total number of residents with the particular barangay
-$resident_count_stmt = $conn->prepare("SELECT COUNT(*) FROM tbl_residents WHERE barangay_address = ?");
+$resident_count_stmt = $conn->prepare("
+    SELECT COUNT(*) 
+    FROM tbl_residents_family_members 
+    WHERE barangay_address = ? AND is_approved = 1
+");
 $resident_count_stmt->execute([$admin_barangay_id]);
 $total_residents = $resident_count_stmt->fetchColumn();
+
+
+// fetch pending approvals number of residents to approved
+$pending_resident_count_stmt = $conn->prepare("
+    SELECT COUNT(*) 
+    FROM tbl_residents_family_members 
+    WHERE barangay_address = ? 
+      AND is_approved = 0
+      AND resident_id NOT IN (
+          SELECT resident_id
+          FROM tbl_residents_family_members
+          GROUP BY resident_id
+          HAVING COUNT(*) = 1 AND MAX(relationship) = 'Account Owner'
+      )
+");
+$pending_resident_count_stmt->execute([$admin_barangay_id]);
+$pending_residents = $pending_resident_count_stmt->fetchColumn();
+
 
 
 
@@ -222,7 +244,7 @@ $total_residents = $resident_count_stmt->fetchColumn();
 
                 <div class="col-sm-6 col-md-3 col-lg-6" onclick="window.location.href = 'resident_verifications.php'">
                     <div class="thumbnail text-center d-flex flex-column align-items-center justify-content-center" style="padding: 50px;">
-                        <h1>12</h1>
+                        <h1><?= $pending_residents ?></h1>
                         <div class="caption">
                             <h3>Pending Approvals</h3>
                         </div>

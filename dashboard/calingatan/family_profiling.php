@@ -223,7 +223,8 @@ if ($resident_id) {
                                 <?php if (!empty($family_members)): ?>
                                     <?php foreach ($family_members as $member): ?>
                                         <li>
-                                            <?= htmlspecialchars($member['first_name'] . ' ' . $member['middle_name'] . ' ' . $member['last_name']) ?>
+                                            <?= htmlspecialchars($member['first_name'] . ' ' . $member['middle_name'] . ' ' . $member['last_name'] .
+                                                (!empty($member['suffix']) ? ' ' . $member['suffix'] : '')) ?>
                                             (<span style="text-transform: capitalize;"><?= htmlspecialchars($member['relationship']) ?></span>)
                                             -
                                             <span style="font-weight: bold; color: <?= $member['is_approved'] ? 'green' : 'red' ?>;">

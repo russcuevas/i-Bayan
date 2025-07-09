@@ -25,9 +25,24 @@ $admin_stmt = $conn->prepare("SELECT barangay_id FROM tbl_admin WHERE id = ?");
 $admin_stmt->execute([$admin_id]);
 $admin_barangay_id = $admin_stmt->fetchColumn();
 
+// Fetch residents of the same barangay
 $stmt = $conn->prepare("SELECT * FROM tbl_residents WHERE barangay_address = :barangay_address");
 $stmt->execute([':barangay_address' => $admin_barangay_id]);
-$residents = $stmt->fetchAll(PDO::FETCH_ASSOC);
+$all_residents = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+$residents = [];
+
+foreach ($all_residents as $resident) {
+    $resident_id = $resident['id'];
+
+    $family_stmt = $conn->prepare("SELECT relationship FROM tbl_residents_family_members WHERE resident_id = ?");
+    $family_stmt->execute([$resident_id]);
+    $family_members = $family_stmt->fetchAll(PDO::FETCH_COLUMN);
+
+    if (count($family_members) > 1 || !in_array('Account Owner', $family_members) || count($family_members) === 0) {
+        $residents[] = $resident;
+    }
+}
 ?>
 
 <!DOCTYPE html>
@@ -193,6 +208,16 @@ $residents = $stmt->fetchAll(PDO::FETCH_ASSOC);
                         </div>
                         <div class="body">
                             <div class="table-responsive">
+                                <?php
+                                foreach ($residents as &$resident) {
+                                    $resident_id = $resident['id'];
+                                    $stmt_family = $conn->prepare("SELECT COUNT(*) FROM tbl_residents_family_members WHERE resident_id = ? AND is_approved = 0");
+                                    $stmt_family->execute([$resident_id]);
+                                    $resident['pending_family_count'] = $stmt_family->fetchColumn();
+                                }
+                                unset($resident);
+                                ?>
+
                                 <table class="table table-bordered table-striped table-hover js-basic-example dataTable">
                                     <thead>
                                         <tr>
@@ -220,14 +245,15 @@ $residents = $stmt->fetchAll(PDO::FETCH_ASSOC);
                                                     </span>
                                                 </td>
                                                 <td>
+                                                    <?php if ($resident['pending_family_count'] > 0): ?>
+                                                        <span class="badge bg-orange" style="margin-bottom: 5px; color: red !important; font-weight: 900;">
+                                                            <?= $resident['pending_family_count'] ?> Pending Family
+                                                        </span>
+                                                        <br>
+                                                    <?php endif; ?>
+
                                                     <a href="view_resident_verifications.php?id=<?= $resident['id'] ?>" class="btn bg-teal waves-effect" style="margin-bottom: 5px;">
                                                         <i class="fa-solid fa-id-card"></i> VIEW INFORMATION
-                                                    </a>
-                                                    <a href="update_resident_verifications.php?id=<?= $resident['id'] ?>" class="btn bg-teal waves-effect" style="margin-bottom: 5px;">
-                                                        <i class="fa-solid fa-pencil"></i> UPDATE
-                                                    </a>
-                                                    <a href="delete_resident_verifications.php?id=<?= $resident['id'] ?>" onclick="return confirm('Are you sure?')" class="btn bg-teal waves-effect" style="margin-bottom: 5px;">
-                                                        <i class="fa-solid fa-trash"></i> DELETE
                                                     </a>
                                                 </td>
                                             </tr>
