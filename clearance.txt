@@ -131,6 +131,8 @@ relationship
 total_amount
 for_barangay
 
+
+//DONE
 tbl_certificates_claimed
 resident_id -> foreign to tbl_residents -> id
 document_number - randomized
@@ -148,7 +150,7 @@ for_barangay -> foreign to tbl_barangay -> id
 created_at
 updated_at
 
-
+// DONE
 clearance to operate
 tbl_operate
 resident_id -> foreign to tbl_residents -> id
@@ -161,6 +163,7 @@ business_name
 business_trade -> foreign id to tbl_business_trade -> id
 business_address
 owner_name
+owner_purok
 email
 contact
 for_barangay -> foreign to tbl_barangay -> id
@@ -168,6 +171,32 @@ for_barangay -> foreign to tbl_barangay -> id
 valid_id
 birth_certificate
 is_resident
+total_amount
+status
+created_at
+updated_at
+
+tbl_operate_claimed
+resident_id -> foreign to tbl_residents -> id
+document_number - randomized
+picked_up_by
+relationship
+certificate_type -> Clearance to operate
+purpose
+business_name
+business_trade -> foreign id to tbl_business_trade -> id
+business_address
+owner_name
+owner_purok
+email
+contact
+for_barangay -> foreign to tbl_barangay -> id
+ -> foreign to tbl_barangay -> id
+valid_id
+birth_certificate
+is_resident
+total_amount
+status
 created_at
 updated_at
 

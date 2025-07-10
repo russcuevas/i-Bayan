@@ -24,6 +24,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     try {
         $certificate_type = $_POST['certificate_type'];
         $resident_id = $_POST['resident_id'];
+        $purok = $_POST['purok'];
         $purpose = $_POST['purpose'];
         $fullname = $_POST['fullname'];
         $gender = $_POST['gender'];
@@ -58,13 +59,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         // Insert into table
         $stmt = $conn->prepare("INSERT INTO tbl_certificates (
-            resident_id, certificate_type, purpose, fullname, gender, email, contact,
+            resident_id, purok, certificate_type, purpose, fullname, gender, email, contact,
             valid_id, birth_certificate, is_resident, picked_up_by, relationship,
             for_barangay, total_amount, status
-        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
 
         $stmt->execute([
             $resident_id,
+            $purok,
             $certificate_type,
             $purpose,
             $fullname,
@@ -301,6 +303,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                             <div class="form-line">
                                                 <input type="text" class="form-control" name="fullname" required>
                                                 <label class="form-label">Fullname <span style="color: red;">*</span></label>
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group form-float">
+                                            <div class="form-line">
+                                                <input type="number" class="form-control" name="purok" required>
+                                                <label class="form-label">Purok <span style="color: red;">*</span></label>
                                             </div>
                                         </div>
 

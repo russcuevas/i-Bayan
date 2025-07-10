@@ -221,7 +221,19 @@ $admin_barangay_id = $admin_stmt->fetchColumn();
                                                 <td><?= htmlspecialchars($row['email']) ?></td>
                                                 <td><?= htmlspecialchars($row['contact']) ?></td>
                                                 <td><?= date("F/d/Y", strtotime($row['created_at'])) ?></td>
-                                                <td><?= ucfirst($row['status'] ?? 'Pending') ?></td>
+                                                <td>
+                                                    <?php
+                                                    $status = ucfirst($row['status'] ?? 'Pending');
+                                                    $badgeClass = 'btn-info'; // default for Pending
+
+                                                    if ($status === 'To Pick Up') {
+                                                        $badgeClass = 'btn-warning text-dark';
+                                                    } elseif ($status === 'Claimed') {
+                                                        $badgeClass = 'btn-success';
+                                                    }
+                                                    ?>
+                                                    <span class="badge <?= $badgeClass ?>"><?= $status ?></span>
+                                                </td>
                                                 <td>
                                                     <a href="certificates_view_information.php?id=<?= $row['id'] ?>" class="btn bg-teal waves-effect" style="margin-bottom: 5px;">
                                                         <i class="fa-solid fa-eye"></i> VIEW INFORMATION

@@ -2,90 +2,99 @@
 session_start();
 include '../../database/connection.php';
 
-$barangay = basename(__DIR__); // e.g., "calingatan"
+$barangay = basename(__DIR__);
 $session_key = "admin_id_$barangay";
 
-// Check if admin is logged in
 if (!isset($_SESSION[$session_key])) {
     header("Location: ../login.php");
     exit();
 }
 
-// Session variables for admin info (optional use)
 $barangay_name_key = "barangay_name_$barangay";
 $admin_name_key = "admin_name_$barangay";
 $admin_position_key = "admin_position_$barangay";
 
-// Validate certificate ID
 if (!isset($_GET['id']) || !is_numeric($_GET['id'])) {
     echo "Invalid request.";
     exit();
 }
 
-$certificate_id = $_GET['id'];
+$operate_id = $_GET['id'];
+$stmt = $conn->prepare("
+    SELECT o.*, b.barangay_name, t.name AS business_type_name
+    FROM tbl_operate AS o
+    LEFT JOIN tbl_barangay AS b ON o.for_barangay = b.id
+    LEFT JOIN tbl_business_trade AS t ON o.business_trade = t.id
+    WHERE o.id = ?
+");
+$stmt->execute([$operate_id]);
+$operate = $stmt->fetch(PDO::FETCH_ASSOC);
 
-// Fetch certificate
-$stmt = $conn->prepare("SELECT * FROM tbl_certificates WHERE id = ?");
-$stmt->execute([$certificate_id]);
-$certificate = $stmt->fetch(PDO::FETCH_ASSOC);
 
-if (!$certificate) {
-    echo "Certificate not found.";
+if (!$operate) {
+    echo "Operate not found.";
     exit();
 }
 
-// Handle POST request to update status
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['status'], $_POST['certificate_id'])) {
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['status'], $_POST['operate_id'])) {
     $new_status = $_POST['status'];
-    $certificate_id = $_POST['certificate_id'];
-    $stmt = $conn->prepare("UPDATE tbl_certificates SET status = ? WHERE id = ?");
-    if ($stmt->execute([$new_status, $certificate_id])) {
+    $operate_id = $_POST['operate_id'];
 
-        if ($new_status === 'Claimed') {
-            $document_number = strtoupper(uniqid('DOC'));
-            $barangay_stmt = $conn->prepare("SELECT id FROM tbl_barangay WHERE LOWER(REPLACE(barangay_name, ' ', '')) = ?");
-            $barangay_stmt->execute([strtolower($barangay)]);
-            $barangay_data = $barangay_stmt->fetch(PDO::FETCH_ASSOC);
+    $update = $conn->prepare("UPDATE tbl_operate SET status = ?, updated_at = NOW() WHERE id = ?");
+    $updated = $update->execute([$new_status, $operate_id]);
 
-            if (!$barangay_data) {
-                $_SESSION['error'] = "Barangay not found in tbl_barangay.";
-                header("Location: certificates_view_information.php?id=" . $certificate_id);
-                exit();
-            }
+    if ($updated && $new_status === 'Claimed') {
+        $stmt = $conn->prepare("SELECT * FROM tbl_operate WHERE id = ?");
+        $stmt->execute([$operate_id]);
+        $data = $stmt->fetch(PDO::FETCH_ASSOC);
 
-            $for_barangay_id = $barangay_data['id'];
-            $insert = $conn->prepare("INSERT INTO tbl_certificates_claimed (
-                resident_id, purok, document_number, picked_up_by, relationship, 
-                certificate_type, purpose, fullname, email, gender, contact, 
-                valid_id, total_amount_paid, for_barangay
-            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+        if ($data) {
+            $insert = $conn->prepare("
+                INSERT INTO tbl_operate_claimed (
+                    resident_id, document_number, picked_up_by, relationship, certificate_type,
+                    purpose, business_name, business_trade, business_address, owner_name,
+                    owner_purok, email, contact, for_barangay, valid_id,
+                    birth_certificate, is_resident, total_amount, status, created_at, updated_at
+                ) VALUES (
+                    :resident_id, :document_number, :picked_up_by, :relationship, :certificate_type,
+                    :purpose, :business_name, :business_trade, :business_address, :owner_name,
+                    :owner_purok, :email, :contact, :for_barangay, :valid_id,
+                    :birth_certificate, :is_resident, :total_amount, :status, :created_at, :updated_at
+                )
+            ");
 
             $insert->execute([
-                $certificate['resident_id'],
-                $certificate['purok'],
-                $document_number,
-                $certificate['picked_up_by'],
-                $certificate['relationship'],
-                $certificate['certificate_type'],
-                $certificate['purpose'],
-                $certificate['fullname'],
-                $certificate['email'],
-                $certificate['gender'],
-                $certificate['contact'],
-                $certificate['valid_id'],
-                $certificate['total_amount'],
-                $for_barangay_id
+                ':resident_id' => $data['resident_id'],
+                ':document_number' => $data['document_number'],
+                ':picked_up_by' => $data['picked_up_by'],
+                ':relationship' => $data['relationship'],
+                ':certificate_type' => $data['certificate_type'],
+                ':purpose' => $data['purpose'],
+                ':business_name' => $data['business_name'],
+                ':business_trade' => $data['business_trade'],
+                ':business_address' => $data['business_address'],
+                ':owner_name' => $data['owner_name'],
+                ':owner_purok' => $data['owner_purok'],
+                ':email' => $data['email'],
+                ':contact' => $data['contact'],
+                ':for_barangay' => $data['for_barangay'],
+                ':valid_id' => $data['valid_id'],
+                ':birth_certificate' => $data['birth_certificate'],
+                ':is_resident' => $data['is_resident'],
+                ':total_amount' => $data['total_amount'],
+                ':status' => $new_status,
+                ':created_at' => $data['created_at'],
+                ':updated_at' => date('Y-m-d H:i:s')
             ]);
         }
-
-        $_SESSION['success'] = "Certificate status updated successfully!";
-    } else {
-        $_SESSION['error'] = "Failed to update certificate status.";
     }
 
-    header("Location: certificates_view_information.php?id=" . $certificate_id);
+    $_SESSION['success'] = "Status updated successfully.";
+    header("Location: operate_view_information.php?id=" . $operate_id);
     exit();
 }
+
+
 ?>
 
 
@@ -167,35 +176,38 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['status'], $_POST['cer
                 <div class="card shadow" style="border-radius: 12px;">
                     <div class="body p-4">
                         <h4 class="text-left mb-4" style="font-weight: 800; color: #1a49cb;">
-                            Certificate Details -
-                            <span class="badge bg-blue"><?= ucfirst($certificate['status'] ?? 'Pending') ?></span>
+                            Operate Details -
+                            <span class="badge bg-blue"><?= ucfirst($operate['status'] ?? 'Pending') ?></span>
                         </h4>
 
                         <div class="row">
-                            <div class="col-md-6 mb-3"><strong>Full Name:</strong><br><?= htmlspecialchars($certificate['fullname']) ?></div>
-                            <div class="col-md-6 mb-3"><strong>Purok:</strong><br><?= htmlspecialchars($certificate['purok']) ?></div>
+                            <div class="col-md-6 mb-3"><strong>Document Number:</strong><br><?= htmlspecialchars($operate['document_number']) ?></div>
+                            <div class="col-md-6 mb-3"><strong>Barangay:</strong><span style="text-transform: capitalize;"><br><?= htmlspecialchars($operate['barangay_name']) ?></span></div>
 
-                            <div class="col-md-6 mb-3"><strong>Gender:</strong><br><?= htmlspecialchars($certificate['gender']) ?></div>
+                            <div class="col-md-6 mb-3"><strong>Certificate Type:</strong><br><?= htmlspecialchars($operate['certificate_type']) ?></div>
+                            <div class="col-md-6 mb-3"><strong>Purpose:</strong><br><?= htmlspecialchars($operate['purpose']) ?></div>
 
-                            <div class="col-md-6 mb-3"><strong>Email:</strong><br><?= htmlspecialchars($certificate['email']) ?></div>
-                            <div class="col-md-6 mb-3"><strong>Contact:</strong><br><?= htmlspecialchars($certificate['contact']) ?></div>
+                            <div class="col-md-6 mb-3"><strong>Business Name:</strong><br><?= htmlspecialchars($operate['business_name']) ?></div>
+                            <div class="col-md-6 mb-3"><strong>Business Type:</strong><br><?= htmlspecialchars($operate['business_type_name']) ?></div>
+                            <div class="col-md-6 mb-3"><strong>Business Address:</strong><br><?= htmlspecialchars($operate['business_address']) ?></div>
 
-                            <div class="col-md-6 mb-3"><strong>Certificate Type:</strong><br><?= htmlspecialchars($certificate['certificate_type']) ?></div>
-                            <div class="col-md-6 mb-3"><strong>Purpose:</strong><br><?= htmlspecialchars($certificate['purpose']) ?></div>
+                            <div class="col-md-6 mb-3"><strong>Owner Name:</strong><br><?= htmlspecialchars($operate['owner_name']) ?></div>
+                            <div class="col-md-6 mb-3"><strong>Purok:</strong><br><?= htmlspecialchars($operate['owner_purok']) ?></div>
 
-                            <div class="col-md-6 mb-3"><strong>Resident:</strong><br><?= htmlspecialchars($certificate['is_resident']) ?></div>
+                            <div class="col-md-6 mb-3"><strong>Email:</strong><br><?= htmlspecialchars($operate['email']) ?></div>
+                            <div class="col-md-6 mb-3"><strong>Contact:</strong><br><?= htmlspecialchars($operate['contact']) ?></div>
 
-                            <div class="col-md-6 mb-3"><strong>Picked Up By:</strong><br><?= htmlspecialchars($certificate['picked_up_by']) ?> - <span style="text-transform: capitalize;"><?= htmlspecialchars($certificate['relationship']) ?></span></div>
+                            <div class="col-md-6 mb-3"><strong>Picked Up By:</strong><br><?= htmlspecialchars($operate['picked_up_by']) ?> - <span style="text-transform: capitalize;"><?= htmlspecialchars($operate['relationship']) ?></span></div>
 
+                            <div class="col-md-6 mb-3"><strong>Resident:</strong><br><?= htmlspecialchars($operate['is_resident']) ?></div>
 
-                            <div class="col-md-6 mb-3"><strong>Total Amount:</strong><br>
-                                <span class="text-success">
-                                    ₱<?= number_format($certificate['total_amount'], 2) ?>
-                                    <?php if ($certificate['status'] === 'Claimed'): ?>
+                            <div class="col-md-6 mb-3">
+                                <strong>Total Amount:</strong><br>
+                                <span class="text-success">₱<?= number_format($operate['total_amount'], 2) ?>
+                                    <?php if ($operate['status'] === 'Claimed'): ?>
                                         / Paid
                                     <?php endif; ?>
                                 </span>
-
                             </div>
                         </div>
 
@@ -205,8 +217,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['status'], $_POST['cer
                         <div class="row">
                             <div class="col-md-6 mb-2">
                                 <strong>Valid ID:</strong><br>
-                                <?php if (!empty($certificate['valid_id'])): ?>
-                                    <a class="btn btn-sm bg-red" href="../../public/request/valid_id/<?= htmlspecialchars($certificate['valid_id']) ?>" target="_blank">
+                                <?php if (!empty($operate['valid_id'])): ?>
+                                    <a class="btn btn-sm bg-red" href="../../public/request/valid_id/<?= htmlspecialchars($operate['valid_id']) ?>" target="_blank">
                                         <i class="fa fa-eye"></i> View Valid ID
                                     </a>
                                 <?php else: ?>
@@ -215,8 +227,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['status'], $_POST['cer
                             </div>
                             <div class="col-md-6 mb-2">
                                 <strong>Birth Certificate:</strong><br>
-                                <?php if (!empty($certificate['birth_certificate'])): ?>
-                                    <a class="btn btn-sm bg-red" href="../../public/request/birth_certificate/<?= htmlspecialchars($certificate['birth_certificate']) ?>" target="_blank">
+                                <?php if (!empty($operate['birth_certificate'])): ?>
+                                    <a class="btn btn-sm bg-red" href="../../public/request/birth_certificate/<?= htmlspecialchars($operate['birth_certificate']) ?>" target="_blank">
                                         <i class="fa fa-eye"></i> View Birth Certificate
                                     </a>
                                 <?php else: ?>
@@ -229,23 +241,23 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['status'], $_POST['cer
 
                         <!-- Update Status -->
                         <form action="" method="POST" class="mb-3">
-                            <input type="hidden" name="certificate_id" value="<?= $certificate['id'] ?>">
+                            <input type="hidden" name="operate_id" value="<?= $operate['id'] ?>">
                             <div class="form-group">
                                 <label><strong>Change Status:</strong></label>
                                 <select name="status" class="form-control" style="border: 2px solid black;" required>
-                                    <?php if ($certificate['status'] === 'Pending'): ?>
+                                    <?php if ($operate['status'] === 'Pending'): ?>
                                         <option disabled selected>Pending</option>
                                         <option value="To Pick Up">To Pick Up</option>
-                                    <?php elseif ($certificate['status'] === 'To Pick Up'): ?>
+                                    <?php elseif ($operate['status'] === 'To Pick Up'): ?>
                                         <option disabled selected>To Pick Up</option>
                                         <option value="Claimed">Claimed</option>
                                     <?php else: ?>
-                                        <option disabled selected><?= htmlspecialchars($certificate['status']) ?></option>
+                                        <option disabled selected><?= htmlspecialchars($operate['status']) ?></option>
                                     <?php endif; ?>
                                 </select>
                             </div>
 
-                            <?php if ($certificate['status'] !== 'Claimed'): ?>
+                            <?php if ($operate['status'] !== 'Claimed'): ?>
                                 <div class="row mt-3">
                                     <div class="col-md-6">
                                         <button type="submit" class="btn btn-primary btn-block w-100">
@@ -253,7 +265,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['status'], $_POST['cer
                                         </button>
                                     </div>
                                     <div class="col-md-6">
-                                        <a href="certificates_reject_request.php?certificate_id=<?= $certificate['id'] ?>"
+                                        <a href="operate_reject_request.php?operate_id=<?= $operate['id'] ?>"
                                             class="btn btn-danger btn-block w-100"
                                             onclick="return confirm('Are you sure you want to reject this request?');">
                                             <i class="fa fa-ban"></i> Reject Request
@@ -261,14 +273,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['status'], $_POST['cer
                                     </div>
                                 </div>
                             <?php endif; ?>
-
                         </form>
 
 
                         <br>
 
                         <div class="text-right mt-4">
-                            <a href="certificate_issuance.php" class="btn bg-red"><i class="fa fa-arrow-left"></i> Back</a>
+                            <a href="certificate_operate.php" class="btn bg-red"><i class="fa fa-arrow-left"></i> Back</a>
                         </div>
                     </div>
                 </div>

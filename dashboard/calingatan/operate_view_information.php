@@ -17,14 +17,18 @@ if (!isset($_GET['id']) || !is_numeric($_GET['id'])) {
     exit();
 }
 
-$certificate_id = $_GET['id'];
+$operate_id = $_GET['id'];
 
-$stmt = $conn->prepare("SELECT * FROM tbl_certificates WHERE id = ? AND resident_id = ?");
-$stmt->execute([$certificate_id, $resident_id]);
-$certificate = $stmt->fetch(PDO::FETCH_ASSOC);
+$stmt = $conn->prepare("SELECT o.*, t.name AS business_type_name, b.barangay_name 
+                        FROM tbl_operate o
+                        LEFT JOIN tbl_business_trade t ON o.business_trade = t.id
+                        LEFT JOIN tbl_barangay b ON o.for_barangay = b.id
+                        WHERE o.id = ? AND o.resident_id = ?");
+$stmt->execute([$operate_id, $resident_id]);
+$operate = $stmt->fetch(PDO::FETCH_ASSOC);
 
-if (!$certificate) {
-    echo "Certificate not found or access denied.";
+if (!$operate) {
+    echo "Operate not found or access denied.";
     exit();
 }
 ?>
@@ -107,52 +111,54 @@ if (!$certificate) {
                 <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
                     <div class="card shadow" style="border-radius: 12px;">
                         <div class="body p-4">
-                            <h4 class="text-left mb-4" style="font-weight: 800; color: #1a49cb;">Certificate Details - <span class="badge bg-blue"><?= ucfirst($certificate['status'] ?? 'Pending') ?></span></h4>
+                            <h4 class="text-left mb-4" style="font-weight: 800; color: #1a49cb;">Operate Details - <span class="badge bg-blue"><?= ucfirst($operate['status'] ?? 'Pending') ?></span></h4>
 
                             <div class="row">
-                                <div class="col-md-6 mb-3"><strong>Full Name:</strong><br><?= htmlspecialchars($certificate['fullname']) ?></div>
-                                <div class="col-md-6 mb-3"><strong>Purok:</strong><br><?= htmlspecialchars($certificate['purok']) ?></div>
+                                <div class="col-md-6 mb-3"><strong>Document Number:</strong><br><?= htmlspecialchars($operate['document_number']) ?></div>
+                                <div class="col-md-6 mb-3"><strong>Barangay:</strong><span style="text-transform: capitalize;"><br><?= htmlspecialchars($operate['barangay_name']) ?></span></div>
 
-                                <div class="col-md-6 mb-3"><strong>Gender:</strong><br><?= htmlspecialchars($certificate['gender']) ?></div>
+                                <div class="col-md-6 mb-3"><strong>Certificate Type:</strong><br><?= htmlspecialchars($operate['certificate_type']) ?></div>
+                                <div class="col-md-6 mb-3"><strong>Purpose:</strong><br><?= htmlspecialchars($operate['purpose']) ?></div>
 
-                                <div class="col-md-6 mb-3"><strong>Email:</strong><br><?= htmlspecialchars($certificate['email']) ?></div>
-                                <div class="col-md-6 mb-3"><strong>Contact:</strong><br><?= htmlspecialchars($certificate['contact']) ?></div>
+                                <div class="col-md-6 mb-3"><strong>Business Name:</strong><br><?= htmlspecialchars($operate['business_name']) ?></div>
+                                <div class="col-md-6 mb-3"><strong>Business Type:</strong><br><?= htmlspecialchars($operate['business_type_name']) ?></div>
+                                <div class="col-md-6 mb-3"><strong>Business Address:</strong><br><?= htmlspecialchars($operate['business_address']) ?></div>
 
-                                <div class="col-md-6 mb-3"><strong>Certificate Type:</strong><br><?= htmlspecialchars($certificate['certificate_type']) ?></div>
-                                <div class="col-md-6 mb-3"><strong>Purpose:</strong><br><?= htmlspecialchars($certificate['purpose']) ?></div>
+                                <div class="col-md-6 mb-3"><strong>Owner Name:</strong><br><?= htmlspecialchars($operate['owner_name']) ?></div>
+                                <div class="col-md-6 mb-3"><strong>Purok:</strong><br><?= htmlspecialchars($operate['owner_purok']) ?></div>
 
-                                <div class="col-md-6 mb-3"><strong>Resident:</strong><br><?= htmlspecialchars($certificate['is_resident']) ?></div>
+                                <div class="col-md-6 mb-3"><strong>Email:</strong><br><?= htmlspecialchars($operate['email']) ?></div>
+                                <div class="col-md-6 mb-3"><strong>Contact:</strong><br><?= htmlspecialchars($operate['contact']) ?></div>
 
-                                <div class="col-md-6 mb-3"><strong>Picked Up By:</strong><br><?= htmlspecialchars($certificate['picked_up_by']) ?> - <span style="text-transform: capitalize;"><?= htmlspecialchars($certificate['relationship']) ?></span></div>
+                                <div class="col-md-6 mb-3"><strong>Picked Up By:</strong><br><?= htmlspecialchars($operate['picked_up_by']) ?> - <span style="text-transform: capitalize;"><?= htmlspecialchars($operate['relationship']) ?></span></div>
 
-                                <div class="col-md-6 mb-3"><strong>Total Amount:</strong><br> <span class="text-success">
-                                        ₱<?= number_format($certificate['total_amount'], 2) ?>
-                                        <?php if ($certificate['status'] === 'Claimed'): ?>
+                                <div class="col-md-6 mb-3"><strong>Resident:</strong><br><?= htmlspecialchars($operate['is_resident']) ?></div>
+
+                                <div class="col-md-6 mb-3">
+                                    <strong>Total Amount:</strong><br>
+                                    <span class="text-success">₱<?= number_format($operate['total_amount'], 2) ?>
+                                        <?php if ($operate['status'] === 'Claimed'): ?>
                                             / Paid
                                         <?php endif; ?>
-                                    </span></div>
+                                    </span>
+                                </div>
                             </div>
 
-                            <hr class="my-4">
-
-                            <h5 class="mb-3 text-primary"><strong>Uploaded Documents</strong></h5>
+                            <hr>
+                            <h5 style="color: #1a49cb;">Uploaded Documents</h5>
                             <div class="row">
                                 <div class="col-md-6 mb-2">
-                                    <strong>Valid ID:</strong><br>
-                                    <?php if (!empty($certificate['valid_id'])): ?>
-                                        <a class="btn btn-sm bg-red" href="../../public/request/valid_id/<?= htmlspecialchars($certificate['valid_id']) ?>" target="_blank">
-                                            View Valid ID
-                                        </a>
+                                    <span class="label-title">Valid ID:</span><br>
+                                    <?php if (!empty($operate['valid_id'])): ?>
+                                        <a class="btn btn-sm bg-red" target="_blank" href="../../public/request/valid_id/<?= $operate['valid_id'] ?>">View Valid ID</a>
                                     <?php else: ?>
                                         <span class="text-danger">Not Uploaded</span>
                                     <?php endif; ?>
                                 </div>
                                 <div class="col-md-6 mb-2">
-                                    <strong>Birth Certificate:</strong><br>
-                                    <?php if (!empty($certificate['birth_certificate'])): ?>
-                                        <a class="btn btn-sm bg-red" href="../../public/request/birth_certificate/<?= htmlspecialchars($certificate['birth_certificate']) ?>" target="_blank">
-                                            View Birth Certificate
-                                        </a>
+                                    <span class="label-title">Birth Certificate:</span><br>
+                                    <?php if (!empty($operate['birth_certificate'])): ?>
+                                        <a class="btn btn-sm bg-red" target="_blank" href="../../public/request/birth_certificate/<?= $operate['birth_certificate'] ?>">View Birth Certificate</a>
                                     <?php else: ?>
                                         <span class="text-danger">Not Uploaded</span>
                                     <?php endif; ?>
@@ -160,7 +166,7 @@ if (!$certificate) {
                             </div>
 
                             <div class="text-right mt-4">
-                                <a href="certificate_issuance.php" class="btn bg-red"><i class="fa fa-arrow-left"></i> Back</a>
+                                <a href="certificate_operate.php" class="btn bg-red">← Back</a>
                             </div>
                         </div>
                     </div>
