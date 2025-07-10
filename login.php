@@ -25,6 +25,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $resident = $stmt->fetch(PDO::FETCH_ASSOC);
 
     if ($resident) {
+        // Set resident as online
+        $update_status = $conn->prepare("UPDATE tbl_residents SET is_online = 'online' WHERE id = ?");
+        $update_status->execute([$resident['id']]);
+
         // Get barangay info
         $barangay_id = $resident['barangay_address'];
         $stmt_b = $conn->prepare("SELECT barangay_name FROM tbl_barangay WHERE id = ?");

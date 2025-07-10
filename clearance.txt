@@ -176,6 +176,7 @@ status
 created_at
 updated_at
 
+// DONE
 tbl_operate_claimed
 resident_id -> foreign to tbl_residents -> id
 document_number - randomized
