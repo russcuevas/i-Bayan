@@ -2,7 +2,7 @@
 $barangay = basename(__DIR__);
 $barangay_name = $_SESSION["barangay_name_$barangay"] ?? 'Barangay';
 $resident_name = $_SESSION["resident_name_$barangay"] ?? 'Resident';
-$is_verified = $_SESSION["is_verified_$barangay"] ?? 0;
+$is_approved = $_SESSION["is_approved_$barangay"] ?? 0;
 ?>
 
 <aside id="leftsidebar" class="sidebar">
@@ -23,7 +23,7 @@ $is_verified = $_SESSION["is_verified_$barangay"] ?? 0;
 
 
 
-            <?php if ($is_verified): ?>
+            <?php if ($is_approved): ?>
                 <li>
                     <a href="family_profiling.php">
                         <i class="material-icons">groups</i>

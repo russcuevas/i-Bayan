@@ -16,7 +16,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $password = $_POST['password'] ?? '';
     $hashed_password = sha1($password);
 
-    $stmt = $conn->prepare("SELECT * FROM tbl_residents WHERE username = :username AND password = :password AND is_approved = 0");
+    $stmt = $conn->prepare("SELECT * FROM tbl_residents WHERE username = :username AND password = :password");
     $stmt->execute([
         ':username' => $username,
         ':password' => $hashed_password
@@ -37,7 +37,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
             $_SESSION["resident_id_$barangay_key"] = $resident['id'];
             $_SESSION["resident_name_$barangay_key"] = $resident['first_name'] . ' ' . $resident['last_name'];
-            $_SESSION["is_verified_$barangay_key"] = $resident['is_verified'];
+            $_SESSION["is_approved_$barangay_key"] = $resident['is_approved'];
 
             $_SESSION["barangay_id_$barangay_key"] = $barangay_id;
             $_SESSION["barangay_name_$barangay_key"] = $barangay_name_raw;

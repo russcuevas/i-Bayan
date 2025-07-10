@@ -5,12 +5,30 @@ include '../../database/connection.php';
 $barangay = basename(__DIR__);
 $session_key = "resident_id_$barangay";
 
+
+
 if (!isset($_SESSION[$session_key])) {
     header("Location: ../../login.php");
     exit();
 }
 
 $resident_name = $_SESSION["resident_name_$barangay"] ?? 'Resident';
+$resident_id = $_SESSION[$session_key];
+
+$stmt = $conn->prepare("SELECT is_approved FROM tbl_residents WHERE id = ?");
+$stmt->execute([$resident_id]);
+$resident = $stmt->fetch(PDO::FETCH_ASSOC);
+
+if (!$resident) {
+    $_SESSION['error'] = "Resident not found.";
+    header("Location: ../../login.php");
+    exit();
+}
+
+$is_approved = $resident['is_approved'];
+$_SESSION["is_approved_$barangay"] = $is_approved; // Store in session
+
+
 ?>
 
 <!DOCTYPE html>
@@ -183,142 +201,145 @@ $resident_name = $_SESSION["resident_name_$barangay"] ?? 'Resident';
         <?php include('right_sidebar.php') ?>
     </section>
 
-    <!-- if verified show this content -->
-    <section class="content">
-        <div class="container-fluid">
-            <div class="block-header text-center" style="margin-bottom: 50px !important;">
-                <h3 style="color: #1a49cb;">Welcome User!</h3>
-                <h3 style="color: #1a49cb;">Resident System for Mataasnakahoy Barangays</h3>
-            </div>
-            <!-- Widgets -->
-            <div class="row clearfix">
-                <div class="col-sm-6 col-md-3 col-lg-4" onclick="window.location.href = 'family_profiling.php'">
-                    <div class="thumbnail text-center d-flex flex-column align-items-center justify-content-center" style="padding: 50px;">
-                        <i class="fas fa-users fa-3x mb-3 icon-style"></i>
-                        <div class="caption">
-                            <h3>Family Profiling</h3>
-                        </div>
-                    </div>
+    <?php if ($is_approved): ?>
+        <!-- if verified show this content -->
+        <section class="content">
+            <div class="container-fluid">
+                <div class="block-header text-center" style="margin-bottom: 50px !important;">
+                    <h3 style="color: #1a49cb;">Welcome User!</h3>
+                    <h3 style="color: #1a49cb;">Resident System for Mataasnakahoy Barangays</h3>
                 </div>
-
-                <div class="col-sm-6 col-md-3 col-lg-4" data-toggle="modal" data-target="#requestCertificateModal">
-                    <div class="thumbnail text-center d-flex flex-column align-items-center justify-content-center" style="padding: 50px;">
-                        <i class="fas fa-file fa-3x mb-3 icon-style"></i>
-                        <div class="caption">
-                            <h3>Document Request</h3>
-                        </div>
-                    </div>
-                </div>
-
-
-                <div class="modal fade" id="requestCertificateModal" tabindex="-1" role="dialog" style="display: none;">
-                    <div class="modal-dialog modal-lg" role="document">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h4 class="modal-title" id="defaultModalLabel">Request</h4>
+                <!-- Widgets -->
+                <div class="row clearfix">
+                    <div class="col-sm-6 col-md-3 col-lg-4" onclick="window.location.href = 'family_profiling.php'">
+                        <div class="thumbnail text-center d-flex flex-column align-items-center justify-content-center" style="padding: 50px;">
+                            <i class="fas fa-users fa-3x mb-3 icon-style"></i>
+                            <div class="caption">
+                                <h3>Family Profiling</h3>
                             </div>
-                            <div class="modal-body" style="max-height: 100vh; overflow-y: auto;">
-                                <div class="row">
-                                    <div class="col-sm-6 col-md-3 col-lg-6" onclick="window.location.href = 'request_certificate.php'">
-                                        <div class="thumbnail text-center d-flex flex-column align-items-center justify-content-center" style="padding: 50px;">
-                                            <i class="fas fa-file fa-3x mb-3 icon-style"></i>
-                                            <div class="caption">
-                                                <h3>Certificates</h3>
+                        </div>
+                    </div>
+
+                    <div class="col-sm-6 col-md-3 col-lg-4" data-toggle="modal" data-target="#requestCertificateModal">
+                        <div class="thumbnail text-center d-flex flex-column align-items-center justify-content-center" style="padding: 50px;">
+                            <i class="fas fa-file fa-3x mb-3 icon-style"></i>
+                            <div class="caption">
+                                <h3>Document Request</h3>
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <div class="modal fade" id="requestCertificateModal" tabindex="-1" role="dialog" style="display: none;">
+                        <div class="modal-dialog modal-lg" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h4 class="modal-title" id="defaultModalLabel">Request</h4>
+                                </div>
+                                <div class="modal-body" style="max-height: 100vh; overflow-y: auto;">
+                                    <div class="row">
+                                        <div class="col-sm-6 col-md-3 col-lg-6" onclick="window.location.href = 'request_certificate.php'">
+                                            <div class="thumbnail text-center d-flex flex-column align-items-center justify-content-center" style="padding: 50px;">
+                                                <i class="fas fa-file fa-3x mb-3 icon-style"></i>
+                                                <div class="caption">
+                                                    <h3>Certificates</h3>
+                                                </div>
                                             </div>
                                         </div>
-                                    </div>
 
-                                    <div class="col-sm-6 col-md-3 col-lg-6" onclick="window.location.href = 'request_operate.php'">
-                                        <div class="thumbnail text-center d-flex flex-column align-items-center justify-content-center" style="padding: 50px;">
-                                            <i class="fas fa-file fa-3x mb-3 icon-style"></i>
-                                            <div class="caption">
-                                                <h3>Operate</h3>
+                                        <div class="col-sm-6 col-md-3 col-lg-6" onclick="window.location.href = 'request_operate.php'">
+                                            <div class="thumbnail text-center d-flex flex-column align-items-center justify-content-center" style="padding: 50px;">
+                                                <i class="fas fa-file fa-3x mb-3 icon-style"></i>
+                                                <div class="caption">
+                                                    <h3>Operate</h3>
+                                                </div>
                                             </div>
                                         </div>
-                                    </div>
 
-                                    <div class="col-sm-6 col-md-3 col-lg-6" onclick="window.location.href = 'request_closure.php'">
-                                        <div class="thumbnail text-center d-flex flex-column align-items-center justify-content-center" style="padding: 50px;">
-                                            <i class="fas fa-file fa-3x mb-3 icon-style"></i>
-                                            <div class="caption">
-                                                <h3>Closure</h3>
+                                        <div class="col-sm-6 col-md-3 col-lg-6" onclick="window.location.href = 'request_closure.php'">
+                                            <div class="thumbnail text-center d-flex flex-column align-items-center justify-content-center" style="padding: 50px;">
+                                                <i class="fas fa-file fa-3x mb-3 icon-style"></i>
+                                                <div class="caption">
+                                                    <h3>Closure</h3>
+                                                </div>
                                             </div>
                                         </div>
-                                    </div>
 
-                                    <div class="col-sm-6 col-md-3 col-lg-6" onclick="window.location.href = 'request_cedula.php'">
-                                        <div class="thumbnail text-center d-flex flex-column align-items-center justify-content-center" style="padding: 50px;">
-                                            <i class="fas fa-file fa-3x mb-3 icon-style"></i>
-                                            <div class="caption">
-                                                <h3>Cedula</h3>
+                                        <div class="col-sm-6 col-md-3 col-lg-6" onclick="window.location.href = 'request_cedula.php'">
+                                            <div class="thumbnail text-center d-flex flex-column align-items-center justify-content-center" style="padding: 50px;">
+                                                <i class="fas fa-file fa-3x mb-3 icon-style"></i>
+                                                <div class="caption">
+                                                    <h3>Cedula</h3>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
+                                <!-- Footer Buttons aligned to bottom right -->
+                                <div class="modal-footer d-flex justify-content-end">
+                                    <button type="button" class="btn btn-link waves-effect" data-dismiss="modal">CLOSE</button>
+                                </div>
                             </div>
-                            <!-- Footer Buttons aligned to bottom right -->
-                            <div class="modal-footer d-flex justify-content-end">
-                                <button type="button" class="btn btn-link waves-effect" data-dismiss="modal">CLOSE</button>
+                        </div>
+                    </div>
+                    <!-- END ADD MODAL -->
+
+                    <div class="col-sm-6 col-md-3 col-lg-4" onclick="window.location.href = 'live_chat.php'">
+                        <div class="thumbnail text-center d-flex flex-column align-items-center justify-content-center" style="padding: 50px;">
+                            <i class="fas fa-comment fa-3x mb-3 icon-style"></i>
+                            <div class="caption">
+                                <h3>Live Chat</h3>
                             </div>
                         </div>
                     </div>
-                </div>
-                <!-- END ADD MODAL -->
+                    <div class="col-lg-2">
 
-                <div class="col-sm-6 col-md-3 col-lg-4" onclick="window.location.href = 'live_chat.php'">
-                    <div class="thumbnail text-center d-flex flex-column align-items-center justify-content-center" style="padding: 50px;">
-                        <i class="fas fa-comment fa-3x mb-3 icon-style"></i>
-                        <div class="caption">
-                            <h3>Live Chat</h3>
+                    </div>
+                    <div class="col-sm-6 col-md-3 col-lg-4" onclick="window.location.href = 'feedback.php'">
+                        <div class="thumbnail text-center d-flex flex-column align-items-center justify-content-center" style="padding: 50px;">
+                            <i class="fas fa-thumbs-up fa-3x mb-3 icon-style"></i>
+                            <div class="caption">
+                                <h3>Feedback</h3>
+                            </div>
                         </div>
                     </div>
-                </div>
-                <div class="col-lg-2">
-
-                </div>
-                <div class="col-sm-6 col-md-3 col-lg-4" onclick="window.location.href = 'feedback.php'">
-                    <div class="thumbnail text-center d-flex flex-column align-items-center justify-content-center" style="padding: 50px;">
-                        <i class="fas fa-thumbs-up fa-3x mb-3 icon-style"></i>
-                        <div class="caption">
-                            <h3>Feedback</h3>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-sm-6 col-md-3 col-lg-4" onclick="window.location.href = 'about_us.php'">
-                    <div class="thumbnail text-center d-flex flex-column align-items-center justify-content-center" style="padding: 50px;">
-                        <i class="fas fa-book-open fa-3x mb-3 icon-style"></i>
-                        <div class="caption">
-                            <h3>About Us</h3>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <!-- #END# Widgets -->
-        </div>
-    </section>
-    <!-- end content -->
-
-    <!-- if not verified show -->
-    <section class="content">
-        <div class="container-fluid">
-            <div class="block-header text-center" style="margin-bottom: 50px !important;">
-                <h3 style="color: #1a49cb;">Welcome!</h3>
-                <h3 style="color: #1a49cb;">Resident System for Mataasnakahoy Barangays</h3>
-            </div>
-            <!-- Widgets -->
-            <p><span style="color: red;">Notice:</span> Please complete the procedure add an family member to complete your registration</p>
-            <div class="row clearfix">
-                <div class="col-sm-6 col-md-3 col-lg-4" onclick="window.location.href = 'family_profiling.php'">
-                    <div class="thumbnail text-center d-flex flex-column align-items-center justify-content-center" style="padding: 50px;">
-                        <i class="fas fa-users fa-3x mb-3 icon-style"></i>
-                        <div class="caption">
-                            <h3>Family Profiling</h3>
+                    <div class="col-sm-6 col-md-3 col-lg-4" onclick="window.location.href = 'about_us.php'">
+                        <div class="thumbnail text-center d-flex flex-column align-items-center justify-content-center" style="padding: 50px;">
+                            <i class="fas fa-book-open fa-3x mb-3 icon-style"></i>
+                            <div class="caption">
+                                <h3>About Us</h3>
+                            </div>
                         </div>
                     </div>
                 </div>
                 <!-- #END# Widgets -->
             </div>
-    </section>
+        </section>
+        <!-- end content -->
+    <?php else: ?>
+
+        <!-- if not verified show -->
+        <section class="content">
+            <div class="container-fluid">
+                <div class="block-header text-center" style="margin-bottom: 50px !important;">
+                    <h3 style="color: #1a49cb;">Welcome!</h3>
+                    <h3 style="color: #1a49cb;">Resident System for Mataasnakahoy Barangays</h3>
+                </div>
+                <!-- Widgets -->
+                <p><span style="color: red;">NOTICE:</span> Please complete the steps to make your account verified add an family member to complete your registration</p>
+                <div class="row clearfix">
+                    <div class="col-sm-6 col-md-3 col-lg-4" onclick="window.location.href = 'family_profiling.php'">
+                        <div class="thumbnail text-center d-flex flex-column align-items-center justify-content-center" style="padding: 50px;">
+                            <i class="fas fa-users fa-3x mb-3 icon-style"></i>
+                            <div class="caption">
+                                <h3>Click here to add <br> Family Profiling</h3>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- #END# Widgets -->
+                </div>
+        </section>
+    <?php endif; ?>
     <!-- end not verified -->
     <!-- Jquery Core Js -->
     <script src="../plugins/jquery/jquery.min.js"></script>

@@ -18,6 +18,42 @@ $admin_position_key = "admin_position_$barangay";
 
 // database connection
 include '../../database/connection.php';
+
+// fetch the barangay of the admin
+$admin_id = $_SESSION[$session_key];
+$admin_stmt = $conn->prepare("SELECT barangay_id FROM tbl_admin WHERE id = ?");
+$admin_stmt->execute([$admin_id]);
+$admin_barangay_id = $admin_stmt->fetchColumn();
+
+// fetch total number of residents with the particular barangay
+$resident_count_stmt = $conn->prepare("
+    SELECT COUNT(*) 
+    FROM tbl_residents_family_members 
+    WHERE barangay_address = ? AND is_approved = 1
+");
+$resident_count_stmt->execute([$admin_barangay_id]);
+$total_residents = $resident_count_stmt->fetchColumn();
+
+
+// fetch pending approvals number of residents to approved
+$pending_resident_count_stmt = $conn->prepare("
+    SELECT COUNT(*) 
+    FROM tbl_residents_family_members 
+    WHERE barangay_address = ? 
+      AND is_approved = 0
+      AND resident_id NOT IN (
+          SELECT resident_id
+          FROM tbl_residents_family_members
+          GROUP BY resident_id
+          HAVING COUNT(*) = 1 AND MAX(relationship) = 'Account Owner'
+      )
+");
+$pending_resident_count_stmt->execute([$admin_barangay_id]);
+$pending_residents = $pending_resident_count_stmt->fetchColumn();
+
+
+
+
 ?>
 
 
@@ -197,18 +233,18 @@ include '../../database/connection.php';
                 <h3 style="color: #1a49cb;">Dashboard</h3>
             </div>
             <div class="row clearfix">
-                <div class="col-sm-6 col-md-3 col-lg-6" onclick="window.location.href = 'barangay_management.php'">
+                <div class="col-sm-6 col-md-3 col-lg-6" onclick="window.location.href = 'manage_residents.php'">
                     <div class="thumbnail text-center d-flex flex-column align-items-center justify-content-center" style="padding: 50px;">
-                        <h1>12</h1>
+                        <h1><?= $total_residents ?></h1>
                         <div class="caption">
                             <h3>Total Residents</h3>
                         </div>
                     </div>
                 </div>
 
-                <div class="col-sm-6 col-md-3 col-lg-6" onclick="window.location.href = 'admin_management.php'">
+                <div class="col-sm-6 col-md-3 col-lg-6" onclick="window.location.href = 'resident_verifications.php'">
                     <div class="thumbnail text-center d-flex flex-column align-items-center justify-content-center" style="padding: 50px;">
-                        <h1>12</h1>
+                        <h1><?= $pending_residents ?></h1>
                         <div class="caption">
                             <h3>Pending Approvals</h3>
                         </div>
@@ -335,6 +371,26 @@ include '../../database/connection.php';
     <!-- Demo Js -->
     <script src="../js/demo.js"></script>
     <script src="../plugins/sweetalert/sweetalert.min.js"></script>
+    <script>
+        <?php if (isset($_SESSION['success'])): ?>
+            swal({
+                type: 'success',
+                title: 'Success!',
+                text: '<?php echo $_SESSION['success']; ?>',
+                confirmButtonText: 'OK'
+            });
+            <?php unset($_SESSION['success']); ?>
+        <?php elseif (isset($_SESSION['error'])): ?>
+            swal({
+                type: 'error',
+                title: 'Oops...',
+                text: '<?php echo $_SESSION['error']; ?>',
+                confirmButtonText: 'OK'
+            });
+            <?php unset($_SESSION['error']); ?>
+        <?php endif; ?>
+    </script>
+
     <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/2.1.4/toastr.min.js" integrity="sha512-lbwH47l/tPXJYG9AcFNoJaTMhGvYWhVM9YI43CT+uteTRRaiLCui8snIgyAN8XWgNjNhCqlAUdzZptso6OCoFQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <?php if (isset($_GET['success'])): ?>
         <script>
@@ -358,6 +414,7 @@ include '../../database/connection.php';
             toastr.success("Welcome administrator!");
         </script>
     <?php endif; ?>
+
 </body>
 
 </html>

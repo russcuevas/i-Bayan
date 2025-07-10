@@ -25,6 +25,12 @@ $admin_stmt = $conn->prepare("SELECT barangay_id FROM tbl_admin WHERE id = ?");
 $admin_stmt->execute([$admin_id]);
 $admin_barangay_id = $admin_stmt->fetchColumn();
 
+// fetching residents
+$family_stmt = $conn->prepare("SELECT * FROM tbl_residents_family_members WHERE barangay_address = ? AND is_approved = 1");
+$family_stmt->execute([$admin_barangay_id]);
+
+$family_members = $family_stmt->fetchAll(PDO::FETCH_ASSOC);
+
 
 ?>
 
@@ -192,6 +198,14 @@ $admin_barangay_id = $admin_stmt->fetchColumn();
                         <div class="body">
                             <div class="text-right" style="margin-bottom: 15px;">
                                 <div class="btn-group">
+                                    <button type="button" class="btn bg-red dropdown-toggle waves-effect"
+                                        onclick="window.location.href='add_residents.php'">
+                                        <i style="font-size: 15px !important;" class="material-icons">add</i>
+                                        Add Residents
+                                    </button>
+                                </div>
+
+                                <div class="btn-group">
                                     <button type="button" class="btn bg-red dropdown-toggle waves-effect" data-toggle="dropdown" aria-expanded="false">
                                         <i style="font-size: 15px !important;" class="material-icons">filter_alt</i>
                                         View All Residents <span class="caret"></span>
@@ -216,7 +230,20 @@ $admin_barangay_id = $admin_stmt->fetchColumn();
                                         </tr>
                                     </thead>
                                     <tbody>
-
+                                        <?php foreach ($family_members as $member): ?>
+                                            <tr>
+                                                <td><?= htmlspecialchars($member['first_name'] . ' ' . $member['middle_name'] . ' ' . $member['last_name'] . ' ' . $member['suffix']) ?></td>
+                                                <td><?= htmlspecialchars($member['birthplace']) ?></td>
+                                                <td><?= htmlspecialchars($member['phone_number']) ?></td>
+                                                <td>
+                                                    <?= $member['is_working'] == 1 ? 'Working' : ($member['is_working'] == 2 ? 'Student' : 'None') ?>
+                                                </td>
+                                                <td>
+                                                    <a href="edit_family_member.php?id=<?= $member['id'] ?>" class="btn btn-sm btn-warning">Edit</a>
+                                                    <a href="delete_family_member.php?id=<?= $member['id'] ?>" class="btn btn-sm btn-danger" onclick="return confirm('Are you sure you want to delete this member?');">Delete</a>
+                                                </td>
+                                            </tr>
+                                        <?php endforeach; ?>
                                     </tbody>
                                 </table>
                             </div>
@@ -286,6 +313,25 @@ $admin_barangay_id = $admin_stmt->fetchColumn();
     <!-- Demo Js -->
     <script src="../js/demo.js"></script>
     <script src="../plugins/sweetalert/sweetalert.min.js"></script>
+    <script>
+        <?php if (isset($_SESSION['success'])): ?>
+            swal({
+                type: 'success',
+                title: 'Success!',
+                text: '<?php echo $_SESSION['success']; ?>',
+                confirmButtonText: 'OK'
+            });
+            <?php unset($_SESSION['success']); ?>
+        <?php elseif (isset($_SESSION['error'])): ?>
+            swal({
+                type: 'error',
+                title: 'Oops...',
+                text: '<?php echo $_SESSION['error']; ?>',
+                confirmButtonText: 'OK'
+            });
+            <?php unset($_SESSION['error']); ?>
+        <?php endif; ?>
+    </script>
 </body>
 
 </html>

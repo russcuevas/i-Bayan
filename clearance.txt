@@ -63,7 +63,7 @@ sms_config
 
 
 // USERS
-[   -- NOW WORKING --
+[   -- FINISH --
     tbl_residents
     first_name
     middle_name
@@ -90,7 +90,7 @@ sms_config
     updated_at
 ]
 
-[  -- NOW WORKING --
+[  -- FINISH --
     tbl_residents_family_members
     resident_id -> foreign to tbl_residents -> id
     first_name
@@ -112,6 +112,41 @@ sms_config
     school -> nullable
     occupation -> nullable
 ]
+
+// DONE
+request certificates
+tbl_certificates
+resident_id -> foreign to tbl_residents -> id
+certificate_type
+purpose
+fullname
+gender
+email
+contact
+valid_id
+birth_certificate
+is_resident
+picked_up_by
+relationship
+total_amount
+for_barangay
+
+tbl_certificates_claimed
+resident_id -> foreign to tbl_residents -> id
+document_number - randomized
+picked_up_by
+relationship
+certificate_type
+purpose
+fullname
+email
+gender
+contact
+valid_id
+total_amount_paid
+for_barangay -> foreign to tbl_barangay -> id
+created_at
+updated_at
 
 
 clearance to operate
@@ -162,22 +197,7 @@ for_barangay -> foreign to tbl_barangay -> id
 created_at
 updated_at
 
-tbl_certificates_completed
-resident_id -> foreign to tbl_residents -> id
-document_number - randomized
-picked_up_by
-relationship
-certificate_type
-purpose
-fullname
-email
-gender
-contact
-valid_id
-total_amount_paid
-for_barangay -> foreign to tbl_barangay -> id
-created_at
-updated_at
+
 
 tbl_certificates_completed
 resident_id -> foreign to tbl_residents -> id

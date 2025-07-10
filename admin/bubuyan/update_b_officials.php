@@ -264,7 +264,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                         <div>
                                             <img src="<?php echo $official['profile_picture'] ?: 'profile_picture/default_profile.png'; ?>"
                                                 alt="Profile" style="height: 100px;"><br>
-                                            <label>Profile:</label>
+                                            <label>Profile Picture</label>
 
                                         </div>
 

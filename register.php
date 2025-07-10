@@ -13,6 +13,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $last_name = $_POST['last_name'] ?? '';
     $suffix = $_POST['suffix'] ?? null;
     $gender = $_POST['gender'] ?? '';
+    $civil_status = $_POST['civil_status'] ?? '';
+
     $date_of_birth = $_POST['date_of_birth'] ?? '';
     $birthplace = $_POST['birthplace'] ?? '';
     $is_working = $_POST['is_working'] ?? 3;
@@ -52,7 +54,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         username, password, email, valid_id, phone_number, is_approved,
         is_online, created_at, updated_at
     ) VALUES (
-        :first_name, :middle_name, :last_name, :suffix, :gender, 'Single', :date_of_birth,
+        :first_name, :middle_name, :last_name, :suffix, :gender, :civil_status, :date_of_birth,
         :birthplace, :is_working, :school, :occupation, :barangay_address, :purok,
         :username, :password, :email, :valid_id, :phone_number, 0,
         'offline', :created_at, :updated_at
@@ -64,6 +66,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         ':last_name' => $last_name,
         ':suffix' => $suffix,
         ':gender' => $gender,
+        ':civil_status' => $civil_status,
         ':date_of_birth' => $date_of_birth,
         ':birthplace' => $birthplace,
         ':is_working' => $is_working,
@@ -88,14 +91,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $age = $dob->diff($today)->y;
 
     $stmtFamily = $conn->prepare("INSERT INTO tbl_residents_family_members (
-        resident_id, barangay_address, first_name, middle_name, last_name, suffix, relationship, gender,
-        date_of_birth, birthplace, age, civil_status, is_working, is_approved,
+        resident_id, barangay_address, first_name, middle_name, last_name, suffix, relationship, gender, civil_status,
+        date_of_birth, birthplace, age, is_working, is_approved,
         is_barangay_voted, years_in_barangay, phone_number, philhealth_number, school, occupation
     ) VALUES (
-        :resident_id, :barangay_address, :first_name, :middle_name, :last_name, :suffix, :relationship, :gender,
-        :date_of_birth, :birthplace, :age, :civil_status, :is_working, 0,
+        :resident_id, :barangay_address, :first_name, :middle_name, :last_name, :suffix, :relationship, :gender, :civil_status,
+        :date_of_birth, :birthplace, :age, :is_working, 0,
         :is_barangay_voted, :years_in_barangay, :phone_number, NULL, :school, :occupation
     )");
+
 
 
 
@@ -108,10 +112,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         ':suffix' => $suffix,
         ':relationship' => 'Account Owner',
         ':gender' => $gender,
+        ':civil_status' => $civil_status,
         ':date_of_birth' => $date_of_birth,
         ':birthplace' => $birthplace,
         ':age' => $age,
-        ':civil_status' => null,
         ':is_working' => $is_working,
         ':is_barangay_voted' => 0,
         ':years_in_barangay' => 0,
@@ -237,6 +241,17 @@ $barangays = $stmt->fetchAll(PDO::FETCH_ASSOC);
                                             </div>
                                         </div>
 
+                                        <div class="col-md-12" style="margin-bottom: 10px;">
+                                            <div class="form-group form-float">
+                                                <label class="form-label">Civil status <span style="color: red;">*</span></label>
+                                                <select class="form-control select-form" name="civil_status" required>
+                                                    <option value="" disabled selected>CHOOSE CIVIL STATUS</option>
+                                                    <option value="single">Single</option>
+                                                    <option value="married">Married</option>
+                                                </select>
+                                            </div>
+                                        </div>
+
                                         <div class="row" style="margin-bottom: 20px;">
                                             <div class="col-md-12">
                                                 <label><strong>Current Status</strong> <span style="color: red;">*</span></label><br>
@@ -251,6 +266,9 @@ $barangays = $stmt->fetchAll(PDO::FETCH_ASSOC);
                                             </div>
                                         </div>
 
+
+
+
                                         <!-- Occupation Input -->
                                         <div class="row" id="occupationDiv" style="display: none; margin-top: 10px;">
                                             <div class="col-md-12">
@@ -262,7 +280,6 @@ $barangays = $stmt->fetchAll(PDO::FETCH_ASSOC);
                                                 </div>
                                             </div>
                                         </div>
-
                                         <!-- School Input -->
                                         <div class="row" id="schoolDiv" style="display: none; margin-top: 10px;">
                                             <div class="col-md-12">
