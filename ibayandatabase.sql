@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jul 04, 2025 at 05:33 AM
+-- Generation Time: Jul 13, 2025 at 02:26 PM
 -- Server version: 10.4.27-MariaDB
 -- PHP Version: 8.2.0
 
@@ -47,8 +47,9 @@ CREATE TABLE `tbl_admin` (
 --
 
 INSERT INTO `tbl_admin` (`id`, `barangay_id`, `username`, `password`, `email`, `fullname`, `gender`, `contact_number`, `position`, `status`, `created_at`, `updated_at`) VALUES
-(7, 37, 'zyrellcali', 'f7c3bc1d808e04732adf679965ccc34ca7ae3441', 'zyrellhidalgo0@gmail.com', 'Zyrell Hidalgo', 'Female', '09495748300', 'staff', 'online', '2025-06-27 10:53:38', '2025-06-27 10:53:38'),
-(8, 36, 'shainebubuyan', 'f7c3bc1d808e04732adf679965ccc34ca7ae3441', 'shainebubuyan@gmail.com', 'Shaine Inciong', 'Female', '09495748300', 'barangay official', 'offline', '2025-06-27 15:53:04', '2025-06-27 15:53:04');
+(7, 37, 'zyrellcali', 'f7c3bc1d808e04732adf679965ccc34ca7ae3441', 'zyrellhidalgo0@gmail.com', 'Zyrell Hidalgo', 'Female', '09495748300', 'staff', 'offline', '2025-06-27 10:53:38', '2025-06-27 10:53:38'),
+(8, 36, 'shainebubuyan', 'f7c3bc1d808e04732adf679965ccc34ca7ae3441', 'shainebubuyan@gmail.com', 'Shaine Inciong', 'Female', '09495748300', 'barangay official', 'online', '2025-06-27 15:53:04', '2025-06-27 15:53:04'),
+(9, 37, 'samplecali', 'f7c3bc1d808e04732adf679965ccc34ca7ae3441', 'russ@gmail.com', 'Sample Lang', 'Male', '09495748302', 'administrator', 'online', '2025-07-10 16:59:20', '2025-07-10 16:59:20');
 
 -- --------------------------------------------------------
 
@@ -208,6 +209,138 @@ INSERT INTO `tbl_business_trade` (`id`, `code`, `name`, `price`, `created_at`, `
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `tbl_certificates`
+--
+
+CREATE TABLE `tbl_certificates` (
+  `id` int(11) NOT NULL,
+  `resident_id` int(11) NOT NULL,
+  `purok` varchar(100) DEFAULT NULL,
+  `certificate_type` varchar(100) DEFAULT NULL,
+  `purpose` varchar(100) DEFAULT NULL,
+  `fullname` varchar(150) DEFAULT NULL,
+  `gender` varchar(10) DEFAULT NULL,
+  `email` varchar(100) DEFAULT NULL,
+  `contact` varchar(20) DEFAULT NULL,
+  `valid_id` varchar(255) DEFAULT NULL,
+  `birth_certificate` varchar(255) DEFAULT NULL,
+  `is_resident` varchar(10) DEFAULT NULL,
+  `picked_up_by` varchar(150) DEFAULT NULL,
+  `relationship` varchar(50) DEFAULT NULL,
+  `total_amount` decimal(10,2) DEFAULT NULL,
+  `for_barangay` varchar(100) DEFAULT NULL,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  `status` varchar(50) DEFAULT 'Pending'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `tbl_certificates_claimed`
+--
+
+CREATE TABLE `tbl_certificates_claimed` (
+  `id` int(11) NOT NULL,
+  `resident_id` int(11) NOT NULL,
+  `purok` varchar(100) DEFAULT NULL,
+  `document_number` varchar(100) NOT NULL,
+  `picked_up_by` varchar(255) DEFAULT NULL,
+  `relationship` varchar(100) DEFAULT NULL,
+  `certificate_type` varchar(100) NOT NULL,
+  `purpose` text DEFAULT NULL,
+  `fullname` varchar(255) NOT NULL,
+  `email` varchar(255) DEFAULT NULL,
+  `gender` varchar(10) DEFAULT NULL,
+  `contact` varchar(50) DEFAULT NULL,
+  `valid_id` varchar(255) DEFAULT NULL,
+  `total_amount_paid` decimal(10,2) NOT NULL DEFAULT 0.00,
+  `for_barangay` int(11) NOT NULL,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `tbl_chats`
+--
+
+CREATE TABLE `tbl_chats` (
+  `id` int(11) NOT NULL,
+  `room_id` varchar(100) DEFAULT NULL,
+  `resident_id` int(11) DEFAULT NULL,
+  `admin_id` int(11) DEFAULT NULL,
+  `message` text NOT NULL,
+  `sender_type` enum('resident','admin') NOT NULL,
+  `chat_at` datetime DEFAULT current_timestamp(),
+  `is_read` tinyint(1) DEFAULT 0
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `tbl_operate`
+--
+
+CREATE TABLE `tbl_operate` (
+  `id` int(11) NOT NULL,
+  `resident_id` int(11) NOT NULL,
+  `document_number` varchar(50) NOT NULL,
+  `picked_up_by` varchar(100) DEFAULT NULL,
+  `relationship` varchar(50) DEFAULT NULL,
+  `certificate_type` varchar(100) DEFAULT 'Clearance to operate',
+  `purpose` text NOT NULL,
+  `business_name` varchar(150) NOT NULL,
+  `business_trade` int(11) NOT NULL,
+  `business_address` varchar(255) NOT NULL,
+  `owner_name` varchar(100) NOT NULL,
+  `owner_purok` varchar(50) NOT NULL,
+  `email` varchar(100) NOT NULL,
+  `contact` varchar(50) NOT NULL,
+  `for_barangay` int(11) NOT NULL,
+  `valid_id` varchar(255) DEFAULT NULL,
+  `birth_certificate` varchar(255) DEFAULT NULL,
+  `is_resident` varchar(10) NOT NULL,
+  `total_amount` decimal(10,2) NOT NULL,
+  `status` varchar(50) NOT NULL DEFAULT 'Pending',
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `tbl_operate_claimed`
+--
+
+CREATE TABLE `tbl_operate_claimed` (
+  `id` int(11) NOT NULL,
+  `resident_id` int(11) DEFAULT NULL,
+  `document_number` varchar(255) DEFAULT NULL,
+  `picked_up_by` varchar(255) DEFAULT NULL,
+  `relationship` varchar(100) DEFAULT NULL,
+  `certificate_type` varchar(100) DEFAULT 'Clearance to operate',
+  `purpose` text DEFAULT NULL,
+  `business_name` varchar(255) DEFAULT NULL,
+  `business_trade` int(11) DEFAULT NULL,
+  `business_address` text DEFAULT NULL,
+  `owner_name` varchar(255) DEFAULT NULL,
+  `owner_purok` varchar(255) DEFAULT NULL,
+  `email` varchar(255) DEFAULT NULL,
+  `contact` varchar(50) DEFAULT NULL,
+  `for_barangay` int(11) DEFAULT NULL,
+  `valid_id` varchar(255) DEFAULT NULL,
+  `birth_certificate` varchar(255) DEFAULT NULL,
+  `is_resident` varchar(10) DEFAULT NULL,
+  `total_amount` decimal(10,2) DEFAULT NULL,
+  `status` varchar(50) DEFAULT NULL,
+  `created_at` datetime DEFAULT current_timestamp(),
+  `updated_at` datetime DEFAULT current_timestamp() ON UPDATE current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `tbl_residents`
 --
 
@@ -238,13 +371,35 @@ CREATE TABLE `tbl_residents` (
   `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+-- --------------------------------------------------------
+
 --
--- Dumping data for table `tbl_residents`
+-- Table structure for table `tbl_residents_family_members`
 --
 
-INSERT INTO `tbl_residents` (`id`, `first_name`, `middle_name`, `last_name`, `suffix`, `gender`, `civil_status`, `date_of_birth`, `birthplace`, `is_working`, `school`, `occupation`, `barangay_address`, `purok`, `username`, `password`, `email`, `valid_id`, `phone_number`, `is_approved`, `is_online`, `remarks`, `created_at`, `updated_at`) VALUES
-(3, 'Sample Calingatan', 'Resident', 'Cuevas', '', 'Male', 'Single', '2001-12-26', 'Granja Lipa City', '1', '', 'Software Developer', 37, '4', 'samplecaliresident', '$2y$10$ilo6RnLxgFGO88PdojqFCugaT1ripJCC/JUL6JDsEUrgzC16DyLre', 'samplecali@gmail.com', 'public/valid_id/1751298398_me.jpg', '09495748300', 0, 'offline', NULL, '2025-06-30 09:46:38', '2025-07-04 02:13:35'),
-(6, 'Sample', 'Bubuyan', 'Resident', '', 'Male', 'Single', '2001-12-26', 'Bubuyan', '2', 'La Purisima Concepcion Academy', '', 36, '4', 'samplebubuyanresident', '$2y$10$5JMa9DJkaUSxE0GqPWXAluIpNSdDtOK25s2IU03rprqBFkLBGHieG', 'russelcuevas01@gmail.com', 'public/valid_id/1751299142_me.jpg', '09495748302', 0, 'offline', NULL, '2025-06-30 09:59:02', '2025-07-04 03:28:09');
+CREATE TABLE `tbl_residents_family_members` (
+  `id` int(11) NOT NULL,
+  `resident_id` int(11) DEFAULT NULL,
+  `barangay_address` int(11) DEFAULT NULL,
+  `first_name` varchar(100) NOT NULL,
+  `middle_name` varchar(100) NOT NULL,
+  `last_name` varchar(100) NOT NULL,
+  `suffix` varchar(20) DEFAULT NULL,
+  `relationship` varchar(100) NOT NULL,
+  `gender` varchar(10) NOT NULL,
+  `date_of_birth` date NOT NULL,
+  `birthplace` varchar(150) NOT NULL,
+  `age` int(11) NOT NULL,
+  `civil_status` varchar(50) DEFAULT NULL,
+  `is_working` varchar(100) DEFAULT NULL,
+  `is_approved` tinyint(1) DEFAULT 0,
+  `is_barangay_voted` tinyint(1) DEFAULT 0,
+  `years_in_barangay` int(11) NOT NULL,
+  `phone_number` varchar(20) DEFAULT NULL,
+  `philhealth_number` varchar(50) DEFAULT NULL,
+  `school` varchar(150) DEFAULT NULL,
+  `occupation` varchar(150) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
 
@@ -304,6 +459,48 @@ ALTER TABLE `tbl_business_trade`
   ADD UNIQUE KEY `code` (`code`);
 
 --
+-- Indexes for table `tbl_certificates`
+--
+ALTER TABLE `tbl_certificates`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `fk_certificates_resident` (`resident_id`);
+
+--
+-- Indexes for table `tbl_certificates_claimed`
+--
+ALTER TABLE `tbl_certificates_claimed`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `document_number` (`document_number`),
+  ADD KEY `resident_id` (`resident_id`),
+  ADD KEY `for_barangay` (`for_barangay`);
+
+--
+-- Indexes for table `tbl_chats`
+--
+ALTER TABLE `tbl_chats`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `resident_id` (`resident_id`),
+  ADD KEY `admin_id` (`admin_id`);
+
+--
+-- Indexes for table `tbl_operate`
+--
+ALTER TABLE `tbl_operate`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `fk_operate_resident` (`resident_id`),
+  ADD KEY `fk_operate_barangay` (`for_barangay`),
+  ADD KEY `fk_operate_trade` (`business_trade`);
+
+--
+-- Indexes for table `tbl_operate_claimed`
+--
+ALTER TABLE `tbl_operate_claimed`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `fk_claimed_resident` (`resident_id`),
+  ADD KEY `fk_claimed_business_trade` (`business_trade`),
+  ADD KEY `fk_claimed_barangay` (`for_barangay`);
+
+--
 -- Indexes for table `tbl_residents`
 --
 ALTER TABLE `tbl_residents`
@@ -311,6 +508,14 @@ ALTER TABLE `tbl_residents`
   ADD UNIQUE KEY `username` (`username`),
   ADD UNIQUE KEY `email` (`email`),
   ADD KEY `fk_barangay` (`barangay_address`);
+
+--
+-- Indexes for table `tbl_residents_family_members`
+--
+ALTER TABLE `tbl_residents_family_members`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `resident_id` (`resident_id`),
+  ADD KEY `fk_family_barangay` (`barangay_address`);
 
 --
 -- Indexes for table `tbl_superadmin`
@@ -328,7 +533,7 @@ ALTER TABLE `tbl_superadmin`
 -- AUTO_INCREMENT for table `tbl_admin`
 --
 ALTER TABLE `tbl_admin`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 
 --
 -- AUTO_INCREMENT for table `tbl_barangay`
@@ -349,10 +554,46 @@ ALTER TABLE `tbl_business_trade`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=79;
 
 --
+-- AUTO_INCREMENT for table `tbl_certificates`
+--
+ALTER TABLE `tbl_certificates`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+
+--
+-- AUTO_INCREMENT for table `tbl_certificates_claimed`
+--
+ALTER TABLE `tbl_certificates_claimed`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+
+--
+-- AUTO_INCREMENT for table `tbl_chats`
+--
+ALTER TABLE `tbl_chats`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=27;
+
+--
+-- AUTO_INCREMENT for table `tbl_operate`
+--
+ALTER TABLE `tbl_operate`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+
+--
+-- AUTO_INCREMENT for table `tbl_operate_claimed`
+--
+ALTER TABLE `tbl_operate_claimed`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+
+--
 -- AUTO_INCREMENT for table `tbl_residents`
 --
 ALTER TABLE `tbl_residents`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=19;
+
+--
+-- AUTO_INCREMENT for table `tbl_residents_family_members`
+--
+ALTER TABLE `tbl_residents_family_members`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=27;
 
 --
 -- AUTO_INCREMENT for table `tbl_superadmin`
@@ -377,10 +618,53 @@ ALTER TABLE `tbl_barangay_officials`
   ADD CONSTRAINT `tbl_barangay_officials_ibfk_1` FOREIGN KEY (`barangay`) REFERENCES `tbl_barangay` (`id`);
 
 --
+-- Constraints for table `tbl_certificates`
+--
+ALTER TABLE `tbl_certificates`
+  ADD CONSTRAINT `fk_certificates_resident` FOREIGN KEY (`resident_id`) REFERENCES `tbl_residents` (`id`) ON DELETE CASCADE;
+
+--
+-- Constraints for table `tbl_certificates_claimed`
+--
+ALTER TABLE `tbl_certificates_claimed`
+  ADD CONSTRAINT `tbl_certificates_claimed_ibfk_1` FOREIGN KEY (`resident_id`) REFERENCES `tbl_residents` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `tbl_certificates_claimed_ibfk_2` FOREIGN KEY (`for_barangay`) REFERENCES `tbl_barangay` (`id`) ON DELETE CASCADE;
+
+--
+-- Constraints for table `tbl_chats`
+--
+ALTER TABLE `tbl_chats`
+  ADD CONSTRAINT `tbl_chats_ibfk_1` FOREIGN KEY (`resident_id`) REFERENCES `tbl_residents` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `tbl_chats_ibfk_2` FOREIGN KEY (`admin_id`) REFERENCES `tbl_admin` (`id`) ON DELETE CASCADE;
+
+--
+-- Constraints for table `tbl_operate`
+--
+ALTER TABLE `tbl_operate`
+  ADD CONSTRAINT `fk_operate_barangay` FOREIGN KEY (`for_barangay`) REFERENCES `tbl_barangay` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `fk_operate_resident` FOREIGN KEY (`resident_id`) REFERENCES `tbl_residents` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `fk_operate_trade` FOREIGN KEY (`business_trade`) REFERENCES `tbl_business_trade` (`id`) ON DELETE CASCADE;
+
+--
+-- Constraints for table `tbl_operate_claimed`
+--
+ALTER TABLE `tbl_operate_claimed`
+  ADD CONSTRAINT `fk_claimed_barangay` FOREIGN KEY (`for_barangay`) REFERENCES `tbl_barangay` (`id`) ON DELETE SET NULL,
+  ADD CONSTRAINT `fk_claimed_business_trade` FOREIGN KEY (`business_trade`) REFERENCES `tbl_business_trade` (`id`) ON DELETE SET NULL,
+  ADD CONSTRAINT `fk_claimed_resident` FOREIGN KEY (`resident_id`) REFERENCES `tbl_residents` (`id`) ON DELETE CASCADE;
+
+--
 -- Constraints for table `tbl_residents`
 --
 ALTER TABLE `tbl_residents`
   ADD CONSTRAINT `fk_barangay` FOREIGN KEY (`barangay_address`) REFERENCES `tbl_barangay` (`id`) ON DELETE CASCADE;
+
+--
+-- Constraints for table `tbl_residents_family_members`
+--
+ALTER TABLE `tbl_residents_family_members`
+  ADD CONSTRAINT `fk_family_barangay` FOREIGN KEY (`barangay_address`) REFERENCES `tbl_barangay` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `tbl_residents_family_members_ibfk_1` FOREIGN KEY (`resident_id`) REFERENCES `tbl_residents` (`id`);
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
