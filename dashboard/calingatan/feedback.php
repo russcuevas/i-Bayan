@@ -1,3 +1,52 @@
+<?php
+session_start();
+include '../../database/connection.php';
+
+$barangay = basename(__DIR__);
+$session_key = "resident_id_$barangay";
+
+if (!isset($_SESSION[$session_key])) {
+    header("Location: ../../login.php");
+    exit();
+}
+
+$resident_name = $_SESSION["resident_name_$barangay"] ?? 'Resident';
+$resident_id = $_SESSION[$session_key];
+
+// Get is_approved and barangay id
+$stmt = $conn->prepare("SELECT is_approved, barangay_address FROM tbl_residents WHERE id = ?");
+$stmt->execute([$resident_id]);
+$resident = $stmt->fetch(PDO::FETCH_ASSOC);
+
+if (!$resident) {
+    $_SESSION['error'] = "Resident not found.";
+    header("Location: ../../login.php");
+    exit();
+}
+
+$is_approved = $resident['is_approved'];
+$barangay_id = $resident['barangay_address'];
+$_SESSION["is_approved_$barangay"] = $is_approved;
+$_SESSION["barangay_id_$barangay"] = $barangay_id;
+
+// Handle feedback form submission
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $rating = intval($_POST['rating'] ?? 0);
+    $message = trim($_POST['message'] ?? '');
+
+    if ($rating >= 1 && $rating <= 5 && !empty($message)) {
+        $stmt = $conn->prepare("INSERT INTO tbl_feedback (resident_id, message, rating, barangay) VALUES (?, ?, ?, ?)");
+        $stmt->execute([$resident_id, $message, $rating, $barangay_id]);
+
+        $_SESSION['success'] = "Thank you for your feedback!";
+        header("Location: " . $_SERVER['PHP_SELF']);
+        exit();
+    } else {
+        $_SESSION['error'] = "Please provide a rating and message.";
+    }
+}
+?>
+
 <!DOCTYPE html>
 <html>
 
@@ -131,13 +180,14 @@
                             <form id="form_validation" method="POST">
                                 <div class="form-group form-float" style="margin-top: 20px;">
                                     <label style="font-weight: bold;">How was your experience with our system? <span style="color:red;">*</span></label>
-                                    <div class="rating-stars text-warning" style="font-size: 24px;">
-                                        <i class="fa fa-star star" data-value="1"></i>
-                                        <i class="fa fa-star star" data-value="2"></i>
-                                        <i class="fa fa-star star" data-value="3"></i>
-                                        <i class="fa fa-star star" data-value="4"></i>
-                                        <i class="fa fa-star star" data-value="5"></i>
+                                    <div class="rating-stars" style="font-size: 24px;">
+                                        <i class="fa fa-star star text-muted" data-value="1"></i>
+                                        <i class="fa fa-star star text-muted" data-value="2"></i>
+                                        <i class="fa fa-star star text-muted" data-value="3"></i>
+                                        <i class="fa fa-star star text-muted" data-value="4"></i>
+                                        <i class="fa fa-star star text-muted" data-value="5"></i>
                                     </div>
+
                                     <input type="hidden" name="rating" id="rating" required>
                                 </div>
 
@@ -205,7 +255,46 @@
     <!-- Demo Js -->
     <script src="../js/demo.js"></script>
     <script src="../plugins/sweetalert/sweetalert.min.js"></script>
+    <script>
+        <?php if (isset($_SESSION['success'])): ?>
+            swal({
+                type: 'success',
+                title: 'Success!',
+                text: '<?php echo $_SESSION['success']; ?>',
+                confirmButtonText: 'OK'
+            });
+            <?php unset($_SESSION['success']); ?>
+        <?php elseif (isset($_SESSION['error'])): ?>
+            swal({
+                type: 'error',
+                title: 'Oops...',
+                text: '<?php echo $_SESSION['error']; ?>',
+                confirmButtonText: 'OK'
+            });
+            <?php unset($_SESSION['error']); ?>
+        <?php endif; ?>
+    </script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const stars = document.querySelectorAll('.rating-stars .star');
+            const ratingInput = document.getElementById('rating');
 
+            stars.forEach(star => {
+                star.classList.add('text-muted'); // set default style
+                star.addEventListener('click', () => {
+                    const value = parseInt(star.dataset.value);
+                    ratingInput.value = value;
+
+                    // Update star visuals
+                    stars.forEach(s => {
+                        const sVal = parseInt(s.dataset.value);
+                        s.classList.toggle('text-warning', sVal <= value);
+                        s.classList.toggle('text-muted', sVal > value);
+                    });
+                });
+            });
+        });
+    </script>
 </body>
 
 </html>

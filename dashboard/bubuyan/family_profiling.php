@@ -20,6 +20,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && $resident_id) {
     $middle_name = $_POST['middle_name'];
     $last_name = $_POST['last_name'];
     $suffix = $_POST['suffix'] ?? null;
+    $purok = $_POST['purok'];
     $gender = $_POST['gender'];
     $date_of_birth = $_POST['birthday'];
     $birthplace = $_POST['birthplace'];
@@ -34,10 +35,10 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && $resident_id) {
     $philhealth_number = $_POST['philhealth'] ?? null;
 
     $stmt = $conn->prepare("INSERT INTO tbl_residents_family_members (
-        resident_id, barangay_address, first_name, middle_name, last_name, suffix, relationship, gender, date_of_birth, birthplace, age,
+        resident_id, barangay_address, first_name, middle_name, last_name, suffix, purok, relationship, gender, date_of_birth, birthplace, age,
         civil_status, is_working, is_approved, is_barangay_voted, years_in_barangay, phone_number, philhealth_number, school, occupation
     ) VALUES (
-        :resident_id, :barangay_address, :first_name, :middle_name, :last_name, :suffix, :relationship, :gender, :date_of_birth, :birthplace, :age,
+        :resident_id, :barangay_address, :first_name, :middle_name, :last_name, :suffix, :purok, :relationship, :gender, :date_of_birth, :birthplace, :age,
         :civil_status, :is_working, 0, :is_barangay_voted, :years_in_barangay, :phone_number, :philhealth_number, :school, :occupation
     )");
 
@@ -48,6 +49,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && $resident_id) {
         ':middle_name' => $middle_name,
         ':last_name' => $last_name,
         ':suffix' => $suffix,
+        ':purok' => $purok,
         ':relationship' => $relationship,
         ':gender' => $gender,
         ':date_of_birth' => $date_of_birth,
@@ -83,6 +85,16 @@ if ($resident_id) {
     $stmt->execute([':resident_id' => $resident_id]);
     $family_members = $stmt->fetchAll(PDO::FETCH_ASSOC);
 }
+
+$is_verified_member_exist = false;
+
+foreach ($family_members as $member) {
+    if ($member['is_approved'] == 1) {
+        $is_verified_member_exist = true;
+        break;
+    }
+}
+
 
 
 ?>
@@ -219,6 +231,11 @@ if ($resident_id) {
                             <h2>FAMILY PROFILING LIST</h2>
                         </div>
                         <div class="body">
+                            <div class="alert bg-red" role="alert">
+                                <strong>Note:</strong> Once your family members are verified,
+                                you will no longer be able to add or modify them. Please contact your <strong>Barangay Admin</strong>
+                                if changes are needed or if you want to add new family members.
+                            </div>
                             <ul id="family-profiling-list">
                                 <?php if (!empty($family_members)): ?>
                                     <?php foreach ($family_members as $member): ?>
@@ -241,217 +258,233 @@ if ($resident_id) {
                 </div>
 
 
-                <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12">
-                    <div class="card">
-                        <div class="header">
-                            <h2>ADD FAMILY MEMBERS</h2>
-                        </div>
-                        <div class="body">
-                            <form id="add_family_profiling" action="" method="POST" style="margin-top: 20px;">
-                                <input type="hidden" name="resident_id" value="<?= htmlspecialchars($_SESSION["resident_id_" . basename(__DIR__)] ?? '') ?>">
-                                <input type="hidden" name="barangay_address" value="<?= htmlspecialchars($_SESSION["barangay_id_" . basename(__DIR__)] ?? '') ?>">
+                <?php if (!$is_verified_member_exist): ?>
 
-                                <h4 class="bold span-or mb-4" style="font-weight: 900; color: #1a49cb;">
-                                    Relationship to Family Member
-                                </h4> <br>
+                    <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12">
+                        <div class="card">
+                            <div class="header">
+                                <h2>ADD FAMILY MEMBERS</h2>
+                            </div>
+                            <div class="body">
+                                <form id="add_family_profiling" action="" method="POST" style="margin-top: 20px;">
+                                    <input type="hidden" name="resident_id" value="<?= htmlspecialchars($_SESSION["resident_id_" . basename(__DIR__)] ?? '') ?>">
+                                    <input type="hidden" name="barangay_address" value="<?= htmlspecialchars($_SESSION["barangay_id_" . basename(__DIR__)] ?? '') ?>">
 
-                                <div class="row">
-                                    <div class="col-md-12">
-                                        <div class="form-group form-float">
-                                            <label class="form-label">Relationship <span style="color: red;">*</span></label>
-                                            <select class="form-control select-form" name="relationship" required>
-                                                <option value="" disabled selected>CHOOSE RELATIONSHIP</option>
-                                                <option value="grandfather">Grandfather</option>
-                                                <option value="grandmother">Grandmother</option>
-                                                <option value="father">Father</option>
-                                                <option value="mother">Mother</option>
-                                                <option value="sibling">Sibling</option>
-                                                <option value="son">Son</option>
-                                            </select>
-                                        </div>
-                                    </div>
-                                </div>
+                                    <h4 class="bold span-or mb-4" style="font-weight: 900; color: #1a49cb;">
+                                        Relationship to Family Member
+                                    </h4> <br>
 
-                                <h4 class="bold span-or mb-4" style="font-weight: 900; color: #1a49cb;">
-                                    Personal Information
-                                </h4> <br>
-                                <div class="row">
-                                    <div class="col-md-6" style="margin-top: 10px;">
-                                        <div class="form-group form-float">
-                                            <div class="form-line">
-                                                <input type="text" class="form-control" name="first_name" required>
-                                                <label class="form-label">First name <span style="color: red;">*</span></label>
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <div class="form-group form-float">
+                                                <label class="form-label">Relationship <span style="color: red;">*</span></label>
+                                                <select class="form-control select-form" name="relationship" required>
+                                                    <option value="" disabled selected>CHOOSE RELATIONSHIP</option>
+                                                    <option value="grandfather">Grandfather</option>
+                                                    <option value="grandmother">Grandmother</option>
+                                                    <option value="father">Father</option>
+                                                    <option value="mother">Mother</option>
+                                                    <option value="sibling">Sibling</option>
+                                                    <option value="son">Son</option>
+                                                </select>
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="col-md-6" style="margin-top: 10px;">
-                                        <div class="form-group form-float">
-                                            <div class="form-line">
-                                                <input type="text" class="form-control" name="middle_name" required>
-                                                <label class="form-label">Middle name <span style="color: red;">*</span></label>
+
+                                    <h4 class="bold span-or mb-4" style="font-weight: 900; color: #1a49cb;">
+                                        Personal Information
+                                    </h4> <br>
+                                    <div class="row">
+
+                                        <div class="col-md-6" style="margin-top: 10px;">
+                                            <div class="form-group form-float">
+                                                <div class="form-line">
+                                                    <input type="text" class="form-control" name="first_name" required>
+                                                    <label class="form-label">First name <span style="color: red;">*</span></label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6" style="margin-top: 10px;">
+                                            <div class="form-group form-float">
+                                                <div class="form-line">
+                                                    <input type="text" class="form-control" name="middle_name" required>
+                                                    <label class="form-label">Middle name <span style="color: red;">*</span></label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6" style="margin-top: 10px;">
+                                            <div class="form-group form-float">
+                                                <div class="form-line">
+                                                    <input type="text" class="form-control" name="last_name" required>
+                                                    <label class="form-label">Last name <span style="color: red;">*</span></label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6" style="margin-top: 10px; margin-bottom: 25px">
+                                            <div class="form-group form-float">
+                                                <div class="form-line">
+                                                    <input type="text" class="form-control" name="suffix">
+                                                    <label class="form-label">Suffix</label>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-6" style="margin-top: 10px;">
+                                            <div class="form-group form-float">
+                                                <div class="form-line">
+                                                    <input type="text" class="form-control" name="purok" required>
+                                                    <label class="form-label">Purok <span style="color: red;">*</span></label>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-6" style="margin-bottom: 20px;">
+                                            <div class="form-group">
+                                                <label for="gender">Gender <span style="color: red;">*</span></label><br>
+
+                                                <input type="radio" name="gender" id="male" value="Male" checked>
+                                                <label for="male">Male</label>
+
+                                                <input type="radio" name="gender" id="female" value="Female" class="m-l-20">
+                                                <label for="female">Female</label>
+
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="col-md-6" style="margin-top: 10px;">
-                                        <div class="form-group form-float">
-                                            <div class="form-line">
-                                                <input type="text" class="form-control" name="last_name" required>
-                                                <label class="form-label">Last name <span style="color: red;">*</span></label>
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="form-group form-float">
+                                                <div class="form-line">
+                                                    <input type="date" class="form-control" name="birthday" required>
+                                                    <label class="form-label">Date of birth <span style="color: red;">*</span></label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="form-group form-float">
+                                                <div class="form-line">
+                                                    <input type="text" class="form-control" name="birthplace" required>
+                                                    <label class="form-label">Birthplace <span style="color: red;">*</span></label>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="col-md-6" style="margin-top: 10px; margin-bottom: 25px">
-                                        <div class="form-group form-float">
-                                            <div class="form-line">
-                                                <input type="text" class="form-control" name="suffix">
-                                                <label class="form-label">Suffix</label>
+
+                                    <div class="row">
+                                        <div class="col-md-6" style="margin-top: 13px;">
+                                            <div class="form-group form-float">
+                                                <div class="form-line">
+                                                    <input type="number" class="form-control" name="age" required>
+                                                    <label class="form-label">Age <span style="color: red;">*</span></label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="form-group form-float">
+                                                <label class="form-label">Civil status <span style="color: red;">*</span></label>
+                                                <select class="form-control select-form" name="civil_status" required>
+                                                    <option value="" disabled selected>CHOOSE CIVIL STATUS</option>
+                                                    <option value="single">Single</option>
+                                                    <option value="married">Married</option>
+                                                </select>
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="col-md-6" style="margin-bottom: 20px;">
-                                        <div class="form-group">
-                                            <label for="gender">Gender <span style="color: red;">*</span></label><br>
 
-                                            <input type="radio" name="gender" id="male" value="Male" checked>
-                                            <label for="male">Male</label>
+                                    <div class="row" style="margin-bottom: 20px;">
+                                        <div class="col-md-12">
+                                            <label><strong>Current Status</strong></label><br>
+                                            <input type="radio" name="is_working" value="1" id="working">
+                                            <label for="working">Working</label>
 
-                                            <input type="radio" name="gender" id="female" value="Female" class="m-l-20">
-                                            <label for="female">Female</label>
+                                            <input type="radio" name="is_working" value="2" id="student" style="margin-left: 15px;">
+                                            <label for="student">Student</label>
 
+                                            <input type="radio" name="is_working" value="3" id="none" style="margin-left: 15px;" checked>
+                                            <label for="none">None</label>
                                         </div>
                                     </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-md-6">
-                                        <div class="form-group form-float">
-                                            <div class="form-line">
-                                                <input type="date" class="form-control" name="birthday" required>
-                                                <label class="form-label">Date of birth <span style="color: red;">*</span></label>
+
+                                    <!-- Occupation Input -->
+                                    <div class="row" id="occupationDiv" style="display: none; margin-top: 10px;">
+                                        <div class="col-md-12">
+                                            <div class="form-group form-float">
+                                                <div class="form-line">
+                                                    <input type="text" class="form-control" name="occupation">
+                                                    <label class="form-label">Occupation <span style="color: red;">*</span></label>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="col-md-6">
-                                        <div class="form-group form-float">
-                                            <div class="form-line">
-                                                <input type="text" class="form-control" name="birthplace" required>
-                                                <label class="form-label">Birthplace <span style="color: red;">*</span></label>
+
+                                    <!-- School Input -->
+                                    <div class="row" id="schoolDiv" style="display: none; margin-top: 10px;">
+                                        <div class="col-md-12">
+                                            <div class="form-group form-float">
+                                                <div class="form-line">
+                                                    <input type="text" class="form-control" name="school">
+                                                    <label class="form-label">School <span style="color: red;">*</span></label>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
-                                </div>
 
-                                <div class="row">
-                                    <div class="col-md-6" style="margin-top: 13px;">
-                                        <div class="form-group form-float">
-                                            <div class="form-line">
-                                                <input type="number" class="form-control" name="age" required>
-                                                <label class="form-label">Age <span style="color: red;">*</span></label>
+                                    <h4 class="bold span-or mb-4" style="font-weight: 900; color: #1a49cb;">
+                                        Other Information
+                                    </h4> <br>
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label for="botante">Botante ba dito? <span style="color: red;">*</span></label><br>
+
+                                                <input type="radio" name="botante" id="yes" value="yes" checked>
+                                                <label for="yes">Yes</label>
+
+                                                <input type="radio" name="botante" id="no" value="no" class="m-l-20">
+                                                <label for="no">No</label>
+
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6" style="margin-top: 15px !important;">
+                                            <div class="form-group form-float">
+                                                <div class="form-line">
+                                                    <input type="text" class="form-control" name="gaano_katagal" required>
+                                                    <label class="form-label">Gaano katagal ka sa barangay? <span style="color: red;">*</span></label>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="col-md-6">
-                                        <div class="form-group form-float">
-                                            <label class="form-label">Civil status <span style="color: red;">*</span></label>
-                                            <select class="form-control select-form" name="civil_status" required>
-                                                <option value="" disabled selected>CHOOSE CIVIL STATUS</option>
-                                                <option value="single">Single</option>
-                                                <option value="married">Married</option>
-                                            </select>
+
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="form-group form-float">
+                                                <div class="form-line">
+                                                    <input type="number" class="form-control" name="mobile">
+                                                    <label class="form-label">Mobile #</label>
+                                                </div>
+                                            </div>
                                         </div>
-                                    </div>
-                                </div>
-
-                                <div class="row" style="margin-bottom: 20px;">
-                                    <div class="col-md-12">
-                                        <label><strong>Current Status</strong></label><br>
-                                        <input type="radio" name="is_working" value="1" id="working">
-                                        <label for="working">Working</label>
-
-                                        <input type="radio" name="is_working" value="2" id="student" style="margin-left: 15px;">
-                                        <label for="student">Student</label>
-
-                                        <input type="radio" name="is_working" value="3" id="none" style="margin-left: 15px;" checked>
-                                        <label for="none">None</label>
-                                    </div>
-                                </div>
-
-                                <!-- Occupation Input -->
-                                <div class="row" id="occupationDiv" style="display: none; margin-top: 10px;">
-                                    <div class="col-md-12">
-                                        <div class="form-group form-float">
-                                            <div class="form-line">
-                                                <input type="text" class="form-control" name="occupation">
-                                                <label class="form-label">Occupation <span style="color: red;">*</span></label>
+                                        <div class="col-md-6">
+                                            <div class="form-group form-float">
+                                                <div class="form-line">
+                                                    <input type="text" class="form-control" name="philhealth">
+                                                    <label class="form-label">Philhealth #</label>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
-                                </div>
 
-                                <!-- School Input -->
-                                <div class="row" id="schoolDiv" style="display: none; margin-top: 10px;">
-                                    <div class="col-md-12">
-                                        <div class="form-group form-float">
-                                            <div class="form-line">
-                                                <input type="text" class="form-control" name="school">
-                                                <label class="form-label">School <span style="color: red;">*</span></label>
-                                            </div>
-                                        </div>
+                                    <div class="text-right">
+                                        <button class="btn bg-teal waves-effect" type="submit">SAVE</button>
+                                        <button type="button" class="btn btn-link waves-effect" onclick="window.location.href = 'all_clients.php'">BACK</button>
                                     </div>
-                                </div>
-
-                                <h4 class="bold span-or mb-4" style="font-weight: 900; color: #1a49cb;">
-                                    Other Information
-                                </h4> <br>
-                                <div class="row">
-                                    <div class="col-md-6">
-                                        <div class="form-group">
-                                            <label for="botante">Botante ba dito? <span style="color: red;">*</span></label><br>
-
-                                            <input type="radio" name="botante" id="yes" value="yes" checked>
-                                            <label for="yes">Yes</label>
-
-                                            <input type="radio" name="botante" id="no" value="no" class="m-l-20">
-                                            <label for="no">No</label>
-
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6" style="margin-top: 15px !important;">
-                                        <div class="form-group form-float">
-                                            <div class="form-line">
-                                                <input type="text" class="form-control" name="gaano_katagal" required>
-                                                <label class="form-label">Gaano katagal ka sa barangay? <span style="color: red;">*</span></label>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="row">
-                                    <div class="col-md-6">
-                                        <div class="form-group form-float">
-                                            <div class="form-line">
-                                                <input type="number" class="form-control" name="mobile">
-                                                <label class="form-label">Mobile #</label>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <div class="form-group form-float">
-                                            <div class="form-line">
-                                                <input type="text" class="form-control" name="philhealth">
-                                                <label class="form-label">Philhealth #</label>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="text-right">
-                                    <button class="btn bg-teal waves-effect" type="submit">SAVE</button>
-                                    <button type="button" class="btn btn-link waves-effect" onclick="window.location.href = 'all_clients.php'">BACK</button>
-                                </div>
-                            </form>
+                                </form>
+                            </div>
                         </div>
                     </div>
-                </div>
+                <?php else: ?>
+                <?php endif; ?>
+
             </div>
             <!-- #END# Basic Validation -->
         </div>

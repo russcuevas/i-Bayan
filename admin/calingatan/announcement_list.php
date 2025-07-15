@@ -19,12 +19,17 @@ $admin_position_key = "admin_position_$barangay";
 // database connection
 include '../../database/connection.php';
 
-// fetch the barangay of the admin
+// fetching residents where in same of the barangay of the admin
 $admin_id = $_SESSION[$session_key];
 $admin_stmt = $conn->prepare("SELECT barangay_id FROM tbl_admin WHERE id = ?");
 $admin_stmt->execute([$admin_id]);
 $admin_barangay_id = $admin_stmt->fetchColumn();
 
+// fetching residents
+$announcement_stmt = $conn->prepare("SELECT * FROM tbl_announcement WHERE barangay = ? AND status = 'active'");
+$announcement_stmt->execute([$admin_barangay_id]);
+
+$announcement = $announcement_stmt->fetchAll(PDO::FETCH_ASSOC);
 
 ?>
 <!DOCTYPE html>
@@ -234,7 +239,7 @@ $admin_barangay_id = $admin_stmt->fetchColumn();
                             <ul id="tagList" class="report-tags">
                                 <li><a href="residents.php"><i class="fa-solid fa-users"></i> Residents</a></li>
                                 <li><a href="reports/email_sent.php"><i class="fa-solid fa-envelope"></i> Email Sent</a></li>
-                                <li><a href="announcement_list.php"><i class="fa-solid fa-bullhorn"></i> Announcement</a></li>
+                                <li><a href="announcement_details.php" class="active"><i class="fa-solid fa-bullhorn"></i> Announcement</a></li>
                                 <li><a href="reports/activity_logs.php"><i class="fa-solid fa-list-check"></i> Activity Logs</a></li>
                             </ul>
                         </div>
@@ -245,12 +250,33 @@ $admin_barangay_id = $admin_stmt->fetchColumn();
                 <!-- RIGHT CARD -->
                 <div class="col-lg-8 col-md-8 col-sm-12 col-xs-12">
                     <div class="card">
-                        <div class="header">
-                            <h2>LIST</h2>
+                        <div class="header" style="display: flex; justify-content: space-between; align-items: center;">
+                            <h2>ANNOUNCEMENT LIST</h2>
+                            <a href="print_announcement.php" target="_blank" class="btn btn-primary">
+                                <i class="fa fa-print"></i> Print
+                            </a>
                         </div>
+
                         <div class="body">
                             <div class="table-responsive">
-                                <h1 style="text-align: center;">Please select categories</h1>
+                                <table class="table table-bordered table-striped table-hover js-basic-example dataTable">
+                                    <thead>
+                                        <tr>
+                                            <th>Title</th>
+                                            <th>Content</th>
+                                            <th>Venue</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <?php foreach ($announcement as $item): ?>
+                                            <tr>
+                                                <td><?= htmlspecialchars($item['announcement_title']) ?></td>
+                                                <td><?= htmlspecialchars($item['announcement_content']) ?></td>
+                                                <td><?= htmlspecialchars($item['announcement_venue']) ?></td>
+                                            </tr>
+                                        <?php endforeach; ?>
+                                    </tbody>
+                                </table>
                             </div>
                         </div>
                     </div>

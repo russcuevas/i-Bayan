@@ -255,15 +255,18 @@ rating
 barangay -> foreign to tbl_barangay -> id
 created_at
 
-tbl_announcement
-announcement_title
-announcement_content
-announcement_venue -> nullable
-announcement_image -> nullable
-barangay -> foreign to tbl_barangay -> id
-status
-created_at
-updated_at
+[ -OKAY-
+    tbl_announcement
+    announcement_title
+    announcement_content
+    announcement_venue -> nullable
+    announcement_image -> nullable
+    barangay -> foreign to tbl_barangay -> id
+    status
+    created_at
+    updated_at
+]
+
 
 tbl_system_preference
 system_logo

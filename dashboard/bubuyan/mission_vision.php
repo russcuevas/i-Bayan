@@ -1,3 +1,43 @@
+<?php
+session_start();
+include '../../database/connection.php';
+
+$barangay = basename(__DIR__);
+$session_key = "resident_id_$barangay";
+
+if (!isset($_SESSION[$session_key])) {
+    header("Location: ../../login.php");
+    exit();
+}
+
+$resident_name = $_SESSION["resident_name_$barangay"] ?? 'Resident';
+$resident_id = $_SESSION[$session_key];
+
+// Fetch resident info, including barangay ID
+$stmt = $conn->prepare("SELECT is_approved, barangay_address FROM tbl_residents WHERE id = ?");
+$stmt->execute([$resident_id]);
+$resident = $stmt->fetch(PDO::FETCH_ASSOC);
+
+if (!$resident) {
+    $_SESSION['error'] = "Resident not found.";
+    header("Location: ../../login.php");
+    exit();
+}
+
+$is_approved = $resident['is_approved'];
+$_SESSION["is_approved_$barangay"] = $is_approved;
+
+$barangay_id = $resident['barangay_address'];
+
+// Fetch mission and vision from tbl_barangay
+$stmt = $conn->prepare("SELECT mission, vision FROM tbl_barangay WHERE id = ?");
+$stmt->execute([$barangay_id]);
+$barangay_info = $stmt->fetch(PDO::FETCH_ASSOC);
+
+$mission = $barangay_info['mission'] ?? 'Mission not available.';
+$vision = $barangay_info['vision'] ?? 'Vision not available.';
+?>
+
 <!DOCTYPE html>
 <html>
 
@@ -129,16 +169,17 @@
                         <div class="col-md-6">
                             <h4 class="text-center" style="font-weight: 900; color: #1a49cb;">Mission</h4>
                             <p style="text-align: justify; font-size: 15px;">
-                                Our mission is to provide efficient, transparent, and accessible services to every member of our barangay through digital transformation and community involvement.
+                                <?php echo htmlspecialchars($mission); ?>
                             </p>
                         </div>
 
                         <div class="col-md-6">
                             <h4 class="text-center" style="font-weight: 900; color: #1a49cb;">Vision</h4>
                             <p style="text-align: justify; font-size: 15px;">
-                                To be a model barangay recognized for excellence in governance, inclusive growth, and innovation-driven public service delivery.
+                                <?php echo htmlspecialchars($vision); ?>
                             </p>
                         </div>
+
                     </div>
 
                     <h4 class="text-center" style="font-weight: 900; color: #1a49cb;">Barangay Officials Year ()</h4>

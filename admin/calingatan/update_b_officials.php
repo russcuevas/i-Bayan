@@ -57,20 +57,30 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Handle new image
     if (isset($_FILES['profile_picture']) && $_FILES['profile_picture']['error'] === UPLOAD_ERR_OK) {
         $upload_dir = 'profile_picture/';
+
+        // Ensure the folder exists
+        if (!is_dir($upload_dir)) {
+            mkdir($upload_dir, 0755, true);
+        }
+
         $file_tmp = $_FILES['profile_picture']['tmp_name'];
-        $file_name = basename($_FILES['profile_picture']['name']);
-        $file_ext = strtolower(pathinfo($file_name, PATHINFO_EXTENSION));
+        $file_ext = strtolower(pathinfo($_FILES['profile_picture']['name'], PATHINFO_EXTENSION));
         $allowed_exts = ['jpg', 'jpeg', 'png', 'gif', 'webp'];
 
         if (in_array($file_ext, $allowed_exts)) {
-            $new_filename = uniqid('official_', true) . '.' . $file_ext;
+            $new_filename = 'official_' . time() . '_' . uniqid() . '.' . $file_ext;
             $destination = $upload_dir . $new_filename;
 
             if (move_uploaded_file($file_tmp, $destination)) {
                 $profile_picture_path = $destination;
+            } else {
+                $profile_picture_path = null; // or handle error
             }
+        } else {
+            $profile_picture_path = null; // or handle invalid extension
         }
     }
+
 
     $stmt = $conn->prepare("
         UPDATE tbl_barangay_officials 
@@ -262,7 +272,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                         <input type="hidden" name="barangay" value="<?php echo htmlspecialchars($official['barangay']); ?>">
 
                                         <div>
-                                            <img src="<?php echo $official['profile_picture'] ?: 'profile_picture/default_profile.png'; ?>"
+                                            <img src="<?= !empty($official['profile_picture']) ? '../../public/barangay_officials/' . htmlspecialchars($official['profile_picture']) : 'https://pluspng.com/img-png/user-png-icon-big-image-png-2240.png' ?>"
                                                 alt="Profile" style="height: 100px;"><br>
                                             <label>Profile Picture</label>
 
@@ -322,7 +332,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                             <tr>
                                                 <td>
                                                     <img
-                                                        src="<?php echo $official['profile_picture'] ? htmlspecialchars($official['profile_picture']) : 'profile_picture/default_profile.png'; ?>"
+                                                        src="<?= !empty($official['profile_picture']) ? '../../public/barangay_officials/' . htmlspecialchars($official['profile_picture']) : 'https://pluspng.com/img-png/user-png-icon-big-image-png-2240.png' ?>"
                                                         alt="Profile Picture"
                                                         style="height: 60px; width: 60px; object-fit: cover;">
                                                 </td>

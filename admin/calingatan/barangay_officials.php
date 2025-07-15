@@ -31,9 +31,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     // Handle image upload
     $profile_picture_path = null;
-
     if (isset($_FILES['profile_picture']) && $_FILES['profile_picture']['error'] === UPLOAD_ERR_OK) {
-        $upload_dir = 'profile_picture/';
+        $upload_dir = '../../public/barangay_officials/';
         $file_tmp = $_FILES['profile_picture']['tmp_name'];
         $file_name = basename($_FILES['profile_picture']['name']);
         $file_ext = strtolower(pathinfo($file_name, PATHINFO_EXTENSION));
@@ -44,10 +43,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $destination = $upload_dir . $new_filename;
 
             if (move_uploaded_file($file_tmp, $destination)) {
-                $profile_picture_path = $destination;
+                // Save only the filename (not the full path) to the database
+                $profile_picture_path = $new_filename;
+            } else {
+                $profile_picture_path = null; // Or handle the error
             }
         }
     }
+
 
     $stmt = $conn->prepare("
         INSERT INTO tbl_barangay_officials 
@@ -304,7 +307,7 @@ $officials = $stmt->fetchAll(PDO::FETCH_ASSOC);
                                             <tr>
                                                 <td>
                                                     <img
-                                                        src="<?php echo $official['profile_picture'] ? htmlspecialchars($official['profile_picture']) : 'profile_picture/default_profile.png'; ?>"
+                                                        src="<?= !empty($official['profile_picture']) ? '../../public/barangay_officials/' . htmlspecialchars($official['profile_picture']) : 'https://pluspng.com/img-png/user-png-icon-big-image-png-2240.png' ?>"
                                                         alt="Profile Picture"
                                                         style="height: 60px; width: 60px; object-fit: cover;">
                                                 </td>

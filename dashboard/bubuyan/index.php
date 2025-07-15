@@ -26,7 +26,7 @@ if (!$resident) {
 }
 
 $is_approved = $resident['is_approved'];
-$_SESSION["is_approved_$barangay"] = $is_approved; // Store in session
+$_SESSION["is_approved_$barangay"] = $is_approved;
 
 
 ?>

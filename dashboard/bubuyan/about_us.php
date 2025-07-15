@@ -1,3 +1,36 @@
+<?php
+session_start();
+include '../../database/connection.php';
+
+$barangay = basename(__DIR__);
+$session_key = "resident_id_$barangay";
+
+
+
+if (!isset($_SESSION[$session_key])) {
+    header("Location: ../../login.php");
+    exit();
+}
+
+$resident_name = $_SESSION["resident_name_$barangay"] ?? 'Resident';
+$resident_id = $_SESSION[$session_key];
+
+$stmt = $conn->prepare("SELECT is_approved FROM tbl_residents WHERE id = ?");
+$stmt->execute([$resident_id]);
+$resident = $stmt->fetch(PDO::FETCH_ASSOC);
+
+if (!$resident) {
+    $_SESSION['error'] = "Resident not found.";
+    header("Location: ../../login.php");
+    exit();
+}
+
+$is_approved = $resident['is_approved'];
+$_SESSION["is_approved_$barangay"] = $is_approved;
+
+
+?>
+
 <!DOCTYPE html>
 <html>
 

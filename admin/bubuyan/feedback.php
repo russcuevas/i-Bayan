@@ -1,3 +1,42 @@
+<?php
+// session
+session_start();
+
+$barangay = basename(__DIR__);
+$session_key = "admin_id_$barangay";
+
+// if not logged in
+if (!isset($_SESSION[$session_key])) {
+    header("Location: ../login.php");
+    exit();
+}
+
+// details welcome
+$barangay_name_key = "barangay_name_$barangay";
+$admin_name_key = "admin_name_$barangay";
+$admin_position_key = "admin_position_$barangay";
+
+// database connection
+include '../../database/connection.php';
+
+// fetch the barangay of the admin
+$admin_id = $_SESSION[$session_key];
+$admin_stmt = $conn->prepare("SELECT barangay_id FROM tbl_admin WHERE id = ?");
+$admin_stmt->execute([$admin_id]);
+$admin_barangay_id = $admin_stmt->fetchColumn();
+
+
+$stmt = $conn->prepare("
+    SELECT f.*, r.first_name, r.last_name
+    FROM tbl_feedback AS f
+    LEFT JOIN tbl_residents AS r ON f.resident_id = r.id
+    WHERE f.barangay = ?
+    ORDER BY f.created_at DESC
+");
+$stmt->execute([$admin_barangay_id]);
+$feedbacks = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+?>
 <!DOCTYPE html>
 <html>
 
@@ -171,13 +210,22 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <tr>
-                                            <td>Zyrell Hidalgo</td>
-                                            <td>Sample</td>
-                                            <td>Sample Ratings</td>
-                                            <td>March/12/2025</td>
-                                        </tr>
+                                        <?php if ($feedbacks): ?>
+                                            <?php foreach ($feedbacks as $feedback): ?>
+                                                <tr>
+                                                    <td><?= htmlspecialchars($feedback['first_name'] . ' ' . $feedback['last_name']) ?></td>
+                                                    <td><?= htmlspecialchars($feedback['message']) ?></td>
+                                                    <td><?= htmlspecialchars($feedback['rating']) ?></td>
+                                                    <td><?= date('F d, Y', strtotime($feedback['created_at'])) ?></td>
+                                                </tr>
+                                            <?php endforeach; ?>
+                                        <?php else: ?>
+                                            <tr>
+                                                <td colspan="4" class="text-center">No feedback found.</td>
+                                            </tr>
+                                        <?php endif; ?>
                                     </tbody>
+
                                 </table>
                             </div>
                         </div>

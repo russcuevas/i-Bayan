@@ -1,3 +1,41 @@
+<?php
+session_start();
+include '../../database/connection.php';
+
+$barangay = basename(__DIR__);
+$session_key = "resident_id_$barangay";
+
+
+
+if (!isset($_SESSION[$session_key])) {
+    header("Location: ../../login.php");
+    exit();
+}
+
+$resident_name = $_SESSION["resident_name_$barangay"] ?? 'Resident';
+$resident_id = $_SESSION[$session_key];
+
+$stmt = $conn->prepare("SELECT is_approved FROM tbl_residents WHERE id = ?");
+$stmt->execute([$resident_id]);
+$resident = $stmt->fetch(PDO::FETCH_ASSOC);
+
+if (!$resident) {
+    $_SESSION['error'] = "Resident not found.";
+    header("Location: ../../login.php");
+    exit();
+}
+
+$is_approved = $resident['is_approved'];
+$_SESSION["is_approved_$barangay"] = $is_approved;
+
+$cert_stmt = $conn->prepare("SELECT * FROM tbl_certificates WHERE resident_id = ? ORDER BY id DESC");
+$cert_stmt->execute([$resident_id]);
+$certificates = $cert_stmt->fetchAll(PDO::FETCH_ASSOC);
+
+
+
+?>
+
 <!DOCTYPE html>
 <html>
 
@@ -180,21 +218,38 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <tr>
-                                            <td>Zyrell Hidalgo</td>
-                                            <td>Barangay Clearance</td>
-                                            <td>₱50.00</td>
-                                            <td>Education</td>
-                                            <td>zyrellhidalgo@gmail.com</td>
-                                            <td>09495748301</td>
-                                            <td>March/06/2025</td>
-                                            <td>Pending</td>
-                                            <td>
-                                                <a href="" class="btn bg-teal waves-effect" style="margin-bottom: 5px;"><i class="fa-solid fa-eye"></i> VIEW INFORMATION</a>
-                                                <a href="" class="btn bg-teal waves-effect" style="margin-bottom: 5px;"><i class="fa-solid fa-ban"></i> CANCEL REQUEST</a>
-                                            </td>
-                                        </tr>
+                                        <?php foreach ($certificates as $cert): ?>
+                                            <tr>
+                                                <td><?= htmlspecialchars($cert['fullname']) ?></td>
+                                                <td><?= htmlspecialchars($cert['certificate_type']) ?></td>
+                                                <td>₱<?= number_format($cert['total_amount'], 2) ?></td>
+                                                <td><?= htmlspecialchars($cert['purpose']) ?></td>
+                                                <td><?= htmlspecialchars($cert['email']) ?></td>
+                                                <td><?= htmlspecialchars($cert['contact']) ?></td>
+                                                <td><?= date('F d, Y', strtotime($cert['created_at'] ?? 'now')) ?></td>
+                                                <td>
+                                                    <?php
+                                                    $status = ucfirst($cert['status'] ?? 'Pending');
+                                                    $badgeClass = 'btn-info'; // default for Pending
+
+                                                    if ($status === 'To Pick Up') {
+                                                        $badgeClass = 'btn-warning text-dark';
+                                                    } elseif ($status === 'Claimed') {
+                                                        $badgeClass = 'btn-success';
+                                                    }
+                                                    ?>
+                                                    <span class="badge <?= $badgeClass ?>"><?= $status ?></span>
+                                                </td>
+                                                <td>
+                                                    <a href="certificates_view_information.php?id=<?= $cert['id'] ?>" class="btn bg-teal waves-effect" style="margin-bottom: 5px;">
+                                                        <i class="fa-solid fa-eye"></i> VIEW INFORMATION
+                                                    </a>
+                                                </td>
+                                            </tr>
+                                        <?php endforeach; ?>
                                     </tbody>
+
+
                                 </table>
                             </div>
                         </div>

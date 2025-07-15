@@ -1,3 +1,101 @@
+<?php
+session_start();
+include '../../database/connection.php';
+
+$barangay = basename(__DIR__);
+$session_key = "resident_id_$barangay";
+
+if (!isset($_SESSION[$session_key])) {
+    $_SESSION['error'] = "Please log in first.";
+    header("Location: ../../login.php");
+    exit();
+}
+
+$resident_id = $_SESSION[$session_key];
+$is_approved = $_SESSION["is_approved_$barangay"] ?? null;
+
+if ($is_approved != 1) {
+    $_SESSION['error'] = "You must be approved to request a certificate.";
+    header("Location: certificate_issuance.php");
+    exit();
+}
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    try {
+        $certificate_type = $_POST['certificate_type'];
+        $resident_id = $_POST['resident_id'];
+        $purok = $_POST['purok'];
+        $purpose = $_POST['purpose'];
+        $fullname = $_POST['fullname'];
+        $gender = $_POST['gender'];
+        $email = $_POST['email'];
+        $contact = $_POST['contact'];
+        $is_resident = $_POST['botante'];
+        $picked_up_by = $_POST['fullname_relatives'] ?? null;
+        $relationship = $_POST['relationship'] ?? null;
+        $status = 'Pending';
+
+        // Determine amount
+        $total_amount = ($certificate_type === 'Certificate of Indigency') ? 0 : 50;
+
+        $valid_id_path = '';
+        $birth_cert_path = '';
+
+        // Handle valid ID upload
+        if (isset($_FILES['valid_id']) && $_FILES['valid_id']['error'] == 0) {
+            $valid_id_name = basename($_FILES['valid_id']['name']);
+            $valid_id_dest = "../../public/request/valid_id/" . $valid_id_name;
+            move_uploaded_file($_FILES['valid_id']['tmp_name'], $valid_id_dest);
+            $valid_id_path = $valid_id_name;
+        }
+
+        // Handle birth certificate upload
+        if (isset($_FILES['birth_certificate']) && $_FILES['birth_certificate']['error'] == 0) {
+            $birth_cert_name = basename($_FILES['birth_certificate']['name']);
+            $birth_cert_dest = "../../public/request/birth_certificate/" . $birth_cert_name;
+            move_uploaded_file($_FILES['birth_certificate']['tmp_name'], $birth_cert_dest);
+            $birth_cert_path = $birth_cert_name;
+        }
+
+        // Insert into table
+        $stmt = $conn->prepare("INSERT INTO tbl_certificates (
+            resident_id, purok, certificate_type, purpose, fullname, gender, email, contact,
+            valid_id, birth_certificate, is_resident, picked_up_by, relationship,
+            for_barangay, total_amount, status
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+
+        $stmt->execute([
+            $resident_id,
+            $purok,
+            $certificate_type,
+            $purpose,
+            $fullname,
+            $gender,
+            $email,
+            $contact,
+            $valid_id_path,
+            $birth_cert_path,
+            $is_resident,
+            $picked_up_by,
+            $relationship,
+            $barangay,
+            $total_amount,
+            $status
+        ]);
+
+        $_SESSION['success'] = "Certificate request submitted successfully!";
+        header("Location: certificate_issuance.php");
+        exit();
+    } catch (Exception $e) {
+        $_SESSION['error'] = "Error: " . $e->getMessage();
+        header("Location: certificate_issuance.php");
+        exit();
+    }
+}
+
+?>
+
+
 <!DOCTYPE html>
 <html>
 
@@ -162,6 +260,7 @@
                         </div>
                         <div class="body">
                             <form id="request_certifacte_validation" method="POST" enctype="multipart/form-data">
+                                <input type="hidden" name="resident_id" value="<?= htmlspecialchars($resident_id) ?>">
                                 <div class="row">
                                     <!-- Left Column: Request Info and Personal Info -->
                                     <div class="col-md-6 pr-4">
@@ -183,20 +282,15 @@
                                                 <option value="Certificate of No Income">Certificate of No Income</option>
                                                 <option value="Certificate of Permit">Certificate of Permit</option>
                                                 <option value="Certificate of Solo Parents">Certificate of Solo Parents</option>
-                                                <option value="Certificate of Business Closure">Certificate of Business Closure</option>
                                                 <option value="Certificate of Guardianship">Certificate of Guardianship</option>
                                             </select>
                                         </div>
 
-                                        <div class="form-group form-float">
-                                            <label class="form-label">Purpose <span style="color: red;">*</span></label>
-                                            <select class="form-control select-form" name="purpose" required>
-                                                <option value="" disabled selected>CHOOSE PURPOSE</option>
-                                                <option value="Medical">Medical</option>
-                                                <option value="Educational">Educational</option>
-                                                <option value="Burial">Burial</option>
-                                                <option value="Financial">Financial</option>
-                                            </select>
+                                        <div class="form-group form-float mt-3">
+                                            <div class="form-line">
+                                                <input type="text" class="form-control" name="purpose" required>
+                                                <label class="form-label">Purpose <span style="color: red;">*</span></label>
+                                            </div>
                                         </div>
 
                                         <!-- Personal Information -->
@@ -205,6 +299,13 @@
                                             <div class="form-line">
                                                 <input type="text" class="form-control" name="fullname" required>
                                                 <label class="form-label">Fullname <span style="color: red;">*</span></label>
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group form-float">
+                                            <div class="form-line">
+                                                <input type="number" class="form-control" name="purok" required>
+                                                <label class="form-label">Purok <span style="color: red;">*</span></label>
                                             </div>
                                         </div>
 
@@ -283,9 +384,10 @@
                                 <!-- Total Price Display -->
                                 <div style="display: flex; justify-content: end; margin-top: 20px;">
                                     <h5 style="font-weight: bold; color: brown;">
-                                        AMOUNT TO PAY: <span style="color: #000;">₱50.00 pesos</span>
+                                        AMOUNT TO PAY: <span id="amount-to-pay" style="color: #000;">₱50.00 pesos</span>
                                     </h5>
                                 </div>
+
 
                                 <!-- Buttons -->
                                 <div style="display: flex; justify-content: end; gap: 5px; margin-top: 10px;">
@@ -337,6 +439,28 @@
     <script src="../plugins/sweetalert/sweetalert.min.js"></script>
     <!-- Demo Js -->
     <script src="../js/demo.js"></script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const certificateSelect = document.querySelector('select[name="certificate_type"]');
+            const amountSpan = document.querySelector('#amount-to-pay');
+
+            const freeCertificates = [
+                "Certificate of Indigency"
+            ];
+
+            certificateSelect.addEventListener('change', function() {
+                const selected = this.value;
+
+                if (freeCertificates.includes(selected)) {
+                    amountSpan.innerText = '₱0.00 pesos';
+                } else {
+                    amountSpan.innerText = '₱50.00 pesos';
+                }
+            });
+        });
+    </script>
+
 
     <script>
         $('#request_certifacte_validation').validate({

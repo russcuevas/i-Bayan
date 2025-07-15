@@ -19,12 +19,17 @@ $admin_position_key = "admin_position_$barangay";
 // database connection
 include '../../database/connection.php';
 
-// fetch the barangay of the admin
+// fetching residents where in same of the barangay of the admin
 $admin_id = $_SESSION[$session_key];
 $admin_stmt = $conn->prepare("SELECT barangay_id FROM tbl_admin WHERE id = ?");
 $admin_stmt->execute([$admin_id]);
 $admin_barangay_id = $admin_stmt->fetchColumn();
 
+// fetching residents
+$family_stmt = $conn->prepare("SELECT * FROM tbl_residents_family_members WHERE barangay_address = ? AND is_approved = 1");
+$family_stmt->execute([$admin_barangay_id]);
+
+$family_members = $family_stmt->fetchAll(PDO::FETCH_ASSOC);
 
 ?>
 <!DOCTYPE html>
@@ -232,9 +237,10 @@ $admin_barangay_id = $admin_stmt->fetchColumn();
                         </div>
                         <div class="body">
                             <ul id="tagList" class="report-tags">
-                                <li><a href="residents.php"><i class="fa-solid fa-users"></i> Residents</a></li>
+                                <li><a href="residents.php" class="active"><i class="fa-solid fa-users"></i> Residents</a></li>
+                                <li><a href="reports/household.php"><i class="fa-solid fa-house-user"></i> Household</a></li>
                                 <li><a href="reports/email_sent.php"><i class="fa-solid fa-envelope"></i> Email Sent</a></li>
-                                <li><a href="announcement_list.php"><i class="fa-solid fa-bullhorn"></i> Announcement</a></li>
+                                <li><a href="reports/announcement.php"><i class="fa-solid fa-bullhorn"></i> Announcement</a></li>
                                 <li><a href="reports/activity_logs.php"><i class="fa-solid fa-list-check"></i> Activity Logs</a></li>
                             </ul>
                         </div>
@@ -245,12 +251,52 @@ $admin_barangay_id = $admin_stmt->fetchColumn();
                 <!-- RIGHT CARD -->
                 <div class="col-lg-8 col-md-8 col-sm-12 col-xs-12">
                     <div class="card">
-                        <div class="header">
+                        <div class="header" style="display: flex; justify-content: space-between; align-items: center;">
                             <h2>LIST</h2>
+                            <a href="print_residents.php" target="_blank" class="btn btn-primary">
+                                <i class="fa fa-print"></i> Print
+                            </a>
                         </div>
+
                         <div class="body">
                             <div class="table-responsive">
-                                <h1 style="text-align: center;">Please select categories</h1>
+                                <table class="table table-bordered table-striped table-hover js-basic-example dataTable">
+                                    <thead>
+                                        <tr>
+                                            <th>Fullname</th>
+                                            <th>Purok</th>
+                                            <th>Mobile</th>
+                                            <th>Status</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <?php foreach ($family_members as $member): ?>
+                                            <?php
+                                            // Format full name
+                                            $full_name = htmlspecialchars(
+                                                $member['first_name'] . ' ' .
+                                                    ($member['middle_name'] ? $member['middle_name'][0] . '. ' : '') .
+                                                    $member['last_name'] .
+                                                    ($member['suffix'] ? ', ' . $member['suffix'] : '')
+                                            );
+
+                                            // Translate status
+                                            $status_map = [
+                                                1 => 'Working',
+                                                2 => 'Student',
+                                                3 => 'None'
+                                            ];
+                                            $status = $status_map[$member['is_working']] ?? 'Unknown';
+                                            ?>
+                                            <tr>
+                                                <td><?= $full_name ?></td>
+                                                <td><?= htmlspecialchars($member['purok']) ?></td>
+                                                <td><?= htmlspecialchars($member['phone_number']) ?></td>
+                                                <td><?= $status ?></td>
+                                            </tr>
+                                        <?php endforeach; ?>
+                                    </tbody>
+                                </table>
                             </div>
                         </div>
                     </div>

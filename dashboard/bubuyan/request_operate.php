@@ -1,3 +1,125 @@
+<?php
+session_start();
+include '../../database/connection.php';
+
+$barangay = basename(__DIR__);
+$session_key = "resident_id_$barangay";
+
+if (!isset($_SESSION[$session_key])) {
+    $_SESSION['error'] = "Please log in first.";
+    header("Location: ../../login.php");
+    exit();
+}
+
+$resident_id = $_SESSION[$session_key];
+$is_approved = $_SESSION["is_approved_$barangay"] ?? null;
+
+if ($is_approved != 1) {
+    $_SESSION['error'] = "You must be approved to request a certificate.";
+    header("Location: certificate_issuance.php");
+    exit();
+}
+
+$businessTypes = [];
+$stmt = $conn->prepare("SELECT id, name, price FROM tbl_business_trade ORDER BY name ASC");
+$stmt->execute();
+$businessTypes = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    try {
+        $certificate_type = $_POST['certificate_type'];
+        $purpose = $_POST['purpose'];
+        $business_name = $_POST['business_name'];
+        $business_trade = $_POST['business_type'];
+        $business_address = $_POST['business_address'];
+        $owner_name = $_POST['owner_name'];
+        $owner_purok = $_POST['owner_purok'];
+        $email = $_POST['email'];
+        $contact = $_POST['contact'];
+        $is_resident = $_POST['botante'];
+        $picked_up_by = $_POST['fullname_relatives'] ?? null;
+        $relationship = $_POST['relationship'] ?? null;
+        $status = 'Pending';
+
+        $total_amount = $_POST['total_amount'] ?? 0;
+
+        $valid_id_path = '';
+        $birth_cert_path = '';
+
+        // Upload valid ID
+        if (isset($_FILES['valid_id']) && $_FILES['valid_id']['error'] == 0) {
+            $valid_id_name = basename($_FILES['valid_id']['name']);
+            $valid_id_dest = "../../public/request/valid_id/" . $valid_id_name;
+            move_uploaded_file($_FILES['valid_id']['tmp_name'], $valid_id_dest);
+            $valid_id_path = $valid_id_name;
+        }
+
+        // Upload birth certificate
+        if (isset($_FILES['birth_certificate']) && $_FILES['birth_certificate']['error'] == 0) {
+            $birth_cert_name = basename($_FILES['birth_certificate']['name']);
+            $birth_cert_dest = "../../public/request/birth_certificate/" . $birth_cert_name;
+            move_uploaded_file($_FILES['birth_certificate']['tmp_name'], $birth_cert_dest);
+            $birth_cert_path = $birth_cert_name;
+        }
+
+        // Get for_barangay id
+        $barangay_stmt = $conn->prepare("SELECT id FROM tbl_barangay WHERE LOWER(REPLACE(barangay_name, ' ', '')) = ?");
+        $barangay_stmt->execute([strtolower($barangay)]);
+        $barangay_data = $barangay_stmt->fetch(PDO::FETCH_ASSOC);
+
+        if (!$barangay_data) {
+            $_SESSION['error'] = "Barangay not found in tbl_barangay.";
+            header("Location: certificate_operate.php");
+            exit();
+        }
+
+        $for_barangay_id = $barangay_data['id'];
+
+        // Generate random document number
+        $document_number = strtoupper(uniqid('DOC'));
+
+        // Insert into tbl_operate
+        $stmt = $conn->prepare("INSERT INTO tbl_operate (
+            resident_id, document_number, picked_up_by, relationship, 
+            certificate_type, purpose, business_name, business_trade, business_address,
+            owner_name, owner_purok, email, contact, for_barangay, 
+            valid_id, birth_certificate, is_resident, total_amount, status
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+
+        $stmt->execute([
+            $resident_id,
+            $document_number,
+            $picked_up_by,
+            $relationship,
+            $certificate_type,
+            $purpose,
+            $business_name,
+            $business_trade,
+            $business_address,
+            $owner_name,
+            $owner_purok,
+            $email,
+            $contact,
+            $for_barangay_id,
+            $valid_id_path,
+            $birth_cert_path,
+            $is_resident,
+            $total_amount,
+            $status
+        ]);
+
+        $_SESSION['success'] = "Clearance to Operate request submitted successfully!";
+        header("Location: certificate_operate.php");
+        exit();
+    } catch (Exception $e) {
+        $_SESSION['error'] = "Error: " . $e->getMessage();
+        header("Location: certificate_operate.php");
+        exit();
+    }
+}
+
+?>
+
 <!DOCTYPE html>
 <html>
 
@@ -35,6 +157,9 @@
 
     <!-- AdminBSB Themes. You can choose a theme from css/themes instead of get all themes -->
     <link href="../css/themes/all-themes.css" rel="stylesheet" />
+
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Poppins&display=swap');
 
@@ -189,15 +314,21 @@
                                         <h4 class="bold span-or mt-4" style="font-weight: 900; color: #1a49cb;">
                                             Business Information
                                         </h4><br>
-
                                         <div class="form-group form-float">
                                             <label class="form-label">Business Type <span style="color: red;">*</span></label>
-                                            <select class="form-control select-form" name="business_type" required>
+                                            <select class="form-control select2" id="business_type" name="business_type" required>
                                                 <option value="" disabled selected>SELECT BUSINESS TYPE</option>
-                                                <option value="barangay_clearance">Barangay Clearance</option>
-                                                <option value="barangay_functionaries">Barangay Functionaries</option>
+                                                <?php foreach ($businessTypes as $type): ?>
+                                                    <option
+                                                        value="<?= htmlspecialchars($type['id']) ?>"
+                                                        data-price="<?= htmlspecialchars($type['price']) ?>">
+                                                        <?= htmlspecialchars($type['name']) ?>
+                                                    </option>
+                                                <?php endforeach; ?>
                                             </select>
                                         </div>
+
+
 
                                         <div class="form-group form-float" style="margin-top: 30px;">
                                             <div class="form-line">
@@ -217,6 +348,13 @@
                                             <div class="form-line">
                                                 <input type="text" class="form-control" name="owner_name" required>
                                                 <label class="form-label">Owner Name <span style="color: red;">*</span></label>
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group form-float" style="margin-top: 30px;">
+                                            <div class="form-line">
+                                                <input type="text" class="form-control" name="owner_purok" required>
+                                                <label class="form-label">Purok <span style="color: red;">*</span></label>
                                             </div>
                                         </div>
 
@@ -295,9 +433,18 @@
                                 <!-- Footer -->
                                 <div style="display: flex; justify-content: end; margin-top: 20px;">
                                     <h5 style="font-weight: bold; color: brown;">
-                                        AMOUNT TO PAY: <span style="color: #000;">₱50.00 pesos</span>
+                                        AMOUNT TO PAY:
+                                        <span style="color: #000;">
+                                            ₱<span id="total_display">0.00</span> pesos
+                                        </span>
                                     </h5>
+                                    <br>
                                 </div>
+                                <h5 style="text-align: right; font-weight: bold;">For certificate: ₱50.00</h5>
+
+
+                                <input type="hidden" name="total_amount" id="total_amount" value="">
+
 
                                 <div style="display: flex; justify-content: end; gap: 5px; margin-top: 10px;">
                                     <button class="btn bg-teal waves-effect" type="submit">Request</button>
@@ -348,6 +495,24 @@
     <script src="../plugins/sweetalert/sweetalert.min.js"></script>
     <!-- Demo Js -->
     <script src="../js/demo.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            $('.select2').select2();
+
+            $('#business_type').on('change', function() {
+                const selectedOption = $(this).find(':selected');
+                const businessPrice = parseFloat(selectedOption.data('price')) || 0;
+                const certificateCharge = 50;
+                const total = businessPrice + certificateCharge;
+
+                $('#total_display').text(total.toFixed(2));
+                $('#total_amount').val(total);
+            });
+        });
+    </script>
+
+
 
     <script>
         $('#request_certifacte_validation').validate({

@@ -36,6 +36,12 @@ $barangay_info = $stmt->fetch(PDO::FETCH_ASSOC);
 
 $mission = $barangay_info['mission'] ?? 'Mission not available.';
 $vision = $barangay_info['vision'] ?? 'Vision not available.';
+
+// Fetch barangay officials
+$stmt = $conn->prepare("SELECT position, fullname, profile_picture FROM tbl_barangay_officials WHERE barangay = ?");
+$stmt->execute([$barangay_id]);
+$officials = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
 ?>
 
 <!DOCTYPE html>
@@ -168,107 +174,71 @@ $vision = $barangay_info['vision'] ?? 'Vision not available.';
                     <div class="row">
                         <div class="col-md-6">
                             <h4 class="text-center" style="font-weight: 900; color: #1a49cb;">Mission</h4>
-                            <p style="text-align: justify; font-size: 15px;">
+                            <p style="text-align: center; font-size: 15px;">
                                 <?php echo htmlspecialchars($mission); ?>
                             </p>
                         </div>
 
                         <div class="col-md-6">
                             <h4 class="text-center" style="font-weight: 900; color: #1a49cb;">Vision</h4>
-                            <p style="text-align: justify; font-size: 15px;">
+                            <p style="text-align: center; font-size: 15px;">
                                 <?php echo htmlspecialchars($vision); ?>
                             </p>
                         </div>
 
                     </div>
 
-                    <h4 class="text-center" style="font-weight: 900; color: #1a49cb;">Barangay Officials Year ()</h4>
+                    <h4 class="text-center" style="font-weight: 900; color: #1a49cb;">Barangay Officials Year (<?= date('Y') ?>)</h4>
                     <div class="row text-center" style="margin-top: 30px;">
-                        <div class="col-md-4 col-sm-6 col-xs-12" style="margin-bottom: 30px;">
-                            <img src="https://pluspng.com/img-png/user-png-icon-big-image-png-2240.png" class="img-responsive center-block" style="width:120px;height:120px;border-radius:50%;object-fit:cover;">
-                            <p style="margin-top: 10px; font-weight: bold;">Barangay Captain</p>
-                            <p>Juan Dela Cruz</p>
-                        </div>
-
-                        <div class="col-md-4 col-sm-6 col-xs-12" style="margin-bottom: 30px;">
-                            <img src="https://pluspng.com/img-png/user-png-icon-big-image-png-2240.png" class="img-responsive center-block" style="width:120px;height:120px;border-radius:50%;object-fit:cover;">
-                            <p style="margin-top: 10px; font-weight: bold;">Kagawad 1</p>
-                            <p>Maria Santos</p>
-                        </div>
-
-                        <div class="col-md-4 col-sm-6 col-xs-12" style="margin-bottom: 30px;">
-                            <img src="https://pluspng.com/img-png/user-png-icon-big-image-png-2240.png" class="img-responsive center-block" style="width:120px;height:120px;border-radius:50%;object-fit:cover;">
-                            <p style="margin-top: 10px; font-weight: bold;">Kagawad 2</p>
-                            <p>Pedro Reyes</p>
-                        </div>
-                        <div class="col-md-4 col-sm-6 col-xs-12" style="margin-bottom: 30px;">
-                            <img src="https://pluspng.com/img-png/user-png-icon-big-image-png-2240.png" class="img-responsive center-block" style="width:120px;height:120px;border-radius:50%;object-fit:cover;">
-                            <p style="margin-top: 10px; font-weight: bold;">Barangay Captain</p>
-                            <p>Juan Dela Cruz</p>
-                        </div>
-
-                        <div class="col-md-4 col-sm-6 col-xs-12" style="margin-bottom: 30px;">
-                            <img src="https://pluspng.com/img-png/user-png-icon-big-image-png-2240.png" class="img-responsive center-block" style="width:120px;height:120px;border-radius:50%;object-fit:cover;">
-                            <p style="margin-top: 10px; font-weight: bold;">Kagawad 1</p>
-                            <p>Maria Santos</p>
-                        </div>
-
-                        <div class="col-md-4 col-sm-6 col-xs-12" style="margin-bottom: 30px;">
-                            <img src="https://pluspng.com/img-png/user-png-icon-big-image-png-2240.png" class="img-responsive center-block" style="width:120px;height:120px;border-radius:50%;object-fit:cover;">
-                            <p style="margin-top: 10px; font-weight: bold;">Kagawad 2</p>
-                            <p>Pedro Reyes</p>
-                        </div>
-                        <div class="col-md-4 col-sm-6 col-xs-12" style="margin-bottom: 30px;">
-                            <img src="https://pluspng.com/img-png/user-png-icon-big-image-png-2240.png" class="img-responsive center-block" style="width:120px;height:120px;border-radius:50%;object-fit:cover;">
-                            <p style="margin-top: 10px; font-weight: bold;">Barangay Captain</p>
-                            <p>Juan Dela Cruz</p>
-                        </div>
-
-                        <div class="col-md-4 col-sm-6 col-xs-12" style="margin-bottom: 30px;">
-                            <img src="https://pluspng.com/img-png/user-png-icon-big-image-png-2240.png" class="img-responsive center-block" style="width:120px;height:120px;border-radius:50%;object-fit:cover;">
-                            <p style="margin-top: 10px; font-weight: bold;">Kagawad 1</p>
-                            <p>Maria Santos</p>
-                        </div>
-
-                        <div class="col-md-4 col-sm-6 col-xs-12" style="margin-bottom: 30px;">
-                            <img src="https://pluspng.com/img-png/user-png-icon-big-image-png-2240.png" class="img-responsive center-block" style="width:120px;height:120px;border-radius:50%;object-fit:cover;">
-                            <p style="margin-top: 10px; font-weight: bold;">Kagawad 2</p>
-                            <p>Pedro Reyes</p>
-                        </div>
-                    </div>
-
-                    <!-- Footer -->
-                    <footer style="background-color: #f5f5f5; padding: 30px 0; margin-top: 50px; border-top: 2px solid #1a49cb;">
-                        <div class="container text-center">
-                            <h1>System Developer</h1> <br>
-                            <div class="row">
-                                <!-- Zyrell Hidalgo -->
-                                <div class="col-md-4 col-sm-4 col-xs-12">
-                                    <img src="https://pluspng.com/img-png/user-png-icon-big-image-png-2240.png" alt="Zyrell Hidalgo" class="img-responsive center-block" style="width:100px;height:100px;border-radius:50%;object-fit:cover;">
-                                    <h5 style="margin-top: 10px; font-weight: bold;">Zyrell Hidalgo</h5>
+                        <?php if ($officials): ?>
+                            <?php foreach ($officials as $official): ?>
+                                <div class="col-md-4 col-sm-6 col-xs-12" style="margin-bottom: 30px;">
+                                    <img src="<?= !empty($official['profile_picture']) ? '../../public/barangay_officials/' . htmlspecialchars($official['profile_picture']) : 'https://pluspng.com/img-png/user-png-icon-big-image-png-2240.png' ?>"
+                                        class="img-responsive center-block"
+                                        style="width:120px;height:120px;border-radius:50%;object-fit:cover;">
+                                    <p style="margin-top: 10px; font-weight: bold;"><?= htmlspecialchars($official['position']) ?></p>
+                                    <p><?= htmlspecialchars($official['fullname']) ?></p>
                                 </div>
-
-                                <!-- Shaine Inciong -->
-                                <div class="col-md-4 col-sm-4 col-xs-12">
-                                    <img src="https://pluspng.com/img-png/user-png-icon-big-image-png-2240.png" alt="Shaine Inciong" class="img-responsive center-block" style="width:100px;height:100px;border-radius:50%;object-fit:cover;">
-                                    <h5 style="margin-top: 10px; font-weight: bold;">Shaine Inciong</h5>
-                                </div>
-
-                                <!-- Christine Manalo -->
-                                <div class="col-md-4 col-sm-4 col-xs-12">
-                                    <img src="https://pluspng.com/img-png/user-png-icon-big-image-png-2240.png" alt="Christine Manalo" class="img-responsive center-block" style="width:100px;height:100px;border-radius:50%;object-fit:cover;">
-                                    <h5 style="margin-top: 10px; font-weight: bold;">Christine Manalo</h5>
-                                </div>
-                            </div>
-                        </div>
-                    </footer>
-
-
-                    <div class="text-right" style="margin-top: 30px;">
-                        <a href="about_us.php" class="btn bg-teal waves-effect">Back</a>
+                            <?php endforeach; ?>
+                        <?php else: ?>
+                            <p class="text-center">No barangay officials data found.</p>
+                        <?php endif; ?>
                     </div>
                 </div>
             </div>
+
+            <!-- Footer -->
+            <footer style="background-color: #f5f5f5; padding: 30px 0; margin-top: 50px; border-top: 2px solid #1a49cb;">
+                <div class="container text-center">
+                    <h1>System Developer</h1> <br>
+                    <div class="row">
+                        <!-- Zyrell Hidalgo -->
+                        <div class="col-md-4 col-sm-4 col-xs-12">
+                            <img src="https://pluspng.com/img-png/user-png-icon-big-image-png-2240.png" alt="Zyrell Hidalgo" class="img-responsive center-block" style="width:100px;height:100px;border-radius:50%;object-fit:cover;">
+                            <h5 style="margin-top: 10px; font-weight: bold;">Zyrell Hidalgo</h5>
+                        </div>
+
+                        <!-- Shaine Inciong -->
+                        <div class="col-md-4 col-sm-4 col-xs-12">
+                            <img src="https://pluspng.com/img-png/user-png-icon-big-image-png-2240.png" alt="Shaine Inciong" class="img-responsive center-block" style="width:100px;height:100px;border-radius:50%;object-fit:cover;">
+                            <h5 style="margin-top: 10px; font-weight: bold;">Shaine Inciong</h5>
+                        </div>
+
+                        <!-- Christine Manalo -->
+                        <div class="col-md-4 col-sm-4 col-xs-12">
+                            <img src="https://pluspng.com/img-png/user-png-icon-big-image-png-2240.png" alt="Christine Manalo" class="img-responsive center-block" style="width:100px;height:100px;border-radius:50%;object-fit:cover;">
+                            <h5 style="margin-top: 10px; font-weight: bold;">Christine Manalo</h5>
+                        </div>
+                    </div>
+                </div>
+            </footer>
+
+
+            <div class="text-right" style="margin-top: 30px;">
+                <a href="about_us.php" class="btn bg-teal waves-effect">Back</a>
+            </div>
+        </div>
+        </div>
         </div>
     </section>
     <!-- Jquery Core Js -->
