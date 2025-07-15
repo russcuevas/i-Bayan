@@ -76,15 +76,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $for_barangay_id = $barangay_data['id'];
 
         // Generate random document number
-        $document_number = strtoupper(uniqid('DOC'));
+        $document_number = strtoupper(uniqid('OPERATE-'));
 
         // Insert into tbl_operate
         $stmt = $conn->prepare("INSERT INTO tbl_operate (
-            resident_id, document_number, picked_up_by, relationship, 
-            certificate_type, purpose, business_name, business_trade, business_address,
-            owner_name, owner_purok, email, contact, for_barangay, 
-            valid_id, birth_certificate, is_resident, total_amount, status
-        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+    resident_id, document_number, picked_up_by, relationship, 
+    certificate_type, purpose, business_name, business_trade, business_address,
+    owner_name, owner_purok, email, contact, for_barangay, 
+    valid_id, birth_certificate, is_resident, total_amount, status
+) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+
 
         $stmt->execute([
             $resident_id,

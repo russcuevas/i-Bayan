@@ -209,6 +209,7 @@ $operate = $cert_stmt->fetchAll(PDO::FETCH_ASSOC);
                                             <th>Purpose</th>
                                             <th>Email</th>
                                             <th>Mobile</th>
+                                            <th>Date</th>
                                             <th>Status</th>
                                             <th>Actions</th>
                                         </tr>
