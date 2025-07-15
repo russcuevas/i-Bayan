@@ -1,3 +1,39 @@
+<?php
+session_start();
+include '../../database/connection.php';
+
+$barangay = basename(__DIR__);
+$session_key = "resident_id_$barangay";
+
+
+
+if (!isset($_SESSION[$session_key])) {
+    header("Location: ../../login.php");
+    exit();
+}
+
+$resident_name = $_SESSION["resident_name_$barangay"] ?? 'Resident';
+$resident_id = $_SESSION[$session_key];
+
+$stmt = $conn->prepare("SELECT is_approved FROM tbl_residents WHERE id = ?");
+$stmt->execute([$resident_id]);
+$resident = $stmt->fetch(PDO::FETCH_ASSOC);
+
+if (!$resident) {
+    $_SESSION['error'] = "Resident not found.";
+    header("Location: ../../login.php");
+    exit();
+}
+
+$is_approved = $resident['is_approved'];
+$_SESSION["is_approved_$barangay"] = $is_approved;
+
+$cedula_stmt = $conn->prepare("SELECT * FROM tbl_cedula WHERE resident_id = ? ORDER BY id DESC");
+$cedula_stmt->execute([$resident_id]);
+$cedula = $cedula_stmt->fetchAll(PDO::FETCH_ASSOC);
+
+?>
+
 <!DOCTYPE html>
 <html>
 
@@ -173,24 +209,41 @@
                                             <th>Purpose</th>
                                             <th>Email</th>
                                             <th>Mobile</th>
+                                            <th>Date</th>
                                             <th>Status</th>
                                             <th>Actions</th>
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <tr>
-                                            <td>Zyrell Hidalgo</td>
-                                            <td>Barangay Clearance</td>
-                                            <td>₱50.00</td>
-                                            <td>Education</td>
-                                            <td>zyrellhidalgo@gmail.com</td>
-                                            <td>09495748301</td>
-                                            <td>Pending</td>
-                                            <td>
-                                                <a href="" class="btn bg-teal waves-effect" style="margin-bottom: 5px;"><i class="fa-solid fa-eye"></i> VIEW INFORMATION</a>
-                                                <a href="" class="btn bg-teal waves-effect" style="margin-bottom: 5px;"><i class="fa-solid fa-ban"></i> CANCEL REQUEST</a>
-                                            </td>
-                                        </tr>
+                                        <?php foreach ($cedula as $cedulas): ?>
+                                            <tr>
+                                                <td><?= htmlspecialchars($cedulas['fullname']) ?></td>
+                                                <td><?= htmlspecialchars($cedulas['certificate_type']) ?></td>
+                                                <td>₱<?= number_format($cedulas['total_amount'], 2) ?></td>
+                                                <td><?= htmlspecialchars($cedulas['purpose']) ?></td>
+                                                <td><?= htmlspecialchars($cedulas['email']) ?></td>
+                                                <td><?= htmlspecialchars($cedulas['contact']) ?></td>
+                                                <td><?= date('F d, Y', strtotime($cedulas['created_at'] ?? 'now')) ?></td>
+                                                <td>
+                                                    <?php
+                                                    $status = ucfirst($cedulas['status'] ?? 'Pending');
+                                                    $badgeClass = 'btn-info'; // default for Pending
+
+                                                    if ($status === 'To Pick Up') {
+                                                        $badgeClass = 'btn-warning text-dark';
+                                                    } elseif ($status === 'Claimed') {
+                                                        $badgeClass = 'btn-success';
+                                                    }
+                                                    ?>
+                                                    <span class="badge <?= $badgeClass ?>"><?= $status ?></span>
+                                                </td>
+                                                <td>
+                                                    <a href="cedula_view_information.php?id=<?= $cedulas['id'] ?>" class="btn bg-teal waves-effect" style="margin-bottom: 5px;">
+                                                        <i class="fa-solid fa-eye"></i> VIEW INFORMATION
+                                                    </a>
+                                                </td>
+                                            </tr>
+                                        <?php endforeach; ?>
                                     </tbody>
                                 </table>
                             </div>

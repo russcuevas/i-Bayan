@@ -1,3 +1,128 @@
+<?php
+session_start();
+include '../../database/connection.php';
+
+$barangay = basename(__DIR__);
+$session_key = "resident_id_$barangay";
+
+
+
+if (!isset($_SESSION[$session_key])) {
+    header("Location: ../../login.php");
+    exit();
+}
+
+$resident_name = $_SESSION["resident_name_$barangay"] ?? 'Resident';
+$resident_id = $_SESSION[$session_key];
+
+$stmt = $conn->prepare("SELECT is_approved FROM tbl_residents WHERE id = ?");
+$stmt->execute([$resident_id]);
+$resident = $stmt->fetch(PDO::FETCH_ASSOC);
+
+if (!$resident) {
+    $_SESSION['error'] = "Resident not found.";
+    header("Location: ../../login.php");
+    exit();
+}
+
+$is_approved = $resident['is_approved'];
+$_SESSION["is_approved_$barangay"] = $is_approved;
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    try {
+        $certificate_type = $_POST['certificate_type'];
+        $fullname = $_POST['fullname'];
+        $civil_status = $_POST['civil_status'];
+        $gender = $_POST['gender'];
+        $tin = $_POST['tin'];
+        $purok = $_POST['purok'];
+        $profession = $_POST['profession'];
+        $email = $_POST['email'];
+        $contact = $_POST['contact'];
+        $purpose = $_POST['purpose'];
+        $is_resident = ($_POST['botante'] === 'yes') ? 1 : 0;
+        $picked_up_by = $_POST['fullname_relatives'] ?? null;
+        $relationship = $_POST['relationship'] ?? null;
+        $total_amount = $_POST['total_amount'] ?? null;
+        $status = 'Pending';
+
+        // Upload valid ID
+        $valid_id_path = '';
+        if (isset($_FILES['valid_id']) && $_FILES['valid_id']['error'] === 0) {
+            $valid_id_name = uniqid() . "_" . basename($_FILES['valid_id']['name']);
+            $valid_id_dest = "../../public/request/valid_id/" . $valid_id_name;
+            move_uploaded_file($_FILES['valid_id']['tmp_name'], $valid_id_dest);
+            $valid_id_path = $valid_id_name;
+        } else {
+            throw new Exception("Valid ID upload failed.");
+        }
+
+        // Upload birth certificate
+        $birth_cert_path = '';
+        if (isset($_FILES['birth_certificate']) && $_FILES['birth_certificate']['error'] === 0) {
+            $birth_cert_name = uniqid() . "_" . basename($_FILES['birth_certificate']['name']);
+            $birth_cert_dest = "../../public/request/birth_certificate/" . $birth_cert_name;
+            move_uploaded_file($_FILES['birth_certificate']['tmp_name'], $birth_cert_dest);
+            $birth_cert_path = $birth_cert_name;
+        } else {
+            throw new Exception("Birth Certificate upload failed.");
+        }
+
+        // Get for_barangay id
+        $barangay_stmt = $conn->prepare("SELECT id FROM tbl_barangay WHERE LOWER(REPLACE(barangay_name, ' ', '')) = ?");
+        $barangay_stmt->execute([strtolower($barangay)]);
+        $barangay_data = $barangay_stmt->fetch(PDO::FETCH_ASSOC);
+
+        if (!$barangay_data) {
+            throw new Exception("Barangay not found.");
+        }
+        $for_barangay_id = $barangay_data['id'];
+
+        // Generate unique document number (CEDULA-xxxxxx)
+        $document_number = strtoupper(uniqid('CEDULA-'));
+
+        // Insert into tbl_cedula
+        $stmt = $conn->prepare("INSERT INTO tbl_cedula ( certificate_type,
+            resident_id, document_number, fullname, civil_status, gender, tin, purok, profession,
+            email, contact, valid_id, birth_certificate, is_resident, purpose, for_barangay,
+            total_amount, status, picked_up_by, relationship
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+
+        $stmt->execute([
+            $certificate_type,
+            $resident_id,
+            $document_number,
+            $fullname,
+            $civil_status,
+            $gender,
+            $tin,
+            $purok,
+            $profession,
+            $email,
+            $contact,
+            $valid_id_path,
+            $birth_cert_path,
+            $is_resident,
+            $purpose,
+            $for_barangay_id,
+            $total_amount,
+            $status,
+            $picked_up_by,
+            $relationship
+        ]);
+
+        $_SESSION['success'] = "Cedula request submitted successfully!";
+        header("Location: certificate_cedula.php");
+        exit();
+    } catch (Exception $e) {
+        $_SESSION['error'] = "Error: " . $e->getMessage();
+        header("Location: certificate_cedula.php");
+        exit();
+    }
+}
+
+?>
+
 <!DOCTYPE html>
 <html>
 
@@ -205,10 +330,17 @@
 
                                         <div class="form-group">
                                             <label for="gender">Gender <span style="color: red;">*</span></label><br>
-                                            <input type="radio" name="gender" id="male" required checked>
+                                            <input type="radio" name="gender" value="male" id="male" required checked>
                                             <label for="male">Male</label>
-                                            <input type="radio" name="gender" id="female" class="m-l-20">
+                                            <input type="radio" name="gender" value="female" id="female" class="m-l-20">
                                             <label for="female">Female</label>
+                                        </div>
+
+                                        <div class="form-group form-float mt-3">
+                                            <div class="form-line">
+                                                <input type="text" class="form-control" name="purok" required>
+                                                <label class="form-label">Purok <span style="color: red;">*</span></label>
+                                            </div>
                                         </div>
 
                                         <div class="form-group form-float mt-3">
@@ -335,12 +467,15 @@
                                 <!-- Totals + Buttons -->
                                 <div style="display: flex; justify-content: end; margin-top: 20px;">
                                     <div>
-                                        <h5 style="font-weight: bold; color: brown;">Total: <span style="color: #000;">₱50.00</span></h5>
-                                        <h5 style="font-weight: bold; color: brown;">Interest: <span style="color: #000;">₱50.00</span></h5>
-                                        <h5 style="font-weight: bold; color: brown;">Due: <span style="color: #000;">₱50.00</span></h5>
-                                        <h5 style="font-weight: bold; color: brown;">Extra for certificate: <span style="color: #000;">₱50.00</span></h5>
+                                        <h5 style="font-weight: bold; color: brown;">Total: <span data-id="total">₱50.00</span></h5>
+                                        <h5 style="font-weight: bold; color: brown;">Interest: <span data-id="interest">₱50.00</span></h5>
+                                        <h5 style="font-weight: bold; color: brown;">Extra for certificate: <span data-id="extra">₱50.00</span></h5>
+                                        <h5 style="font-weight: bold; color: brown;">Amount To Pay: <span data-id="due">₱50.00</span></h5>
+
                                     </div>
                                 </div>
+
+                                <input type="text" name="total_amount" id="total_amount" value="0">
 
                                 <div style="display: flex; justify-content: end; gap: 5px; margin-top: 10px;">
                                     <button class="btn bg-teal waves-effect" type="submit">Request</button>
@@ -392,6 +527,68 @@
     <!-- Demo Js -->
     <script src="../js/demo.js"></script>
 
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Get payment inputs
+            const basicTaxInput = document.querySelector('input[name="basic_tax"]');
+            const additionalTaxInput = document.querySelector('input[name="additional_tax"]');
+            const businessIncomeInput = document.querySelector('input[name="business_income"]');
+            const professionalIncomeInput = document.querySelector('input[name="professional_income"]');
+            const propertyIncomeInput = document.querySelector('input[name="property_income"]');
+
+            // Get summary spans (you can add IDs for easy targeting)
+            const totalSpan = document.querySelector('h5 span[data-id="total"]');
+            const interestSpan = document.querySelector('h5 span[data-id="interest"]');
+            const dueSpan = document.querySelector('h5 span[data-id="due"]');
+            const extraSpan = document.querySelector('h5 span[data-id="extra"]');
+
+            // Hidden input for submission
+            const totalAmountInput = document.getElementById('total_amount');
+
+            // For this example, let's assume fixed interest and extra fees
+            const fixedInterest = 50.00;
+            const fixedExtra = 50.00;
+
+            // Helper function to parse float safely
+            function parseFloatSafe(value) {
+                return parseFloat(value) || 0;
+            }
+
+            function calculateTax() {
+                const basicTax = parseFloatSafe(basicTaxInput.value);
+                const additionalTax = parseFloatSafe(additionalTaxInput.value);
+                const businessIncome = parseFloatSafe(businessIncomeInput.value);
+                const professionalIncome = parseFloatSafe(professionalIncomeInput.value);
+                const propertyIncome = parseFloatSafe(propertyIncomeInput.value);
+
+                // Calculate income tax (1% of total income as example)
+                const incomeTax = 0.01 * (businessIncome + professionalIncome + propertyIncome);
+
+                // Total tax
+                const totalTax = basicTax + additionalTax + incomeTax;
+
+                // Total amount due including interest and extra fees
+                const totalDue = totalTax + fixedInterest + fixedExtra;
+
+                // Update UI
+                if (totalSpan) totalSpan.textContent = `₱${totalTax.toFixed(2)}`;
+                if (interestSpan) interestSpan.textContent = `₱${fixedInterest.toFixed(2)}`;
+                if (dueSpan) dueSpan.textContent = `₱${totalDue.toFixed(2)}`;
+                if (extraSpan) extraSpan.textContent = `₱${fixedExtra.toFixed(2)}`;
+
+                // Set hidden input for form submission
+                totalAmountInput.value = totalDue.toFixed(2);
+            }
+
+            // Add event listeners to payment inputs to recalc on input
+            [additionalTaxInput, businessIncomeInput, professionalIncomeInput, propertyIncomeInput].forEach(input => {
+                input.addEventListener('input', calculateTax);
+            });
+
+            // Initialize on page load
+            calculateTax();
+        });
+    </script>
     <script>
         $('#request_certifacte_validation').validate({
             rules: {},
