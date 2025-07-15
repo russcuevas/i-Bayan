@@ -52,7 +52,48 @@ $pending_resident_count_stmt->execute([$admin_barangay_id]);
 $pending_residents = $pending_resident_count_stmt->fetchColumn();
 
 
+// 
+$tables = ['tbl_certificates', 'tbl_cedula', 'tbl_closure', 'tbl_operate'];
+$total_pending = 0;
 
+foreach ($tables as $table) {
+    $stmt = $conn->prepare("SELECT COUNT(*) FROM $table WHERE status = 'Pending' AND for_barangay = ?");
+    $stmt->execute([$admin_barangay_id]);
+    $count = $stmt->fetchColumn();
+    $total_pending += (int)$count;
+}
+
+$tables = [
+    'tbl_certificates' => 'Certificates',
+    'tbl_cedula' => 'Cedula',
+    'tbl_closure' => 'Closure',
+    'tbl_operate' => 'Operate'
+];
+
+$pending_counts = [];
+
+foreach ($tables as $table => $label) {
+    $stmt = $conn->prepare("SELECT COUNT(*) FROM $table WHERE status = 'Pending' AND for_barangay = ?");
+    $stmt->execute([$admin_barangay_id]);
+    $pending_counts[$label] = (int)$stmt->fetchColumn();
+}
+
+//
+$claimed_tables = [
+    'tbl_certificates_claimed',
+    'tbl_cedula_claimed',
+    'tbl_closure_claimed',
+    'tbl_operate_claimed'
+];
+
+$total_claimed = 0;
+
+foreach ($claimed_tables as $table) {
+    $stmt = $conn->prepare("SELECT COUNT(*) FROM $table WHERE for_barangay = ?");
+    $stmt->execute([$admin_barangay_id]);
+    $count = $stmt->fetchColumn();
+    $total_claimed += (int)$count;
+}
 
 ?>
 
@@ -253,12 +294,13 @@ $pending_residents = $pending_resident_count_stmt->fetchColumn();
 
                 <div class="col-sm-6 col-md-3 col-lg-6" data-toggle="modal" data-target="#requestCertificateModal">
                     <div class="thumbnail text-center d-flex flex-column align-items-center justify-content-center" style="padding: 50px;">
-                        <h1>12</h1>
+                        <h1><?= $total_pending ?></h1>
                         <div class="caption">
                             <h3>Certificate Requests</h3>
                         </div>
                     </div>
                 </div>
+
 
                 <div class="modal fade" id="requestCertificateModal" tabindex="-1" role="dialog" style="display: none;">
                     <div class="modal-dialog modal-lg" role="document">
@@ -273,6 +315,8 @@ $pending_residents = $pending_resident_count_stmt->fetchColumn();
                                             <i class="fas fa-file fa-3x mb-3 icon-style"></i>
                                             <div class="caption">
                                                 <h3>Certificates</h3>
+                                                <p>Pending requests: <strong><?= $pending_counts['Certificates'] ?? 0 ?></strong></p>
+
                                             </div>
                                         </div>
                                     </div>
@@ -282,6 +326,8 @@ $pending_residents = $pending_resident_count_stmt->fetchColumn();
                                             <i class="fas fa-file fa-3x mb-3 icon-style"></i>
                                             <div class="caption">
                                                 <h3>Operate</h3>
+                                                <p>Pending requests: <strong><?= $pending_counts['Operate'] ?? 0 ?></strong></p>
+
                                             </div>
                                         </div>
                                     </div>
@@ -291,6 +337,8 @@ $pending_residents = $pending_resident_count_stmt->fetchColumn();
                                             <i class="fas fa-file fa-3x mb-3 icon-style"></i>
                                             <div class="caption">
                                                 <h3>Closure</h3>
+                                                <p>Pending requests: <strong><?= $pending_counts['Closure'] ?? 0 ?></strong></p>
+
                                             </div>
                                         </div>
                                     </div>
@@ -300,6 +348,8 @@ $pending_residents = $pending_resident_count_stmt->fetchColumn();
                                             <i class="fas fa-file fa-3x mb-3 icon-style"></i>
                                             <div class="caption">
                                                 <h3>Cedula</h3>
+                                                <p>Pending requests: <strong><?= $pending_counts['Cedula'] ?? 0 ?></strong></p>
+
                                             </div>
                                         </div>
                                     </div>
@@ -314,14 +364,15 @@ $pending_residents = $pending_resident_count_stmt->fetchColumn();
                 </div>
                 <!-- END ADD MODAL -->
 
-                <div class="col-sm-6 col-md-3 col-lg-6" onclick="window.location.href = 'certificate_completed.php'">
+                <div class="col-sm-6 col-md-3 col-lg-6" onclick="window.location.href = 'email_sent.php'">
                     <div class="thumbnail text-center d-flex flex-column align-items-center justify-content-center" style="padding: 50px;">
-                        <h1>12</h1>
+                        <h1><?= $total_claimed ?></h1>
                         <div class="caption">
                             <h3>Certificate Completed</h3>
                         </div>
                     </div>
                 </div>
+
             </div>
             <!-- #END# Widgets -->
         </div>

@@ -57,8 +57,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['status'], $_POST['cer
             $insert = $conn->prepare("INSERT INTO tbl_certificates_claimed (
                 resident_id, purok, document_number, picked_up_by, relationship, 
                 certificate_type, purpose, fullname, email, gender, contact, 
-                valid_id, total_amount_paid, for_barangay
-            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+                valid_id, total_amount_paid, for_barangay, status
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
 
             $insert->execute([
                 $certificate['resident_id'],
@@ -74,7 +74,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['status'], $_POST['cer
                 $certificate['contact'],
                 $certificate['valid_id'],
                 $certificate['total_amount'],
-                $for_barangay_id
+                $for_barangay_id,
+                'Claimed'
             ]);
         }
 

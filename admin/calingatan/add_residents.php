@@ -265,14 +265,14 @@ $admin_barangay_name = $barangay_stmt->fetchColumn();
                                     foreach ($fields as $field) {
                                         [$name, $label] = $field;
                                         echo '
-            <div class="col-md-6" style="margin-top: 10px;">
-                <div class="form-group form-float">
-                    <div class="form-line">
-                        <input type="text" class="form-control" name="' . $name . '"' . ($name !== 'suffix' ? ' required' : '') . '>
-                        <label class="form-label">' . $label . ($name !== 'suffix' ? ' <span style="color: red;">*</span>' : '') . '</label>
-                    </div>
-                </div>
-            </div>';
+                                        <div class="col-md-6" style="margin-top: 10px;">
+                                            <div class="form-group form-float">
+                                                <div class="form-line">
+                                                    <input type="text" class="form-control" name="' . $name . '"' . ($name !== 'suffix' ? ' required' : '') . '>
+                                                    <label class="form-label">' . $label . ($name !== 'suffix' ? ' <span style="color: red;">*</span>' : '') . '</label>
+                                                </div>
+                                            </div>
+                                        </div>';
                                     }
                                     ?>
 
@@ -411,7 +411,7 @@ $admin_barangay_name = $barangay_stmt->fetchColumn();
                                 <!-- Submit -->
                                 <div class="text-right">
                                     <button class="btn bg-teal waves-effect" type="submit">SAVE</button>
-                                    <button type="button" class="btn btn-link waves-effect" onclick="window.location.href = 'index.php'">BACK</button>
+                                    <button type="button" class="btn btn-link waves-effect" onclick="window.location.href = 'manage_residents.php'">BACK</button>
                                 </div>
                             </form>
 

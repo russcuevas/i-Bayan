@@ -25,11 +25,44 @@ $admin_stmt = $conn->prepare("SELECT barangay_id FROM tbl_admin WHERE id = ?");
 $admin_stmt->execute([$admin_id]);
 $admin_barangay_id = $admin_stmt->fetchColumn();
 
-// fetching residents
-$family_stmt = $conn->prepare("SELECT * FROM tbl_residents_family_members WHERE barangay_address = ? AND is_approved = 1");
-$family_stmt->execute([$admin_barangay_id]);
 
-$family_members = $family_stmt->fetchAll(PDO::FETCH_ASSOC);
+// Define the claimed tables with their certificate type labels
+$claimed_tables = [
+    'tbl_certificates_claimed' => ['amount_column' => 'total_amount_paid', 'name_column' => 'fullname', 'purok_column' => 'purok'],
+    'tbl_cedula_claimed'       => ['amount_column' => 'total_amount', 'name_column' => 'fullname', 'purok_column' => 'purok'],
+    'tbl_closure_claimed'      => ['amount_column' => 'total_amount', 'name_column' => 'owner_name', 'purok_column' => 'owner_purok'],
+    'tbl_operate_claimed'      => ['amount_column' => 'total_amount', 'name_column' => 'owner_name', 'purok_column' => 'owner_purok'],
+];
+
+$all_claimed = [];
+
+foreach ($claimed_tables as $table => $columns) {
+    $amount_column = $columns['amount_column'];
+    $name_column = $columns['name_column'];
+    $purok_column = $columns['purok_column'];
+
+    $stmt = $conn->prepare("
+        SELECT 
+            document_number, 
+            certificate_type, 
+            $name_column AS fullname, 
+            $amount_column AS total_amount,
+            $purok_column AS purok,
+            status
+        FROM $table 
+        WHERE for_barangay = ?
+    ");
+
+    $stmt->execute([$admin_barangay_id]);
+    $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    $all_claimed = array_merge($all_claimed, $results);
+}
+
+
+// Optional: Sort by document_number or other criteria
+usort($all_claimed, function ($a, $b) {
+    return strcmp($a['document_number'], $b['document_number']);
+});
 
 ?>
 <!DOCTYPE html>
@@ -237,8 +270,8 @@ $family_members = $family_stmt->fetchAll(PDO::FETCH_ASSOC);
                         </div>
                         <div class="body">
                             <ul id="tagList" class="report-tags">
-                                <li><a href="residents.php" class="active"><i class="fa-solid fa-users"></i> Residents</a></li>
-                                <li><a href="email_sent.php"><i class="fa-solid fa-envelope"></i> Email Sent</a></li>
+                                <li><a href="residents.php"><i class="fa-solid fa-users"></i> Residents</a></li>
+                                <li><a href="email_sent.php" class="active"><i class="fa-solid fa-envelope"></i> Email Sent</a></li>
                                 <li><a href="announcement_list.php"><i class="fa-solid fa-bullhorn"></i> Announcement</a></li>
                                 <li><a href="reports/activity_logs.php"><i class="fa-solid fa-list-check"></i> Activity Logs</a></li>
                             </ul>
@@ -251,8 +284,8 @@ $family_members = $family_stmt->fetchAll(PDO::FETCH_ASSOC);
                 <div class="col-lg-8 col-md-8 col-sm-12 col-xs-12">
                     <div class="card">
                         <div class="header" style="display: flex; justify-content: space-between; align-items: center;">
-                            <h2>RESIDENTS LIST</h2>
-                            <a href="print_residents.php" target="_blank" class="btn btn-primary">
+                            <h2>EMAIL COMPLETED CERTIFICATE SENT</h2>
+                            <a href="print_completed.php" target="_blank" class="btn btn-primary">
                                 <i class="fa fa-print"></i> Print
                             </a>
                         </div>
@@ -262,36 +295,23 @@ $family_members = $family_stmt->fetchAll(PDO::FETCH_ASSOC);
                                 <table class="table table-bordered table-striped table-hover js-basic-example dataTable">
                                     <thead>
                                         <tr>
+                                            <th>Document ID</th>
+                                            <th>Certificate Type</th>
                                             <th>Fullname</th>
                                             <th>Purok</th>
-                                            <th>Mobile</th>
+                                            <th>Price</th>
                                             <th>Status</th>
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <?php foreach ($family_members as $member): ?>
-                                            <?php
-                                            // Format full name
-                                            $full_name = htmlspecialchars(
-                                                $member['first_name'] . ' ' .
-                                                    ($member['middle_name'] ? $member['middle_name'][0] . '. ' : '') .
-                                                    $member['last_name'] .
-                                                    ($member['suffix'] ? ', ' . $member['suffix'] : '')
-                                            );
-
-                                            // Translate status
-                                            $status_map = [
-                                                1 => 'Working',
-                                                2 => 'Student',
-                                                3 => 'None'
-                                            ];
-                                            $status = $status_map[$member['is_working']] ?? 'Unknown';
-                                            ?>
+                                        <?php foreach ($all_claimed as $claim): ?>
                                             <tr>
-                                                <td><?= $full_name ?></td>
-                                                <td><?= htmlspecialchars($member['purok']) ?></td>
-                                                <td><?= htmlspecialchars($member['phone_number']) ?></td>
-                                                <td><?= $status ?></td>
+                                                <td><?= htmlspecialchars($claim['document_number']) ?></td>
+                                                <td><?= htmlspecialchars($claim['certificate_type']) ?></td>
+                                                <td><?= htmlspecialchars($claim['fullname']) ?></td>
+                                                <td><?= htmlspecialchars($claim['purok']) ?></td>
+                                                <td>₱<?= number_format((float)$claim['total_amount'], 2) ?></td>
+                                                <td><span class="badge bg-green"><?= htmlspecialchars($claim['status']) ?></span></td>
                                             </tr>
                                         <?php endforeach; ?>
                                     </tbody>

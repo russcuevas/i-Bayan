@@ -19,19 +19,59 @@ $admin_position_key = "admin_position_$barangay";
 // database connection
 include '../../database/connection.php';
 
-// fetching residents where in same of the barangay of the admin
 $admin_id = $_SESSION[$session_key];
 $admin_stmt = $conn->prepare("SELECT barangay_id FROM tbl_admin WHERE id = ?");
 $admin_stmt->execute([$admin_id]);
 $admin_barangay_id = $admin_stmt->fetchColumn();
 
-// fetching residents
-$family_stmt = $conn->prepare("SELECT * FROM tbl_residents_family_members WHERE barangay_address = ? AND is_approved = 1");
-$family_stmt->execute([$admin_barangay_id]);
+// Get member ID from GET
+if (!isset($_GET['id']) || !is_numeric($_GET['id'])) {
+    header("Location: manage_residents.php");
+    exit();
+}
 
-$family_members = $family_stmt->fetchAll(PDO::FETCH_ASSOC);
+$id = (int)$_GET['id'];
+
+// Fetch existing member data (make sure belongs to same barangay)
+$stmt = $conn->prepare("SELECT * FROM tbl_residents_family_members WHERE id = ? AND barangay_address = ?");
+$stmt->execute([$id, $admin_barangay_id]);
+$member = $stmt->fetch(PDO::FETCH_ASSOC);
+
+if (!$member) {
+    $_SESSION['error'] = "Family member not found or you don't have permission.";
+    header("Location: manage_residents.php");
+    exit();
+}
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    // Validate and sanitize inputs
+    $first_name = trim($_POST['first_name']);
+    $middle_name = trim($_POST['middle_name']);
+    $last_name = trim($_POST['last_name']);
+    $suffix = trim($_POST['suffix']);
+    $purok = trim($_POST['purok']);
+    $phone_number = trim($_POST['phone_number']);
+
+    // Simple validation
+    if ($first_name === '' || $last_name === '' || $purok === '') {
+        $_SESSION['error'] = "Please fill in all required fields.";
+    } else {
+        // Update query
+        $update = $conn->prepare("UPDATE tbl_residents_family_members SET first_name = ?, middle_name = ?, last_name = ?, suffix = ?, purok = ?, phone_number = ? WHERE id = ? AND barangay_address = ?");
+        $success = $update->execute([$first_name, $middle_name, $last_name, $suffix, $purok, $phone_number, $id, $admin_barangay_id]);
+
+        if ($success) {
+            $_SESSION['success'] = "Resident updated successfully.";
+            header("Location: manage_residents.php");
+            exit();
+        } else {
+            $_SESSION['error'] = "Failed to update family member.";
+        }
+    }
+}
 
 ?>
+
 <!DOCTYPE html>
 <html>
 
@@ -71,6 +111,8 @@ $family_members = $family_stmt->fetchAll(PDO::FETCH_ASSOC);
     <link href="../css/themes/all-themes.css" rel="stylesheet" />
     <!-- Sweetalert Css -->
     <link href="../plugins/sweetalert/sweetalert.css" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Poppins&display=swap');
 
@@ -95,6 +137,21 @@ $family_members = $family_stmt->fetchAll(PDO::FETCH_ASSOC);
             -webkit-transition: border-color ease-in-out .15s, -webkit-box-shadow ease-in-out .15s !important;
             -o-transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s !important;
             transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s !important;
+        }
+
+        .select2-container--default .select2-selection--single {
+            height: 33px !important;
+            padding: 5px 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        .select2-container--default .select2-selection--single .select2-selection__rendered {
+            line-height: 24px;
+        }
+
+        .select2-container--default .select2-selection--single .select2-selection__arrow {
+            height: 34px;
         }
 
         /* HOMEPAGE */
@@ -123,45 +180,6 @@ $family_members = $family_stmt->fetchAll(PDO::FETCH_ASSOC);
 
         .icon-style {
             transition: color 0.3s ease;
-        }
-
-        /* Tag List Styling */
-        .report-tags {
-            list-style-type: none;
-            padding-left: 0;
-            display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
-        }
-
-        .report-tags li a {
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            background-color: #ffffff;
-            border: 2px solid #1a49cb;
-            color: #1a49cb;
-            padding: 8px 15px;
-            font-size: 14px;
-            font-weight: 600;
-            text-decoration: none;
-            border-radius: 30px;
-            transition: all 0.3s ease;
-        }
-
-        .report-tags li a:hover {
-            background-color: #1a49cb;
-            color: #ffffff;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
-            transform: translateY(-2px);
-        }
-
-        .report-tags li a.active {
-            background-color: #1a49cb;
-            color: #ffffff;
-            border-color: #1a49cb;
-            box-shadow: 0 4px 12px rgba(26, 73, 203, 0.3);
-            transform: translateY(-1px);
         }
     </style>
 </head>
@@ -221,82 +239,92 @@ $family_members = $family_stmt->fetchAll(PDO::FETCH_ASSOC);
                 <ol style="font-size: 15px;" class="breadcrumb breadcrumb-col-red">
                     <li><a href="index.php"><i style="font-size: 20px;" class="material-icons">home</i>
                             Dashboard</a></li>
-                    <li class="active"><i style="font-size: 20px;" class="material-icons">description</i> Reports
+                    <li class="active"><i style="font-size: 20px;" class="material-icons">description</i> Manage Residents
                     </li>
                 </ol>
             </div>
             <!-- Basic Validation -->
-            <div class="block-header text-left">
-                <h3 style="color: #1a49cb;">Generate Reports</h3>
-            </div>
             <div class="row clearfix">
-                <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
                     <div class="card">
                         <div class="header">
-                            <h2>CATEGORIES</h2>
+                            <h2>EDIT FAMILY MEMBER</h2>
                         </div>
                         <div class="body">
-                            <ul id="tagList" class="report-tags">
-                                <li><a href="residents.php" class="active"><i class="fa-solid fa-users"></i> Residents</a></li>
-                                <li><a href="email_sent.php"><i class="fa-solid fa-envelope"></i> Email Sent</a></li>
-                                <li><a href="announcement_list.php"><i class="fa-solid fa-bullhorn"></i> Announcement</a></li>
-                                <li><a href="reports/activity_logs.php"><i class="fa-solid fa-list-check"></i> Activity Logs</a></li>
-                            </ul>
-                        </div>
 
-                    </div>
-                </div>
+                            <?php if (isset($_SESSION['error'])): ?>
+                                <p style="color: red;"><?= $_SESSION['error'] ?></p>
+                                <?php unset($_SESSION['error']); ?>
+                            <?php endif; ?>
 
-                <!-- RIGHT CARD -->
-                <div class="col-lg-8 col-md-8 col-sm-12 col-xs-12">
-                    <div class="card">
-                        <div class="header" style="display: flex; justify-content: space-between; align-items: center;">
-                            <h2>RESIDENTS LIST</h2>
-                            <a href="print_residents.php" target="_blank" class="btn btn-primary">
-                                <i class="fa fa-print"></i> Print
-                            </a>
-                        </div>
+                            <form method="post" style="margin-top: 20px;">
 
-                        <div class="body">
-                            <div class="table-responsive">
-                                <table class="table table-bordered table-striped table-hover js-basic-example dataTable">
-                                    <thead>
-                                        <tr>
-                                            <th>Fullname</th>
-                                            <th>Purok</th>
-                                            <th>Mobile</th>
-                                            <th>Status</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <?php foreach ($family_members as $member): ?>
-                                            <?php
-                                            // Format full name
-                                            $full_name = htmlspecialchars(
-                                                $member['first_name'] . ' ' .
-                                                    ($member['middle_name'] ? $member['middle_name'][0] . '. ' : '') .
-                                                    $member['last_name'] .
-                                                    ($member['suffix'] ? ', ' . $member['suffix'] : '')
-                                            );
+                                <div class="row">
+                                    <div class="col-md-6" style="margin-top: 10px;">
+                                        <div class="form-group form-float">
+                                            <div class="form-line">
+                                                <input type="text" class="form-control" name="first_name" value="<?= htmlspecialchars($member['first_name']) ?>" required>
+                                                <label class="form-label">First Name <span style="color: red;">*</span></label>
+                                            </div>
+                                        </div>
+                                    </div>
 
-                                            // Translate status
-                                            $status_map = [
-                                                1 => 'Working',
-                                                2 => 'Student',
-                                                3 => 'None'
-                                            ];
-                                            $status = $status_map[$member['is_working']] ?? 'Unknown';
-                                            ?>
-                                            <tr>
-                                                <td><?= $full_name ?></td>
-                                                <td><?= htmlspecialchars($member['purok']) ?></td>
-                                                <td><?= htmlspecialchars($member['phone_number']) ?></td>
-                                                <td><?= $status ?></td>
-                                            </tr>
-                                        <?php endforeach; ?>
-                                    </tbody>
-                                </table>
-                            </div>
+                                    <div class="col-md-6" style="margin-top: 10px;">
+                                        <div class="form-group form-float">
+                                            <div class="form-line">
+                                                <input type="text" class="form-control" name="middle_name" value="<?= htmlspecialchars($member['middle_name']) ?>">
+                                                <label class="form-label">Middle Name</label>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-6" style="margin-top: 10px;">
+                                        <div class="form-group form-float">
+                                            <div class="form-line">
+                                                <input type="text" class="form-control" name="last_name" value="<?= htmlspecialchars($member['last_name']) ?>" required>
+                                                <label class="form-label">Last Name <span style="color: red;">*</span></label>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-6" style="margin-top: 10px;">
+                                        <div class="form-group form-float">
+                                            <div class="form-line">
+                                                <input type="text" class="form-control" name="suffix" value="<?= htmlspecialchars($member['suffix']) ?>">
+                                                <label class="form-label">Suffix</label>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-6" style="margin-top: 10px;">
+                                        <div class="form-group form-float">
+                                            <div class="form-line">
+                                                <input type="text" class="form-control" name="purok" value="<?= htmlspecialchars($member['purok']) ?>" required>
+                                                <label class="form-label">Purok <span style="color: red;">*</span></label>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-6" style="margin-top: 10px;">
+                                        <div class="form-group form-float">
+                                            <div class="form-line">
+                                                <input type="text" class="form-control" name="phone_number" value="<?= htmlspecialchars($member['phone_number']) ?>">
+                                                <label class="form-label">Phone Number</label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+
+                                <div class="row" style="margin-top: 20px;">
+                                    <div class="col-md-12 text-right">
+                                        <button class="btn bg-teal waves-effect" type="submit">SAVE CHANGES</button>
+                                        <a href="manage_residents.php" class="btn btn-link waves-effect">CANCEL</a>
+                                    </div>
+                                </div>
+
+                            </form>
+
                         </div>
                     </div>
                 </div>
@@ -306,8 +334,20 @@ $family_members = $family_stmt->fetchAll(PDO::FETCH_ASSOC);
         </div>
     </section>
 
+
+
     <!-- Jquery Core Js -->
     <script src="../plugins/jquery/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            $('#resident-select').select2({
+                placeholder: "Select Resident",
+                allowClear: true,
+                width: '100%'
+            });
+        });
+    </script>
     <!-- Jquery Validation Plugin Css -->
     <script src="../plugins/jquery-validation/jquery.validate.js"></script>
     <script src="../js/pages/forms/form-validation.js"></script>
@@ -363,6 +403,27 @@ $family_members = $family_stmt->fetchAll(PDO::FETCH_ASSOC);
     <!-- Demo Js -->
     <script src="../js/demo.js"></script>
     <script src="../plugins/sweetalert/sweetalert.min.js"></script>
+    <script>
+        document.querySelectorAll('input[name="is_working"]').forEach((elem) => {
+            elem.addEventListener('change', function() {
+                const occupationDiv = document.getElementById('occupationDiv');
+                const schoolDiv = document.getElementById('schoolDiv');
+
+                if (this.value === "1") {
+                    occupationDiv.style.display = 'block';
+                    schoolDiv.style.display = 'none';
+                } else if (this.value === "2") {
+                    occupationDiv.style.display = 'none';
+                    schoolDiv.style.display = 'block';
+                } else {
+                    occupationDiv.style.display = 'none';
+                    schoolDiv.style.display = 'none';
+                }
+            });
+        });
+    </script>
+
+
 </body>
 
 </html>

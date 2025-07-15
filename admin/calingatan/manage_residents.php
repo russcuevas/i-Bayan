@@ -26,10 +26,27 @@ $admin_stmt->execute([$admin_id]);
 $admin_barangay_id = $admin_stmt->fetchColumn();
 
 // fetching residents
-$family_stmt = $conn->prepare("SELECT * FROM tbl_residents_family_members WHERE barangay_address = ? AND is_approved = 1");
-$family_stmt->execute([$admin_barangay_id]);
+$filter = $_GET['filter'] ?? null;
 
-$family_members = $family_stmt->fetchAll(PDO::FETCH_ASSOC);
+if ($filter === 'recent') {
+    $family_stmt = $conn->prepare("
+        SELECT * 
+        FROM tbl_residents_family_members 
+        WHERE barangay_address = ? 
+            AND is_approved = 1
+            AND DATE(created_at) >= CURDATE() - INTERVAL 1 DAY
+    ");
+} else {
+    $family_stmt = $conn->prepare("
+        SELECT * 
+        FROM tbl_residents_family_members 
+        WHERE barangay_address = ? 
+            AND is_approved = 1
+    ");
+}
+
+$family_stmt->execute([$admin_barangay_id]);
+$family_members = $family_stmt->fetchAll(PDO::FETCH_ASSOC);;
 
 
 ?>
@@ -211,9 +228,10 @@ $family_members = $family_stmt->fetchAll(PDO::FETCH_ASSOC);
                                         View All Residents <span class="caret"></span>
                                     </button>
                                     <ul class="dropdown-menu pull-right">
-                                        <li><a href="">Recently Added</a></li>
-                                        <li><a href="">Export</a></li>
+                                        <li><a href="?filter=recent">Recently Added</a></li>
+                                        <li><a href="print_residents.php" target="_blank">Export</a></li>
                                     </ul>
+
                                 </div>
                             </div>
 
@@ -239,8 +257,8 @@ $family_members = $family_stmt->fetchAll(PDO::FETCH_ASSOC);
                                                     <?= $member['is_working'] == 1 ? 'Working' : ($member['is_working'] == 2 ? 'Student' : 'None') ?>
                                                 </td>
                                                 <td>
-                                                    <a href="edit_family_member.php?id=<?= $member['id'] ?>" class="btn btn-sm btn-warning">Edit</a>
-                                                    <a href="delete_family_member.php?id=<?= $member['id'] ?>" class="btn btn-sm btn-danger" onclick="return confirm('Are you sure you want to delete this member?');">Delete</a>
+                                                    <a href="edit_residents.php?id=<?= $member['id'] ?>" class="btn btn-sm btn-warning">Edit</a>
+                                                    <a href="delete_residents.php?id=<?= $member['id'] ?>" class="btn btn-sm btn-danger" onclick="return confirm('Are you sure you want to delete this member?');">Delete</a>
                                                 </td>
                                             </tr>
                                         <?php endforeach; ?>
