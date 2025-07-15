@@ -65,13 +65,6 @@
             </li>
 
             <li>
-                <a href="certificate_completed.php">
-                    <i class="material-icons">task_alt</i>
-                    <span>Certificate Completed</span>
-                </a>
-            </li>
-
-            <li>
                 <a href="live_chat.php">
                     <i class="material-icons">chat</i>
                     <span>Live Chat</span>

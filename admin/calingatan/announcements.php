@@ -319,6 +319,8 @@ $announcements = $stmt->fetchAll(PDO::FETCH_ASSOC);
                                                 <td><?= htmlspecialchars($announcement['announcement_venue']) ?></td>
                                                 <td><?= nl2br(htmlspecialchars($announcement['status'])) ?></td>
                                                 <td>
+                                                    <a href="" class="btn bg-teal waves-effect" style="margin-bottom: 5px;"><i class="fa-solid fa-comment-sms"></i> SEND SMS</a>
+
                                                     <a href="edit_announcement.php?id=<?= $announcement['id'] ?>" class="btn bg-teal waves-effect" style="margin-bottom: 5px;">
                                                         <i class="fa-solid fa-pen-to-square"></i> EDIT
                                                     </a>

@@ -233,7 +233,7 @@ $family_members = $family_stmt->fetchAll(PDO::FETCH_ASSOC);
                                         <?php foreach ($family_members as $member): ?>
                                             <tr>
                                                 <td><?= htmlspecialchars($member['first_name'] . ' ' . $member['middle_name'] . ' ' . $member['last_name'] . ' ' . $member['suffix']) ?></td>
-                                                <td><?= htmlspecialchars($member['birthplace']) ?></td>
+                                                <td><?= htmlspecialchars($member['purok']) ?></td>
                                                 <td><?= htmlspecialchars($member['phone_number']) ?></td>
                                                 <td>
                                                     <?= $member['is_working'] == 1 ? 'Working' : ($member['is_working'] == 2 ? 'Student' : 'None') ?>

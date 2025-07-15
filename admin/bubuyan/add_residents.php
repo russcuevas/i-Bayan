@@ -275,6 +275,17 @@ $admin_barangay_name = $barangay_stmt->fetchColumn();
             </div>';
                                     }
                                     ?>
+
+                                    <div class="col-md-6" style="margin-top: 10px; margin-bottom: 25px">
+                                        <div class="form-group form-float">
+                                            <div class="form-line">
+                                                <input type="text" class="form-control" name="purok">
+                                                <label class="form-label">Purok <span style="color: red;">*</span></label>
+                                            </div>
+                                        </div>
+                                    </div>
+
+
                                     <div class="col-md-6" style="margin-top: 10px; margin-bottom: 25px">
                                         <div class="form-group">
                                             <label for="gender">Gender <span style="color: red;">*</span></label><br>

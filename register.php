@@ -97,14 +97,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $age = $dob->diff($today)->y;
 
     $stmtFamily = $conn->prepare("INSERT INTO tbl_residents_family_members (
-        resident_id, barangay_address, first_name, middle_name, last_name, suffix, 'purok', relationship, gender, civil_status,
-        date_of_birth, birthplace, age, is_working, is_approved,
-        is_barangay_voted, years_in_barangay, phone_number, philhealth_number, school, occupation
-    ) VALUES (
-        :resident_id, :barangay_address, :first_name, :middle_name, :last_name, :suffix, :purok, :relationship, :gender, :civil_status,
-        :date_of_birth, :birthplace, :age, :is_working, 0,
-        :is_barangay_voted, :years_in_barangay, :phone_number, NULL, :school, :occupation
-    )");
+    resident_id, barangay_address, first_name, middle_name, last_name, suffix, purok, relationship, gender, civil_status,
+    date_of_birth, birthplace, age, is_working, is_approved,
+    is_barangay_voted, years_in_barangay, phone_number, philhealth_number, school, occupation
+) VALUES (
+    :resident_id, :barangay_address, :first_name, :middle_name, :last_name, :suffix, :purok, :relationship, :gender, :civil_status,
+    :date_of_birth, :birthplace, :age, :is_working, 0,
+    :is_barangay_voted, :years_in_barangay, :phone_number, NULL, :school, :occupation
+)");
+
 
 
 

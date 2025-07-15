@@ -204,14 +204,13 @@ $admin_barangay_id = $admin_stmt->fetchColumn();
                                     <tbody>
                                         <?php
                                         $stmt = $conn->prepare("
-    SELECT c.*, r.barangay_address 
-    FROM tbl_certificates AS c
-    INNER JOIN tbl_residents AS r ON c.resident_id = r.id
-    WHERE r.barangay_address = ?
-    ORDER BY c.created_at DESC
-");
+                                            SELECT c.*, r.barangay_address 
+                                            FROM tbl_certificates AS c
+                                            INNER JOIN tbl_residents AS r ON c.resident_id = r.id
+                                            WHERE r.barangay_address = ?
+                                            ORDER BY c.created_at DESC
+                                        ");
                                         $stmt->execute([$admin_barangay_id]);
-
                                         while ($row = $stmt->fetch(PDO::FETCH_ASSOC)):
                                         ?>
                                             <tr>
@@ -222,22 +221,27 @@ $admin_barangay_id = $admin_stmt->fetchColumn();
                                                 <td><?= htmlspecialchars($row['email']) ?></td>
                                                 <td><?= htmlspecialchars($row['contact']) ?></td>
                                                 <td><?= date("F/d/Y", strtotime($row['created_at'])) ?></td>
-                                                <td><?= ucfirst($row['status'] ?? 'Pending') ?></td>
                                                 <td>
-                                                    <a href="update_status.php?id=<?= $row['id'] ?>" class="btn bg-teal waves-effect" style="margin-bottom: 5px;">
-                                                        <i class="fa-solid fa-pencil"></i> UPDATE STATUS
-                                                    </a>
-                                                    <a href="view_certificate.php?id=<?= $row['id'] ?>" class="btn bg-teal waves-effect" style="margin-bottom: 5px;">
+                                                    <?php
+                                                    $status = ucfirst($row['status'] ?? 'Pending');
+                                                    $badgeClass = 'btn-info'; // default for Pending
+
+                                                    if ($status === 'To Pick Up') {
+                                                        $badgeClass = 'btn-warning text-dark';
+                                                    } elseif ($status === 'Claimed') {
+                                                        $badgeClass = 'btn-success';
+                                                    }
+                                                    ?>
+                                                    <span class="badge <?= $badgeClass ?>"><?= $status ?></span>
+                                                </td>
+                                                <td>
+                                                    <a href="certificates_view_information.php?id=<?= $row['id'] ?>" class="btn bg-teal waves-effect" style="margin-bottom: 5px;">
                                                         <i class="fa-solid fa-eye"></i> VIEW INFORMATION
-                                                    </a>
-                                                    <a href="cancel_certificate.php?id=<?= $row['id'] ?>" class="btn bg-teal waves-effect" style="margin-bottom: 5px;">
-                                                        <i class="fa-solid fa-ban"></i> CANCEL REQUEST
                                                     </a>
                                                 </td>
                                             </tr>
                                         <?php endwhile; ?>
                                     </tbody>
-
                                 </table>
                             </div>
                         </div>

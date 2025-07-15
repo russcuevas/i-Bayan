@@ -1,3 +1,81 @@
+<?php
+// session
+session_start();
+
+$barangay = basename(__DIR__);
+$session_key = "admin_id_$barangay";
+
+// if not logged in
+if (!isset($_SESSION[$session_key])) {
+    header("Location: ../login.php");
+    exit();
+}
+
+// details welcome
+$barangay_name_key = "barangay_name_$barangay";
+$admin_name_key = "admin_name_$barangay";
+$admin_position_key = "admin_position_$barangay";
+
+include '../../database/connection.php';
+
+// Get barangay_id linked to admin_id
+$admin_id = $_SESSION[$session_key];
+$admin_stmt = $conn->prepare("SELECT barangay_id FROM tbl_admin WHERE id = ?");
+$admin_stmt->execute([$admin_id]);
+$admin_barangay_id = $admin_stmt->fetchColumn();
+
+// If barangay_id not found, block
+if (!$admin_barangay_id) {
+    die('Barangay not found for this admin.');
+}
+
+// Handle form submission
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $announcement_title = $_POST['announcement_title'] ?? '';
+    $announcement_content = $_POST['announcement_content'] ?? '';
+    $announcement_venue = $_POST['announcement_venue'] ?? null;
+
+    // Handle image upload if provided
+    $announcement_image = null;
+    if (isset($_FILES['announcement_image']) && $_FILES['announcement_image']['error'] === UPLOAD_ERR_OK) {
+        $file_tmp = $_FILES['announcement_image']['tmp_name'];
+        $file_name = time() . '_' . basename($_FILES['announcement_image']['name']);
+        $destination = '../../public/announcement/' . $file_name;
+
+        // Create folder if doesn't exist
+        if (!is_dir('../../public/announcement')) {
+            mkdir('../../public/announcement', 0755, true);
+        }
+
+        if (move_uploaded_file($file_tmp, $destination)) {
+            $announcement_image = $file_name;
+        }
+    }
+
+    // Insert announcement
+    $stmt = $conn->prepare("INSERT INTO tbl_announcement 
+        (announcement_title, announcement_content, announcement_venue, announcement_image, barangay, status, created_at)
+        VALUES (?, ?, ?, ?, ?, 'active', NOW())");
+    $stmt->execute([
+        $announcement_title,
+        $announcement_content,
+        $announcement_venue,
+        $announcement_image,
+        $admin_barangay_id
+    ]);
+
+    // Redirect or show success message
+    $_SESSION['success'] = "Announcement added successfully.";
+    header("Location: announcements.php");
+    exit();
+}
+
+// fetch announcements for this barangay
+$stmt = $conn->prepare("SELECT * FROM tbl_announcement WHERE barangay = ? ORDER BY created_at DESC");
+$stmt->execute([$admin_barangay_id]);
+$announcements = $stmt->fetchAll(PDO::FETCH_ASSOC);
+?>
+
 <!DOCTYPE html>
 <html>
 
@@ -222,20 +300,36 @@
                                             <th>Title</th>
                                             <th>Content</th>
                                             <th>Venue</th>
+                                            <th>Status</th>
                                             <th>Actions</th>
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <tr>
-                                            <td><img src="" alt="Sample"></td>
-                                            <td>Sample Title</td>
-                                            <td>Sample Content</td>
-                                            <td>Sample Venue</td>
-                                            <td>
-                                                <a href="" class="btn bg-teal waves-effect" style="margin-bottom: 5px;"><i class="fa-solid fa-comment-sms"></i> SEND SMS</a>
-                                                <a href="" class="btn bg-teal waves-effect" style="margin-bottom: 5px;"><i class="fa-solid fa-trash"></i> DELETE</a>
-                                            </td>
-                                        </tr>
+                                        <?php foreach ($announcements as $announcement): ?>
+                                            <tr>
+                                                <td>
+                                                    <?php if ($announcement['announcement_image']): ?>
+                                                        <img src="../../public/announcement/<?= htmlspecialchars($announcement['announcement_image']) ?>" style="width: 100px; height: auto;">
+                                                    <?php else: ?>
+                                                        <img src="../img/no_image.png" style="width: 100px; height: auto;">
+                                                    <?php endif; ?>
+                                                </td>
+                                                <td><?= htmlspecialchars($announcement['announcement_title']) ?></td>
+                                                <td><?= nl2br(htmlspecialchars($announcement['announcement_content'])) ?></td>
+                                                <td><?= htmlspecialchars($announcement['announcement_venue']) ?></td>
+                                                <td><?= nl2br(htmlspecialchars($announcement['status'])) ?></td>
+                                                <td>
+                                                    <a href="" class="btn bg-teal waves-effect" style="margin-bottom: 5px;"><i class="fa-solid fa-comment-sms"></i> SEND SMS</a>
+
+                                                    <a href="edit_announcement.php?id=<?= $announcement['id'] ?>" class="btn bg-teal waves-effect" style="margin-bottom: 5px;">
+                                                        <i class="fa-solid fa-pen-to-square"></i> EDIT
+                                                    </a>
+                                                    <a href="delete_announcement.php?id=<?= $announcement['id'] ?>" onclick="return confirm('Are you sure you want to delete this announcement?')" class="btn bg-teal waves-effect" style="margin-bottom: 5px;">
+                                                        <i class="fa-solid fa-trash"></i> DELETE
+                                                    </a>
+                                                </td>
+                                            </tr>
+                                        <?php endforeach; ?>
                                     </tbody>
                                 </table>
                             </div>
@@ -305,6 +399,25 @@
     <!-- Demo Js -->
     <script src="../js/demo.js"></script>
     <script src="../plugins/sweetalert/sweetalert.min.js"></script>
+    <script>
+        <?php if (isset($_SESSION['success'])): ?>
+            swal({
+                type: 'success',
+                title: 'Success!',
+                text: '<?php echo $_SESSION['success']; ?>',
+                confirmButtonText: 'OK'
+            });
+            <?php unset($_SESSION['success']); ?>
+        <?php elseif (isset($_SESSION['error'])): ?>
+            swal({
+                type: 'error',
+                title: 'Oops...',
+                text: '<?php echo $_SESSION['error']; ?>',
+                confirmButtonText: 'OK'
+            });
+            <?php unset($_SESSION['error']); ?>
+        <?php endif; ?>
+    </script>
 </body>
 
 </html>
