@@ -286,15 +286,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                             </select>
                                         </div>
 
-                                        <div class="form-group form-float">
-                                            <label class="form-label">Purpose <span style="color: red;">*</span></label>
-                                            <select class="form-control select-form" name="purpose" required>
-                                                <option value="" disabled selected>CHOOSE PURPOSE</option>
-                                                <option value="Medical">Medical</option>
-                                                <option value="Educational">Educational</option>
-                                                <option value="Burial">Burial</option>
-                                                <option value="Financial">Financial</option>
-                                            </select>
+                                        <div class="form-group form-float mt-3">
+                                            <div class="form-line">
+                                                <input type="text" class="form-control" name="purpose" required>
+                                                <label class="form-label">Purpose <span style="color: red;">*</span></label>
+                                            </div>
                                         </div>
 
                                         <!-- Personal Information -->
