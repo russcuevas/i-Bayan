@@ -32,11 +32,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (isset($_FILES['valid_id']) && $_FILES['valid_id']['error'] === UPLOAD_ERR_OK) {
         $fileTmp = $_FILES['valid_id']['tmp_name'];
         $fileName = basename($_FILES['valid_id']['name']);
+
+        // Remove leading numbers and underscores before the actual name
+        $realName = preg_replace('/^[0-9_]+/', '', $fileName);
+
         $targetDir = 'public/valid_id/';
-        $targetFile = $targetDir . time() . '_' . $fileName;
+        $finalFileName = time() . '_' . $realName;
+        $targetFile = $targetDir . $finalFileName;
 
         if (move_uploaded_file($fileTmp, $targetFile)) {
-            $valid_id_path = $targetFile;
+            $valid_id_path = $finalFileName;  // Save only: timestamp_real_name.jpg
         } else {
             $_SESSION['error'] = "Failed to upload Valid ID.";
             header("Location: " . $_SERVER['PHP_SELF']);
@@ -47,6 +52,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         header("Location: " . $_SERVER['PHP_SELF']);
         exit();
     }
+
 
     $stmt = $conn->prepare("INSERT INTO tbl_residents (
         first_name, middle_name, last_name, suffix, gender, civil_status, date_of_birth,
@@ -91,11 +97,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $age = $dob->diff($today)->y;
 
     $stmtFamily = $conn->prepare("INSERT INTO tbl_residents_family_members (
-        resident_id, barangay_address, first_name, middle_name, last_name, suffix, relationship, gender, civil_status,
+        resident_id, barangay_address, first_name, middle_name, last_name, suffix, 'purok', relationship, gender, civil_status,
         date_of_birth, birthplace, age, is_working, is_approved,
         is_barangay_voted, years_in_barangay, phone_number, philhealth_number, school, occupation
     ) VALUES (
-        :resident_id, :barangay_address, :first_name, :middle_name, :last_name, :suffix, :relationship, :gender, :civil_status,
+        :resident_id, :barangay_address, :first_name, :middle_name, :last_name, :suffix, :purok, :relationship, :gender, :civil_status,
         :date_of_birth, :birthplace, :age, :is_working, 0,
         :is_barangay_voted, :years_in_barangay, :phone_number, NULL, :school, :occupation
     )");
@@ -110,6 +116,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         ':middle_name' => $middle_name,
         ':last_name' => $last_name,
         ':suffix' => $suffix,
+        ':purok' => $purok,
         ':relationship' => 'Account Owner',
         ':gender' => $gender,
         ':civil_status' => $civil_status,

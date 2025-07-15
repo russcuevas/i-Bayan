@@ -20,6 +20,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && $resident_id) {
     $middle_name = $_POST['middle_name'];
     $last_name = $_POST['last_name'];
     $suffix = $_POST['suffix'] ?? null;
+    $purok = $_POST['purok'];
     $gender = $_POST['gender'];
     $date_of_birth = $_POST['birthday'];
     $birthplace = $_POST['birthplace'];
@@ -34,10 +35,10 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && $resident_id) {
     $philhealth_number = $_POST['philhealth'] ?? null;
 
     $stmt = $conn->prepare("INSERT INTO tbl_residents_family_members (
-        resident_id, barangay_address, first_name, middle_name, last_name, suffix, relationship, gender, date_of_birth, birthplace, age,
+        resident_id, barangay_address, first_name, middle_name, last_name, suffix, purok, relationship, gender, date_of_birth, birthplace, age,
         civil_status, is_working, is_approved, is_barangay_voted, years_in_barangay, phone_number, philhealth_number, school, occupation
     ) VALUES (
-        :resident_id, :barangay_address, :first_name, :middle_name, :last_name, :suffix, :relationship, :gender, :date_of_birth, :birthplace, :age,
+        :resident_id, :barangay_address, :first_name, :middle_name, :last_name, :suffix, :purok, :relationship, :gender, :date_of_birth, :birthplace, :age,
         :civil_status, :is_working, 0, :is_barangay_voted, :years_in_barangay, :phone_number, :philhealth_number, :school, :occupation
     )");
 
@@ -48,6 +49,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && $resident_id) {
         ':middle_name' => $middle_name,
         ':last_name' => $last_name,
         ':suffix' => $suffix,
+        ':purok' => $purok,
         ':relationship' => $relationship,
         ':gender' => $gender,
         ':date_of_birth' => $date_of_birth,
@@ -293,6 +295,7 @@ foreach ($family_members as $member) {
                                         Personal Information
                                     </h4> <br>
                                     <div class="row">
+
                                         <div class="col-md-6" style="margin-top: 10px;">
                                             <div class="form-group form-float">
                                                 <div class="form-line">
@@ -325,6 +328,16 @@ foreach ($family_members as $member) {
                                                 </div>
                                             </div>
                                         </div>
+
+                                        <div class="col-md-6" style="margin-top: 10px;">
+                                            <div class="form-group form-float">
+                                                <div class="form-line">
+                                                    <input type="text" class="form-control" name="purok" required>
+                                                    <label class="form-label">Purok <span style="color: red;">*</span></label>
+                                                </div>
+                                            </div>
+                                        </div>
+
                                         <div class="col-md-6" style="margin-bottom: 20px;">
                                             <div class="form-group">
                                                 <label for="gender">Gender <span style="color: red;">*</span></label><br>

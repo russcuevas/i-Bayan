@@ -18,62 +18,66 @@ $admin_position_key = "admin_position_$barangay";
 
 include '../../database/connection.php';
 
-// Get barangay_id linked to admin_id
-$admin_id = $_SESSION[$session_key];
-$admin_stmt = $conn->prepare("SELECT barangay_id FROM tbl_admin WHERE id = ?");
-$admin_stmt->execute([$admin_id]);
-$admin_barangay_id = $admin_stmt->fetchColumn();
 
-// If barangay_id not found, block
-if (!$admin_barangay_id) {
-    die('Barangay not found for this admin.');
+// get announcement ID
+$id = $_GET['id'] ?? null;
+if (!$id) {
+    die('Invalid request.');
 }
 
-// Handle form submission
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $announcement_title = $_POST['announcement_title'] ?? '';
-    $announcement_content = $_POST['announcement_content'] ?? '';
-    $announcement_venue = $_POST['announcement_venue'] ?? null;
+// fetch existing announcement
+$stmt = $conn->prepare("SELECT * FROM tbl_announcement WHERE id = ?");
+$stmt->execute([$id]);
+$announcement = $stmt->fetch(PDO::FETCH_ASSOC);
 
-    // Handle image upload if provided
-    $announcement_image = null;
+if (!$announcement) {
+    die('Announcement not found.');
+}
+
+// handle update
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $title = $_POST['announcement_title'];
+    $content = $_POST['announcement_content'];
+    $venue = $_POST['announcement_venue'] ?? null;
+    $status = $_POST['status'] ?? null;
+
+    $image_sql = '';
+    $params = [$title, $content, $venue, $status]; // include status early
+
+    // handle image upload
     if (isset($_FILES['announcement_image']) && $_FILES['announcement_image']['error'] === UPLOAD_ERR_OK) {
         $file_tmp = $_FILES['announcement_image']['tmp_name'];
         $file_name = time() . '_' . basename($_FILES['announcement_image']['name']);
         $destination = '../../public/announcement/' . $file_name;
 
-        // Create folder if doesn't exist
         if (!is_dir('../../public/announcement')) {
             mkdir('../../public/announcement', 0755, true);
         }
 
-        if (move_uploaded_file($file_tmp, $destination)) {
-            $announcement_image = $file_name;
-        }
+        move_uploaded_file($file_tmp, $destination);
+
+        $image_sql = ", announcement_image = ?";
+        $params[] = $file_name; // append image filename to parameters
     }
 
-    // Insert announcement
-    $stmt = $conn->prepare("INSERT INTO tbl_announcement 
-        (announcement_title, announcement_content, announcement_venue, announcement_image, barangay, status, created_at)
-        VALUES (?, ?, ?, ?, ?, 'active', NOW())");
-    $stmt->execute([
-        $announcement_title,
-        $announcement_content,
-        $announcement_venue,
-        $announcement_image,
-        $admin_barangay_id
-    ]);
+    $params[] = $id; // always add ID at the end
+
+    $sql = "UPDATE tbl_announcement SET 
+                announcement_title = ?, 
+                announcement_content = ?, 
+                announcement_venue = ?, 
+                status = ?
+                $image_sql
+            WHERE id = ?";
+
+    $stmt = $conn->prepare($sql);
+    $stmt->execute($params);
 
     // Redirect or show success message
-    $_SESSION['success'] = "Announcement added successfully.";
+    $_SESSION['success'] = "Announcement updated successfully.";
     header("Location: announcements.php");
     exit();
 }
-
-// fetch announcements for this barangay
-$stmt = $conn->prepare("SELECT * FROM tbl_announcement WHERE barangay = ? ORDER BY created_at DESC");
-$stmt->execute([$admin_barangay_id]);
-$announcements = $stmt->fetchAll(PDO::FETCH_ASSOC);
 ?>
 
 <!DOCTYPE html>
@@ -232,105 +236,72 @@ $announcements = $stmt->fetchAll(PDO::FETCH_ASSOC);
             </div>
             <!-- Basic Validation -->
             <div class="row clearfix">
-                <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+                <div class="col-lg-4 col-md-6 col-sm-12 col-xs-12">
                     <div class="card">
                         <div class="header">
-                            <h2>ADD ANNOUNCEMENT</h2>
+                            <h2>EDIT ANNOUNCEMENT</h2>
                         </div>
                         <div class="body">
-                            <form id="form_validation" method="POST" enctype="multipart/form-data">
+                            <form method="POST" enctype="multipart/form-data">
+
+                                <!-- Title -->
                                 <div class="row">
-                                    <!-- LEFT COLUMN -->
-                                    <div class="col-md-12 pr-4">
-                                        <!-- hidden input -->
-                                        <input type="hidden" name="barangay" value="">
-                                        <input type="hidden" name="zip" value="4223">
-                                        <div class="form-group form-float" style="margin-top: 30px;">
-                                            <div class="form-line">
-                                                <input type="text" class="form-control" name="announcement_title" required>
-                                                <label class="form-label">Announcement Title <span style="color: red;">*</span></label>
-                                            </div>
-                                        </div>
+                                    <div class="col-md-12">
+                                        <div class="form-group form-float">
+                                            <label class="form-label">Status <span style="color: red;">*</span></label>
+                                            <select class="form-control select-form" name="status" required>
+                                                <option value="" disabled>CHOOSE STATUS</option>
+                                                <option value="active" <?= $announcement['status'] === 'active' ? 'selected' : '' ?>>Active</option>
+                                                <option value="inactive" <?= $announcement['status'] === 'inactive' ? 'selected' : '' ?>>Inactive</option>
+                                            </select>
 
-                                        <div class="form-group form-float" style="margin-top: 30px;">
-                                            <div class="form-line">
-                                                <textarea style="padding: 5px;" name="announcement_content" cols="30" rows="5" class="form-control" required></textarea>
-                                                <label class="form-label">Content <span style="color: red;">*</span></label>
-                                            </div>
                                         </div>
-
-                                        <div class="form-group form-float" style="margin-top: 30px;">
-                                            <div class="form-line">
-                                                <input type="text" class="form-control" name="announcement_venue">
-                                                <label class="form-label">Venue</label>
-                                            </div>
-                                        </div>
-
-                                        <div class="form-group form-float" style="margin-top: 30px;">
-                                            <div class="form-line">
-                                                <input type="file" class="form-control" name="announcement_image">
-                                                <label class="form-label">Picture</label>
-                                            </div>
-                                        </div>
-
                                     </div>
                                 </div>
 
+                                <div class="form-group form-float" style="margin-top: 10px;">
+                                    <div class="form-line">
+                                        <input type="text" class="form-control" name="announcement_title" value="<?= htmlspecialchars($announcement['announcement_title']) ?>" required>
+                                        <label class="form-label">Announcement Title <span style="color: red;">*</span></label>
+                                    </div>
+                                </div>
+
+                                <!-- Content -->
+                                <div class="form-group form-float" style="margin-top: 30px;">
+                                    <div class="form-line">
+                                        <textarea style="padding: 5px;" name="announcement_content" cols="30" rows="5" class="form-control" required><?= htmlspecialchars($announcement['announcement_content']) ?></textarea>
+                                        <label class="form-label">Content <span style="color: red;">*</span></label>
+                                    </div>
+                                </div>
+
+                                <!-- Venue -->
+                                <div class="form-group form-float" style="margin-top: 30px;">
+                                    <div class="form-line">
+                                        <input type="text" class="form-control" name="announcement_venue" value="<?= htmlspecialchars($announcement['announcement_venue']) ?>">
+                                        <label class="form-label">Venue</label>
+                                    </div>
+                                </div>
+
+                                <!-- Picture -->
+                                <div class="form-group form-float" style="margin-top: 30px;">
+                                    <label style="margin-bottom: 10px;">Current Picture:</label><br>
+                                    <?php if ($announcement['announcement_image']): ?>
+                                        <img src="../../public/announcement/<?= htmlspecialchars($announcement['announcement_image']) ?>" style="width: 100px; margin-bottom: 10px;"><br>
+                                    <?php else: ?>
+                                        <p>No Image Available.</p>
+                                    <?php endif; ?>
+
+                                    <div class="form-line">
+                                        <input type="file" class="form-control" name="announcement_image">
+                                        <label class="form-label">Upload New Picture</label>
+                                    </div>
+                                </div>
+
+                                <!-- Save Button -->
                                 <div style="display: flex; justify-content: end; gap: 5px; margin-top: 10px;">
-                                    <button class="btn bg-teal waves-effect" type="submit"> + Save</button>
+                                    <button class="btn bg-teal waves-effect" type="submit">✔ Update</button>
                                 </div>
                             </form>
-                        </div>
-
-                    </div>
-                </div>
-
-                <!-- RIGHT CARD -->
-                <div class="col-lg-8 col-md-8 col-sm-12 col-xs-12">
-                    <div class="card">
-                        <div class="header">
-                            <h2>ANNOUNCEMENT LIST</h2>
-                        </div>
-                        <div class="body">
-                            <div class="table-responsive">
-                                <table class="table table-bordered table-striped table-hover js-basic-example dataTable">
-                                    <thead>
-                                        <tr>
-                                            <th>Picture</th>
-                                            <th>Title</th>
-                                            <th>Content</th>
-                                            <th>Venue</th>
-                                            <th>Status</th>
-                                            <th>Actions</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <?php foreach ($announcements as $announcement): ?>
-                                            <tr>
-                                                <td>
-                                                    <?php if ($announcement['announcement_image']): ?>
-                                                        <img src="../../public/announcement/<?= htmlspecialchars($announcement['announcement_image']) ?>" style="width: 100px; height: auto;">
-                                                    <?php else: ?>
-                                                        <img src="../img/no_image.png" style="width: 100px; height: auto;">
-                                                    <?php endif; ?>
-                                                </td>
-                                                <td><?= htmlspecialchars($announcement['announcement_title']) ?></td>
-                                                <td><?= nl2br(htmlspecialchars($announcement['announcement_content'])) ?></td>
-                                                <td><?= htmlspecialchars($announcement['announcement_venue']) ?></td>
-                                                <td><?= nl2br(htmlspecialchars($announcement['status'])) ?></td>
-                                                <td>
-                                                    <a href="edit_announcement.php?id=<?= $announcement['id'] ?>" class="btn bg-teal waves-effect" style="margin-bottom: 5px;">
-                                                        <i class="fa-solid fa-pen-to-square"></i> EDIT
-                                                    </a>
-                                                    <a href="delete_announcement.php?id=<?= $announcement['id'] ?>" onclick="return confirm('Are you sure you want to delete this announcement?')" class="btn bg-teal waves-effect" style="margin-bottom: 5px;">
-                                                        <i class="fa-solid fa-trash"></i> DELETE
-                                                    </a>
-                                                </td>
-                                            </tr>
-                                        <?php endforeach; ?>
-                                    </tbody>
-                                </table>
-                            </div>
                         </div>
                     </div>
                 </div>
