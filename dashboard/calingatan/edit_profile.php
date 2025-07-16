@@ -1,3 +1,68 @@
+<?php
+session_start();
+include '../../database/connection.php';
+
+$barangay = basename(__DIR__);
+$session_key = "resident_id_$barangay";
+
+if (!isset($_SESSION[$session_key])) {
+    header("Location: ../../login.php");
+    exit();
+}
+
+$resident_name = $_SESSION["resident_name_$barangay"] ?? 'Resident';
+$resident_id = $_SESSION[$session_key];
+
+$stmt = $conn->prepare("SELECT * FROM tbl_residents WHERE id = ?");
+$stmt->execute([$resident_id]);
+$resident = $stmt->fetch(PDO::FETCH_ASSOC);
+
+if (!$resident) {
+    $_SESSION['error'] = "Resident not found.";
+    header("Location: ../../login.php");
+    exit();
+}
+
+// Fetch existing data for pre-filling the form
+$first_name = $resident['first_name'];
+$last_name = $resident['last_name'];
+$phone_number = $resident['phone_number'];
+$email = $resident['email'];
+$password = $resident['password']; // Note: In a real-world scenario, you wouldn't store plain passwords
+
+// Check if form is submitted
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $first_name = $_POST['first_name'] ?? '';
+    $last_name = $_POST['last_name'] ?? '';
+    $phone_number = $_POST['phone_number'] ?? '';
+    $email = $_POST['email'] ?? '';
+    $new_password = $_POST['password'] ?? '';
+
+    // Use existing password if new one is not provided
+    $password_to_save = empty(trim($new_password)) ? $password : sha1($new_password);
+
+    // Update the database
+    $update = $conn->prepare("UPDATE tbl_residents SET first_name = ?, last_name = ?, phone_number = ?, email = ?, password = ? WHERE id = ?");
+    $update->execute([$first_name, $last_name, $phone_number, $email, $password_to_save, $resident_id]);
+
+
+    $_SESSION['success'] = "Profile updated successfully.";
+    header("Location: edit_profile.php");
+    exit();
+
+    $stmt = $conn->prepare("SELECT * FROM tbl_residents WHERE id = ?");
+    $stmt->execute([$resident_id]);
+    $resident = $stmt->fetch(PDO::FETCH_ASSOC);
+
+    $first_name = $resident['first_name'];
+    $last_name = $resident['last_name'];
+    $phone_number = $resident['phone_number'];
+    $email = $resident['email'];
+}
+
+?>
+
+
 <!DOCTYPE html>
 <html>
 
@@ -128,54 +193,55 @@
                     <div class="card">
                         <div class="body">
                             <h4 class="text-center" style="font-weight: 900; color: #1a49cb;">Update Profile</h4>
-                            <form id="form_validation" method="POST">
-                                <div class="form-group form-float mt-3" style="margin-top: 30px">
+                            <form id="form_validation" method="POST" action="">
+                                <!-- First Name -->
+                                <div class="form-group form-float mt-3">
                                     <div class="form-line">
-                                        <input type="text" class="form-control" name="fullname" required>
+                                        <input type="text" class="form-control" name="first_name" value="<?= htmlspecialchars($first_name) ?>" required>
                                         <label class="form-label">First Name</label>
                                     </div>
                                 </div>
 
-                                <div class="form-group form-float mt-3" style="margin-top: 30px">
+                                <!-- Last Name -->
+                                <div class="form-group form-float mt-3">
                                     <div class="form-line">
-                                        <input type="text" class="form-control" name="lastname" required>
+                                        <input type="text" class="form-control" name="last_name" value="<?= htmlspecialchars($last_name) ?>" required>
                                         <label class="form-label">Last Name</label>
                                     </div>
                                 </div>
 
-                                <div class="form-group form-float mt-3" style="margin-top: 30px">
-                                    <div class="form-line">
-                                        <input type="text" class="form-control" name="age" required>
-                                        <label class="form-label">Age</label>
-                                    </div>
-                                </div>
 
-                                <div class="form-group form-float mt-3" style="margin-top: 30px">
+                                <!-- Phone Number -->
+                                <div class="form-group form-float mt-3">
                                     <div class="form-line">
-                                        <input type="text" class="form-control" name="phone_number" required>
+                                        <input type="text" class="form-control" name="phone_number" value="<?= htmlspecialchars($phone_number) ?>" required>
                                         <label class="form-label">Phone number</label>
                                     </div>
                                 </div>
 
-                                <div class="form-group form-float mt-3" style="margin-top: 30px">
+                                <!-- Email -->
+                                <div class="form-group form-float mt-3">
                                     <div class="form-line">
-                                        <input type="text" class="form-control" name="email" required>
+                                        <input type="text" class="form-control" name="email" value="<?= htmlspecialchars($email) ?>" required>
                                         <label class="form-label">Email</label>
                                     </div>
                                 </div>
 
-                                <div class="form-group form-float mt-3" style="margin-top: 30px">
+                                <!-- Password (Leave it blank if not updating) -->
+                                <div class="form-group form-float mt-3">
                                     <div class="form-line">
-                                        <input type="text" class="form-control" name="password" required>
-                                        <label class="form-label">Password</label>
+                                        <input type="password" class="form-control" name="password">
+                                        <label class="form-label">Password (Leave blank to keep current)</label>
                                     </div>
                                 </div>
+
 
                                 <div style="display: flex; justify-content: flex-end; gap: 10px;">
                                     <button type="submit" class="btn bg-teal waves-effect">Submit</button>
                                     <button type="reset" class="btn btn-link waves-effect">Clear</button>
                                 </div>
                             </form>
+
                         </div>
                     </div>
                 </div>
@@ -228,6 +294,25 @@
     <!-- Demo Js -->
     <script src="../js/demo.js"></script>
     <script src="../plugins/sweetalert/sweetalert.min.js"></script>
+    <script>
+        <?php if (isset($_SESSION['success'])): ?>
+            swal({
+                type: 'success',
+                title: 'Success!',
+                text: '<?php echo $_SESSION['success']; ?>',
+                confirmButtonText: 'OK'
+            });
+            <?php unset($_SESSION['success']); ?>
+        <?php elseif (isset($_SESSION['error'])): ?>
+            swal({
+                type: 'error',
+                title: 'Oops...',
+                text: '<?php echo $_SESSION['error']; ?>',
+                confirmButtonText: 'OK'
+            });
+            <?php unset($_SESSION['error']); ?>
+        <?php endif; ?>
+    </script>
 
 </body>
 

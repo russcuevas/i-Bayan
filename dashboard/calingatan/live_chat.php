@@ -84,7 +84,8 @@ if ($selected_admin_id) {
         <div class="row">
             <!-- Sidebar -->
             <div class="col-md-3 border-end">
-                <h5 class="text-center mb-3">Barangay Admins</h5>
+                <h5 class="text-left">Barangay Admins</h5>
+                <a href="index.php" class="btn btn-primary mb-3">Go back</a>
                 <div class="list-group" id="admin-list">
                     <?php foreach ($admin_list as $admin): ?>
                         <a href="?admin_id=<?= $admin['id'] ?>"
