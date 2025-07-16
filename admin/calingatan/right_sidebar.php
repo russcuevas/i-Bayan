@@ -6,7 +6,7 @@
         <div role="tabpanel" class="tab-pane fade in active in active" id="account">
             <div class="slimScrollDiv" style="position: relative; overflow: hidden; width: auto; height: 548px;">
                 <ul class="account-settings" style="overflow: hidden; width: auto; height: 548px;">
-                    <li style="display: flex; align-items: center;" onclick="window.location.href = 'edit_profile.php'">
+                    <li style="display: flex; align-items: center;" onclick="window.location.href = 'my_profile.php'">
                         <div>
                             <label class="mb-0 hov-pointer">
                                 <i class="material-icons mr-2" style="font-size: 18px; vertical-align: middle;">person</i> MY PROFILE
