@@ -8,7 +8,26 @@ if (!isset($_SESSION['superadmin_id'])) {
 
 // database connection
 include '../database/connection.php';
+
+// to get total count of Barangay
+$barangay_query = "SELECT COUNT(*) AS total_barangay FROM tbl_barangay";
+$barangay_stmt = $conn->query($barangay_query);
+$barangay_data = $barangay_stmt->fetch(PDO::FETCH_ASSOC);
+$total_barangay = $barangay_data['total_barangay'];
+
+// to get total count of Admin
+$admin_query = "SELECT COUNT(*) AS total_admin FROM tbl_admin";
+$admin_stmt = $conn->query($admin_query);
+$admin_data = $admin_stmt->fetch(PDO::FETCH_ASSOC);
+$total_admin = $admin_data['total_admin'];
+
+// to get total count of Admin
+$announcement_query = "SELECT COUNT(*) AS total_announcement FROM tbl_announcement";
+$announcement_stmt = $conn->query($announcement_query);
+$announcement_data = $announcement_stmt->fetch(PDO::FETCH_ASSOC);
+$total_announcement = $announcement_data['total_announcement'];
 ?>
+
 <!DOCTYPE html>
 <html>
 
@@ -187,7 +206,7 @@ include '../database/connection.php';
             <div class="row clearfix">
                 <div class="col-sm-6 col-md-3 col-lg-4" onclick="window.location.href = 'barangay_management.php'">
                     <div class="thumbnail text-center d-flex flex-column align-items-center justify-content-center" style="padding: 50px;">
-                        <h1>12</h1>
+                        <h1><?php echo $total_barangay; ?></h1>
                         <div class="caption">
                             <h3>Total Barangay</h3>
                         </div>
@@ -196,7 +215,7 @@ include '../database/connection.php';
 
                 <div class="col-sm-6 col-md-3 col-lg-4" onclick="window.location.href = 'admin_management.php'">
                     <div class="thumbnail text-center d-flex flex-column align-items-center justify-content-center" style="padding: 50px;">
-                        <h1>12</h1>
+                        <h1><?php echo $total_admin; ?></h1>
                         <div class="caption">
                             <h3>Total Admin</h3>
                         </div>
@@ -205,7 +224,7 @@ include '../database/connection.php';
 
                 <div class="col-sm-6 col-md-3 col-lg-4" onclick="window.location.href = 'emergency_update.php'">
                     <div class="thumbnail text-center d-flex flex-column align-items-center justify-content-center" style="padding: 50px;">
-                        <h1>12</h1>
+                        <h1><?php echo $total_announcement; ?></h1>
                         <div class="caption">
                             <h3>Total Emergency</h3>
                         </div>

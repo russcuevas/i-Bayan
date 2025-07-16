@@ -1,3 +1,33 @@
+<?php
+// session
+session_start();
+if (!isset($_SESSION['superadmin_id'])) {
+    header("Location: login.php");
+    exit();
+}
+
+// database connection
+include '../database/connection.php';
+
+// Fetch data from tables
+$query_admin = "SELECT * FROM tbl_admin";
+$query_superadmin = "SELECT * FROM tbl_superadmin";
+$query_residents = "SELECT * FROM tbl_residents";
+
+// Prepare and execute queries
+$stmt_admin = $conn->prepare($query_admin);
+$stmt_admin->execute();
+$admin_data = $stmt_admin->fetchAll(PDO::FETCH_ASSOC);
+
+$stmt_superadmin = $conn->prepare($query_superadmin);
+$stmt_superadmin->execute();
+$superadmin_data = $stmt_superadmin->fetchAll(PDO::FETCH_ASSOC);
+
+$stmt_residents = $conn->prepare($query_residents);
+$stmt_residents->execute();
+$residents_data = $stmt_residents->fetchAll(PDO::FETCH_ASSOC);
+?>
+
 <!DOCTYPE html>
 <html>
 
@@ -167,43 +197,68 @@
                                     <thead>
                                         <tr>
                                             <th>Fullname</th>
-                                            <th>Position</th>
+                                            <th>Roles</th>
                                             <th>Mobile</th>
                                             <th>Status</th>
                                             <th>Actions</th>
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <tr>
-                                            <td>Zyrell Hidalgo</td>
-                                            <td>Admin</td>
-                                            <td>09495748300</td>
-                                            <td><span style="color: green">Online</span></td>
-                                            <td>
-                                                <a href="" class="btn bg-teal waves-effect" style="margin-bottom: 5px;"><i class="fa-solid fa-pencil"></i> UPDATE</a>
-                                                <a href="" class="btn bg-teal waves-effect" style="margin-bottom: 5px;"><i class="fa-solid fa-trash"></i> DELETE</a>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>Zyrell Hidalgo</td>
-                                            <td>Superadmin</td>
-                                            <td>09495748300</td>
-                                            <td><span style="color: green">Online</span></td>
-                                            <td>
-                                                <a href="" class="btn bg-teal waves-effect" style="margin-bottom: 5px;"><i class="fa-solid fa-pencil"></i> UPDATE</a>
-                                                <a href="" class="btn bg-teal waves-effect" style="margin-bottom: 5px;"><i class="fa-solid fa-trash"></i> DELETE</a>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>Zyrell Hidalgo</td>
-                                            <td>Residents</td>
-                                            <td>09495748300</td>
-                                            <td><span style="color: green">Online</span></td>
-                                            <td>
-                                                <a href="" class="btn bg-teal waves-effect" style="margin-bottom: 5px;"><i class="fa-solid fa-pencil"></i> UPDATE</a>
-                                                <a href="" class="btn bg-teal waves-effect" style="margin-bottom: 5px;"><i class="fa-solid fa-trash"></i> DELETE</a>
-                                            </td>
-                                        </tr>
+                                        <?php
+                                        // Loop through the admin data
+                                        foreach ($admin_data as $row) {
+                                            echo "<tr>";
+                                            echo "<td>" . $row['fullname'] . "</td>";
+                                            echo "<td>Admin</td>";
+                                            echo "<td>" . $row['contact_number'] . "</td>";
+                                            echo "<td><span style='color: green'>Online</span></td>";
+                                            echo "<td>
+    <a href='edit_roles.php?id=" . $row['id'] . "&type=admin' class='btn bg-teal waves-effect'>
+        <i class='fa-solid fa-pencil'></i> UPDATE
+    </a>
+    <a href='delete_roles.php?id=" . $row['id'] . "&type=admin' class='btn bg-red waves-effect' onclick='return confirm(\"Are you sure you want to delete this user?\")'>
+        <i class='fa-solid fa-trash'></i> DELETE
+    </a>
+</td>";
+                                            echo "</tr>";
+                                        }
+
+                                        // Loop through the superadmin data
+                                        foreach ($superadmin_data as $row) {
+                                            echo "<tr>";
+                                            echo "<td>" . $row['first_name'] . " " . $row['last_name'] . "</td>";
+                                            echo "<td>Superadmin</td>";
+                                            echo "<td>" . $row['phone_number'] . "</td>";
+                                            echo "<td><span style='color: green'>Online</span></td>";
+                                            echo "<td>
+    <a href='edit_roles.php?id=" . $row['id'] . "&type=superadmin' class='btn bg-teal waves-effect'>
+        <i class='fa-solid fa-pencil'></i> UPDATE
+    </a>
+    <a href='delete_roles.php?id=" . $row['id'] . "&type=superadmin' class='btn bg-red waves-effect' onclick='return confirm(\"Are you sure you want to delete this user?\")'>
+        <i class='fa-solid fa-trash'></i> DELETE
+    </a>
+</td>";
+                                            echo "</tr>";
+                                        }
+
+                                        // Loop through the residents data
+                                        foreach ($residents_data as $row) {
+                                            echo "<tr>";
+                                            echo "<td>" . $row['first_name'] . " " . $row['middle_name'] . " " . $row['last_name'] . " " . $row['suffix'] . "</td>";
+                                            echo "<td>Resident</td>";
+                                            echo "<td>" . $row['phone_number'] . "</td>";
+                                            echo "<td><span style='color: green'>Online</span></td>";
+                                            echo "<td>
+    <a href='edit_roles.php?id=" . $row['id'] . "&type=resident' class='btn bg-teal waves-effect'>
+        <i class='fa-solid fa-pencil'></i> UPDATE
+    </a>
+    <a href='delete_roles.php?id=" . $row['id'] . "&type=resident' class='btn bg-red waves-effect' onclick='return confirm(\"Are you sure you want to delete this user?\")'>
+        <i class='fa-solid fa-trash'></i> DELETE
+    </a>
+</td>";
+                                            echo "</tr>";
+                                        }
+                                        ?>
                                     </tbody>
                                 </table>
                             </div>
@@ -273,6 +328,25 @@
     <!-- Demo Js -->
     <script src="js/demo.js"></script>
     <script src="plugins/sweetalert/sweetalert.min.js"></script>
+    <script>
+        <?php if (isset($_SESSION['success'])): ?>
+            swal({
+                type: 'success',
+                title: 'Success!',
+                text: '<?php echo $_SESSION['success']; ?>',
+                confirmButtonText: 'OK'
+            });
+            <?php unset($_SESSION['success']); ?>
+        <?php elseif (isset($_SESSION['error'])): ?>
+            swal({
+                type: 'error',
+                title: 'Oops...',
+                text: '<?php echo $_SESSION['error']; ?>',
+                confirmButtonText: 'OK'
+            });
+            <?php unset($_SESSION['error']); ?>
+        <?php endif; ?>
+    </script>
 </body>
 
 </html>

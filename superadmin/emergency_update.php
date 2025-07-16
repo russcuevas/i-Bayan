@@ -1,3 +1,26 @@
+<?php
+// session
+session_start();
+if (!isset($_SESSION['superadmin_id'])) {
+    header("Location: login.php");
+    exit();
+}
+
+// database connection
+include '../database/connection.php';
+
+// 
+$emergency_updates_stmt = $conn->prepare("
+    SELECT a.id, a.announcement_title, a.announcement_content, a.announcement_venue, a.announcement_image, 
+           b.barangay_name, a.status, a.created_at, a.updated_at
+    FROM tbl_announcement a
+    LEFT JOIN tbl_barangay b ON a.barangay = b.id
+    WHERE a.status = 'active'
+");
+$emergency_updates_stmt->execute();
+$emergency_updates = $emergency_updates_stmt->fetchAll(PDO::FETCH_ASSOC);
+?>
+
 <!DOCTYPE html>
 <html>
 
@@ -157,29 +180,73 @@
                 <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
                     <div class="card">
                         <div class="header">
-                            <h2>EMERGENCY UPDATES</h2>
+                            <h2>EMERGENCY ANNOUNCEMENT</h2>
                         </div>
                         <div class="body">
                             <div class="table-responsive">
                                 <table class="table table-bordered table-striped table-hover js-basic-example dataTable">
                                     <thead>
                                         <tr>
-                                            <th>Barangay Personnel</th>
                                             <th>Barangay</th>
                                             <th>Announcement</th>
                                             <th>Actions</th>
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <tr>
-                                            <td>Zyrell Hidalgo</td>
-                                            <td>Barangay Clearance</td>
-                                            <td>₱50.00</td>
-                                            <td>
-                                                <a href="" class="btn bg-teal waves-effect" style="margin-bottom: 5px;"><i class="fa-solid fa-pencil"></i> UPDATE</a>
-                                                <a href="" class="btn bg-teal waves-effect" style="margin-bottom: 5px;"><i class="fa-solid fa-trash"></i> DELETE</a>
-                                            </td>
-                                        </tr>
+                                        <?php foreach ($emergency_updates as $announcement): ?>
+                                            <tr>
+                                                <td><span style="text-transform: capitalize;"><?php echo htmlspecialchars($announcement['barangay_name']); ?></span></td>
+                                                <td>
+                                                    Title : <?php echo htmlspecialchars($announcement['announcement_title']); ?><br>
+                                                    <?php if ($announcement['announcement_image']): ?>
+                                                        Image: <img src="../public/announcement/<?= htmlspecialchars($announcement['announcement_image']) ?>" style="width: 100px; height: auto;"><br>
+                                                    <?php else: ?>
+                                                        Image : <img src="../img/no_image.png" style="width: 100px; height: auto;"><br>
+                                                    <?php endif; ?>
+                                                    Content : <?php echo htmlspecialchars($announcement['announcement_content']); ?><br>
+                                                    Venue : <?php echo htmlspecialchars($announcement['announcement_venue']); ?><br>
+                                                </td>
+                                                <td>
+                                                    <!-- Trigger Modal Button -->
+                                                    <button class="btn bg-teal waves-effect" data-toggle="modal" data-target="#viewInformationModal<?php echo $announcement['id']; ?>">
+                                                        <i class="fa-solid fa-eye"></i> VIEW INFORMATION
+                                                    </button>
+                                                </td>
+
+                                            </tr>
+                                            <div class="modal fade" id="viewInformationModal<?php echo $announcement['id']; ?>" tabindex="-1" role="dialog" aria-labelledby="viewInformationModalLabel<?php echo $announcement['id']; ?>" aria-hidden="true">
+                                                <div class="modal-dialog modal-lg" role="document">
+                                                    <div class="modal-content">
+                                                        <div class="modal-header">
+                                                            <h5 class="modal-title" id="viewInformationModalLabel<?php echo $announcement['id']; ?>">Emergency Announcement Details</h5>
+                                                        </div>
+                                                        <div class="modal-body">
+                                                            <div class="row">
+                                                                <div class="col-md-6">
+                                                                    <h4>Title: <?php echo htmlspecialchars($announcement['announcement_title']); ?></h4>
+                                                                    <p><strong>Image:</strong><br>
+                                                                        <?php if ($announcement['announcement_image']): ?>
+                                                                            <img style="height: 100px;" src="../public/announcement/<?= htmlspecialchars($announcement['announcement_image']) ?>" class="announcement-image">
+                                                                        <?php else: ?>
+                                                                            <img src="../img/no_image.png" class="announcement-image">
+                                                                        <?php endif; ?>
+                                                                    </p>
+                                                                    <p><strong>Content:</strong> <?php echo htmlspecialchars($announcement['announcement_content']); ?></p>
+                                                                    <p><strong>Venue:</strong> <?php echo htmlspecialchars($announcement['announcement_venue']); ?></p>
+                                                                    <p><strong>Barangay:</strong> <span style="text-transform: capitalize;"><?php echo htmlspecialchars($announcement['barangay_name']); ?></span></p>
+                                                                    <p><strong>Status:</strong> <?php echo htmlspecialchars($announcement['status']); ?></p>
+                                                                    <p><strong>Created At:</strong> <?php echo htmlspecialchars($announcement['created_at']); ?></p>
+                                                                    <p><strong>Updated At:</strong> <?php echo htmlspecialchars($announcement['updated_at']); ?></p>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="modal-footer">
+                                                            <button type="button" class="btn bg-red" data-dismiss="modal">Close</button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        <?php endforeach; ?>
                                     </tbody>
                                 </table>
                             </div>

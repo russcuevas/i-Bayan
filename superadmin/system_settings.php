@@ -1,3 +1,15 @@
+<?php
+// session
+session_start();
+if (!isset($_SESSION['superadmin_id'])) {
+    header("Location: login.php");
+    exit();
+}
+
+// database connection
+include '../database/connection.php';
+?>
+
 <!DOCTYPE html>
 <html>
 
@@ -147,19 +159,11 @@
             <!-- Widgets -->
             <div class="container">
                 <div class="row clearfix">
-                    <div class="col-sm-6 col-md-6 col-lg-6" onclick="window.location.href = 'system_preference.php'">
+                    <div class="col-sm-12 col-md-12 col-lg-12" onclick="window.location.href = 'system_preference.php'">
                         <div class="thumbnail text-center d-flex flex-column align-items-center justify-content-center" style="padding: 50px;">
                             <i class="fas fa-circle fa-3x mb-3 icon-style"></i>
                             <div class="caption">
                                 <h3>System Preferences</h3>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-sm-6 col-md-6 col-lg-6" onclick="window.location.href = 'system_configuration.php'">
-                        <div class="thumbnail text-center d-flex flex-column align-items-center justify-content-center" style="padding: 50px;">
-                            <i class="fas fa-circle fa-3x mb-3 icon-style"></i>
-                            <div class="caption">
-                                <h3>Email/SMS Configuration</h3>
                             </div>
                         </div>
                     </div>
