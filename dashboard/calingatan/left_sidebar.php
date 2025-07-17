@@ -46,6 +46,13 @@ $certificate_active = in_array($current_page, $certificate_pages);
                 </a>
             </li>
 
+            <li style="display: none;" class="<?= $current_page == 'family_profiling.php' ? 'active' : '' ?>">
+                <a href="family_profiling.php">
+                    <i class="material-icons">groups</i>
+                    <span>Family Profiling</span>
+                </a>
+            </li>
+
             <?php if ($is_approved): ?>
                 <li class="<?= $current_page == 'family_profiling.php' ? 'active' : '' ?>">
                     <a href="family_profiling.php">

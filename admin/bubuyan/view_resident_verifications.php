@@ -153,7 +153,6 @@ if (isset($_POST['reject_all']) && !empty($_POST['rejection_note'])) {
     <link href="../css/style.css" rel="stylesheet">
     <link href="../css/custom.css" rel="stylesheet">
 
-    <!-- AdminBSB Themes. You can choose a theme from css/themes instead of get all themes -->
     <link href="../css/themes/all-themes.css" rel="stylesheet" />
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Poppins&display=swap');

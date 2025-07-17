@@ -136,7 +136,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <link href="../css/style.css" rel="stylesheet">
     <link href="../css/custom.css" rel="stylesheet">
 
-    <!-- AdminBSB Themes. You can choose a theme from css/themes instead of get all themes -->
     <link href="../css/themes/all-themes.css" rel="stylesheet" />
     <!-- Sweetalert Css -->
     <link href="../plugins/sweetalert/sweetalert.css" rel="stylesheet" />

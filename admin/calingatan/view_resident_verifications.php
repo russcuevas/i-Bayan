@@ -61,14 +61,16 @@ if (isset($_POST['accept_all'])) {
     $stmt_resident_update = $conn->prepare("UPDATE tbl_residents SET is_approved = 1 WHERE id = ?");
     $stmt_resident_update->execute([$resident_id]);
 
-    $_SESSION['accept_success'] = true;
-    header("Location: view_resident_verifications.php?id=" . $resident_id);
+    $_SESSION['success'] = "Successfully registered as verified residents";
+    header("Location: manage_residents.php");
     exit();
 }
 
 
 if (isset($_POST['reject_all']) && !empty($_POST['rejection_note'])) {
     $note = $_POST['rejection_note'];
+    $stmt = $conn->prepare("DELETE FROM tbl_system_logs_residents WHERE resident_id = ?");
+    $stmt->execute([$resident_id]);
 
     $stmtDeleteFamily = $conn->prepare("DELETE FROM tbl_residents_family_members WHERE resident_id = ?");
     $stmtDeleteFamily->execute([$resident_id]);
@@ -106,7 +108,7 @@ if (isset($_POST['reject_all']) && !empty($_POST['rejection_note'])) {
         $mail->send();
 
         $_SESSION['success'] = "Resident and family members rejected, Email sent.";
-        header("Location: index.php");
+        header("Location: resident_verifications.php");
         exit();
     } catch (Exception $e) {
         echo "<script>alert('Deletion completed but email failed: {$mail->ErrorInfo}'); window.location.href=window.location.href;</script>";
@@ -153,7 +155,6 @@ if (isset($_POST['reject_all']) && !empty($_POST['rejection_note'])) {
     <link href="../css/style.css" rel="stylesheet">
     <link href="../css/custom.css" rel="stylesheet">
 
-    <!-- AdminBSB Themes. You can choose a theme from css/themes instead of get all themes -->
     <link href="../css/themes/all-themes.css" rel="stylesheet" />
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Poppins&display=swap');

@@ -80,7 +80,6 @@ foreach ($all_residents as $resident) {
     <link href="../css/style.css" rel="stylesheet">
     <link href="../css/custom.css" rel="stylesheet">
 
-    <!-- AdminBSB Themes. You can choose a theme from css/themes instead of get all themes -->
     <link href="../css/themes/all-themes.css" rel="stylesheet" />
     <!-- Sweetalert Css -->
     <link href="../plugins/sweetalert/sweetalert.css" rel="stylesheet" />
@@ -232,31 +231,34 @@ foreach ($all_residents as $resident) {
                                     </thead>
                                     <tbody>
                                         <?php foreach ($residents as $resident): ?>
-                                            <tr>
-                                                <td><?= htmlspecialchars($resident['first_name'] . ' ' . $resident['middle_name'] . ' ' . $resident['last_name'] . ' ' . $resident['suffix']) ?></td>
-                                                <td><?= htmlspecialchars($resident['gender']) ?></td>
-                                                <td><?= htmlspecialchars($resident['purok']) ?></td>
-                                                <td><?= htmlspecialchars($resident['phone_number']) ?></td>
-                                                <td><?= htmlspecialchars($resident['email']) ?></td>
+                                            <?php if ($resident['is_approved'] != 1): // Only show if not verified 
+                                            ?>
+                                                <tr>
+                                                    <td><?= htmlspecialchars($resident['first_name'] . ' ' . $resident['middle_name'] . ' ' . $resident['last_name'] . ' ' . $resident['suffix']) ?></td>
+                                                    <td><?= htmlspecialchars($resident['gender']) ?></td>
+                                                    <td><?= htmlspecialchars($resident['purok']) ?></td>
+                                                    <td><?= htmlspecialchars($resident['phone_number']) ?></td>
+                                                    <td><?= htmlspecialchars($resident['email']) ?></td>
 
-                                                <td>
-                                                    <span style="color: <?= $resident['is_approved'] == 1 ? 'green' : 'orange' ?>">
-                                                        <?= $resident['is_approved'] == 1 ? 'Verified' : 'Pending' ?>
-                                                    </span>
-                                                </td>
-                                                <td>
-                                                    <?php if ($resident['pending_family_count'] > 0): ?>
-                                                        <span class="badge bg-orange" style="margin-bottom: 5px; color: red !important; font-weight: 900;">
-                                                            <?= $resident['pending_family_count'] ?> Pending Family
+                                                    <td>
+                                                        <span style="color: orange">
+                                                            Pending
                                                         </span>
-                                                        <br>
-                                                    <?php endif; ?>
+                                                    </td>
+                                                    <td>
+                                                        <?php if ($resident['pending_family_count'] > 0): ?>
+                                                            <span class="badge bg-orange" style="margin-bottom: 5px; color: red !important; font-weight: 900;">
+                                                                <?= $resident['pending_family_count'] ?> Pending Family
+                                                            </span>
+                                                            <br>
+                                                        <?php endif; ?>
 
-                                                    <a href="view_resident_verifications.php?id=<?= $resident['id'] ?>" class="btn bg-teal waves-effect" style="margin-bottom: 5px;">
-                                                        <i class="fa-solid fa-id-card"></i> VIEW INFORMATION
-                                                    </a>
-                                                </td>
-                                            </tr>
+                                                        <a href="view_resident_verifications.php?id=<?= $resident['id'] ?>" class="btn bg-teal waves-effect" style="margin-bottom: 5px;">
+                                                            <i class="fa-solid fa-id-card"></i> VIEW INFORMATION
+                                                        </a>
+                                                    </td>
+                                                </tr>
+                                            <?php endif; ?>
                                         <?php endforeach; ?>
                                     </tbody>
                                 </table>
@@ -327,6 +329,25 @@ foreach ($all_residents as $resident) {
     <!-- Demo Js -->
     <script src="../js/demo.js"></script>
     <script src="../plugins/sweetalert/sweetalert.min.js"></script>
+    <script>
+        <?php if (isset($_SESSION['success'])): ?>
+            swal({
+                type: 'success',
+                title: 'Success!',
+                text: '<?php echo $_SESSION['success']; ?>',
+                confirmButtonText: 'OK'
+            });
+            <?php unset($_SESSION['success']); ?>
+        <?php elseif (isset($_SESSION['error'])): ?>
+            swal({
+                type: 'error',
+                title: 'Oops...',
+                text: '<?php echo $_SESSION['error']; ?>',
+                confirmButtonText: 'OK'
+            });
+            <?php unset($_SESSION['error']); ?>
+        <?php endif; ?>
+    </script>
 </body>
 
 </html>
