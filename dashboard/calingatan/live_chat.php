@@ -77,6 +77,8 @@ if ($selected_admin_id) {
     <meta charset="UTF-8">
     <title>iBayan - Resident Chat</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Sweetalert Css -->
+    <link href="../plugins/sweetalert/sweetalert.css" rel="stylesheet" />
 </head>
 
 <body>
@@ -123,8 +125,9 @@ if ($selected_admin_id) {
                                     <?= htmlspecialchars($msg['message']) ?>
                                 </div>
                                 <div class="small text-muted">
-                                    <?= date('h:i A', strtotime($msg['chat_at'])) ?>
+                                    <?= date('Y-m-d - h:i A', strtotime($msg['chat_at'])) ?>
                                 </div>
+
                             </div>
                         <?php endforeach; ?>
                     </div>
@@ -203,11 +206,23 @@ if ($selected_admin_id) {
         // Format timestamp to hh:mm AM/PM
         function formatTime(datetime) {
             const date = new Date(datetime);
-            return date.toLocaleTimeString([], {
-                hour: '2-digit',
-                minute: '2-digit'
-            });
+            const year = date.getFullYear();
+            const month = String(date.getMonth() + 1).padStart(2, '0');
+            const day = String(date.getDate()).padStart(2, '0');
+
+            let hours = date.getHours();
+            const minutes = String(date.getMinutes()).padStart(2, '0');
+            const ampm = hours >= 12 ? 'PM' : 'AM';
+
+            hours = hours % 12;
+            hours = hours ? hours : 12; // convert 0 to 12 for 12-hour format
+            const formattedHours = String(hours).padStart(2, '0');
+
+            return `${year}-${month}-${day} - ${formattedHours}:${minutes} ${ampm}`;
         }
+
+
+
 
         // Auto-refresh every 3 seconds
         setInterval(fetchChats, 1000);
@@ -233,7 +248,27 @@ if ($selected_admin_id) {
         updateAdminStatus();
         setInterval(updateAdminStatus, 5000);
     </script>
-
+    <!-- SweetAlert Plugin Js -->
+    <script src="../plugins/sweetalert/sweetalert.min.js"></script>
+    <script>
+        <?php if (isset($_SESSION['success'])): ?>
+            swal({
+                type: 'success',
+                title: 'Success!',
+                text: '<?php echo $_SESSION['success']; ?>',
+                confirmButtonText: 'OK'
+            });
+            <?php unset($_SESSION['success']); ?>
+        <?php elseif (isset($_SESSION['error'])): ?>
+            swal({
+                type: 'error',
+                title: 'Oops...',
+                text: '<?php echo $_SESSION['error']; ?>',
+                confirmButtonText: 'OK'
+            });
+            <?php unset($_SESSION['error']); ?>
+        <?php endif; ?>
+    </script>
 </body>
 
 </html>
