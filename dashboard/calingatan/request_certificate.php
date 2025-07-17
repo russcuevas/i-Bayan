@@ -57,7 +57,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $birth_cert_path = $birth_cert_name;
         }
 
-        // Insert into table
+        // Fetch barangay ID
+        $stmt_brg = $conn->prepare("SELECT id FROM tbl_barangay WHERE LOWER(REPLACE(barangay_name, ' ', '')) = ?");
+        $stmt_brg->execute([strtolower($barangay)]);
+        $barangay_data = $stmt_brg->fetch(PDO::FETCH_ASSOC);
+
+        if (!$barangay_data) {
+            throw new Exception("Barangay not found.");
+        }
+
+        $barangay_id = $barangay_data['id'];
+
+        // Insert certificate request
         $stmt = $conn->prepare("INSERT INTO tbl_certificates (
             resident_id, purok, certificate_type, purpose, fullname, gender, email, contact,
             valid_id, birth_certificate, is_resident, picked_up_by, relationship,
@@ -78,9 +89,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $is_resident,
             $picked_up_by,
             $relationship,
-            $barangay,
+            $barangay_id,
             $total_amount,
             $status
+        ]);
+
+        // ✅ Insert activity log
+        $insert_log = $conn->prepare("INSERT INTO tbl_activity_logs (resident_id, action, barangay_id, created_at)
+            VALUES (:resident_id, :action, :barangay_id, NOW())");
+
+        $insert_log->execute([
+            ':resident_id' => $resident_id,
+            ':action' => 'Requested Certificate (' . htmlspecialchars($certificate_type) . ')',
+            ':barangay_id' => $barangay_id
         ]);
 
         $_SESSION['success'] = "Certificate request submitted successfully!";
@@ -92,8 +113,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         exit();
     }
 }
-
 ?>
+
 
 
 <!DOCTYPE html>

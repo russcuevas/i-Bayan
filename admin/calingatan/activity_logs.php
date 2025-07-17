@@ -1,3 +1,42 @@
+<?php
+// session
+session_start();
+
+$barangay = basename(__DIR__);
+$session_key = "admin_id_$barangay";
+
+// if not logged in
+if (!isset($_SESSION[$session_key])) {
+    header("Location: ../login.php");
+    exit();
+}
+
+// details welcome
+$barangay_name_key = "barangay_name_$barangay";
+$admin_name_key = "admin_name_$barangay";
+$admin_position_key = "admin_position_$barangay";
+
+// database connection
+include '../../database/connection.php';
+
+// fetch the barangay of the admin
+$admin_id = $_SESSION[$session_key];
+$admin_stmt = $conn->prepare("SELECT barangay_id FROM tbl_admin WHERE id = ?");
+$admin_stmt->execute([$admin_id]);
+$admin_barangay_id = $admin_stmt->fetchColumn();
+
+
+$stmt = $conn->prepare("
+        SELECT al.*, r.username
+        FROM tbl_activity_logs al
+        LEFT JOIN tbl_residents r ON al.resident_id = r.id
+        WHERE al.barangay_id = ?
+        ORDER BY al.created_at DESC
+    ");
+$stmt->execute([$admin_barangay_id]);
+$logs = $stmt->fetchAll(PDO::FETCH_ASSOC);
+?>
+
 <!DOCTYPE html>
 <html>
 
@@ -159,28 +198,6 @@
                             <h2>ACTIVITY LOGS</h2>
                         </div>
                         <div class="body">
-                            <div style="margin-bottom: 15px;">
-                                <div class="btn-group">
-                                    <button type="button" class="btn bg-red dropdown-toggle waves-effect" data-toggle="dropdown" aria-expanded="false">
-                                        <i style="font-size: 15px !important;" class="material-icons">filter_alt</i>
-                                        Filter User Type <span class="caret"></span>
-                                    </button>
-                                    <ul class="dropdown-menu pull-right">
-                                        <li><a href="">All Types</a></li>
-                                        <li><a href="">Barangay Officials</a></li>
-                                        <li><a href="">Staff</a></li>
-                                        <li><a href="">Admin</a></li>
-                                        <li><a href="">Residents</a></li>
-                                    </ul>
-                                </div>
-                                <div class="btn-group">
-                                    <a href="activity_logs.php" class="btn bg-red dropdown-toggle waves-effect">
-                                        <i style="font-size: 15px !important;" class="material-icons">refresh</i>
-                                        Refresh
-                                    </a>
-                                </div>
-                            </div>
-
                             <div class="table-responsive">
                                 <table class="table table-bordered table-striped table-hover js-basic-example dataTable">
                                     <thead>
@@ -192,12 +209,20 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <tr>
-                                            <td>Zyrell Hidalgo</td>
-                                            <td>Sample</td>
-                                            <td>Sample Ratings</td>
-                                            <td>March/12/2025</td>
-                                        </tr>
+                                        <?php if (!empty($logs)) : ?>
+                                            <?php foreach ($logs as $log) : ?>
+                                                <tr>
+                                                    <td><?= htmlspecialchars($log['username'] ?? 'N/A') ?></td>
+                                                    <td>Resident</td>
+                                                    <td><?= htmlspecialchars($log['action']) ?></td>
+                                                    <td><?= date('M/d/Y h:i A', strtotime($log['created_at'])) ?></td>
+                                                </tr>
+                                            <?php endforeach; ?>
+                                        <?php else : ?>
+                                            <tr>
+                                                <td colspan="4" style="text-align:center;">No activity logs found.</td>
+                                            </tr>
+                                        <?php endif; ?>
                                     </tbody>
                                 </table>
                             </div>

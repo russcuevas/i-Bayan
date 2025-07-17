@@ -46,6 +46,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $_SESSION["barangay_id_$barangay_key"] = $barangay_id;
             $_SESSION["barangay_name_$barangay_key"] = $barangay_name_raw;
 
+            $insert_activity = $conn->prepare("INSERT INTO tbl_activity_logs (resident_id, action, barangay_id, created_at) VALUES (?, ?, ?, NOW())");
+            $insert_activity->execute([
+                $resident['id'],
+                'Logged in to the system',
+                $barangay_id
+            ]);
+
             $insert_log = $conn->prepare("INSERT INTO tbl_system_logs_residents (resident_id, logged_in) VALUES (?, NOW())");
             $insert_log->execute([$resident['id']]);
             $log_id = $conn->lastInsertId();

@@ -1,3 +1,46 @@
+<?php
+// session
+session_start();
+
+$barangay = basename(__DIR__);
+$session_key = "admin_id_$barangay";
+
+// if not logged in
+if (!isset($_SESSION[$session_key])) {
+    header("Location: ../login.php");
+    exit();
+}
+
+// details welcome
+$barangay_name_key = "barangay_name_$barangay";
+$admin_name_key = "admin_name_$barangay";
+$admin_position_key = "admin_position_$barangay";
+
+// database connection
+include '../../database/connection.php';
+
+// fetching residents where in same of the barangay of the admin
+$admin_id = $_SESSION[$session_key];
+$admin_stmt = $conn->prepare("SELECT barangay_id FROM tbl_admin WHERE id = ?");
+$admin_stmt->execute([$admin_id]);
+$admin_barangay_id = $admin_stmt->fetchColumn();
+
+// fetching residents
+$activity_logs_stmt = $conn->prepare("
+    SELECT r.username AS username, 
+           'Resident' AS usertype, 
+           a.action, 
+           a.created_at
+    FROM tbl_activity_logs a
+    LEFT JOIN tbl_residents r ON a.resident_id = r.id
+    WHERE a.barangay_id = ?
+    ORDER BY a.created_at DESC
+");
+$activity_logs_stmt->execute([$admin_barangay_id]);
+$log = $activity_logs_stmt->fetchAll(PDO::FETCH_ASSOC);
+
+
+?>
 <!DOCTYPE html>
 <html>
 
@@ -202,10 +245,9 @@
                         </div>
                         <div class="body">
                             <ul id="tagList" class="report-tags">
-                                <li><a href="reports/residents.php" class="active"><i class="fa-solid fa-users"></i> Residents</a></li>
-                                <li><a href="reports/household.php"><i class="fa-solid fa-house-user"></i> Household</a></li>
-                                <li><a href="reports/announcement.php"><i class="fa-solid fa-bullhorn"></i> Announcement</a></li>
-                                <li><a href="reports/activity_logs.php"><i class="fa-solid fa-list-check"></i> Activity Logs</a></li>
+                                <li><a href="residents.php"><i class="fa-solid fa-users"></i> Residents</a></li>
+                                <li><a href="announcement_list.php"><i class="fa-solid fa-bullhorn"></i> Announcement</a></li>
+                                <li><a href="logs.php" class="active"><i class="fa-solid fa-list-check"></i> Activity Logs</a></li>
                             </ul>
                         </div>
 
@@ -215,12 +257,38 @@
                 <!-- RIGHT CARD -->
                 <div class="col-lg-8 col-md-8 col-sm-12 col-xs-12">
                     <div class="card">
-                        <div class="header">
-                            <h2>LIST</h2>
+                        <div class="header" style="display: flex; justify-content: space-between; align-items: center;">
+                            <h2>ACTIVITY LOGS LIST</h2>
+                            <a href="print_logs.php" target="_blank" class="btn btn-primary">
+                                <i class="fa fa-print"></i> Print
+                            </a>
                         </div>
+
                         <div class="body">
                             <div class="table-responsive">
-                                <h1 style="text-align: center;">Please select categories</h1>
+                                <table class="table table-bordered table-striped table-hover js-basic-example dataTable">
+                                    <thead>
+                                        <tr>
+                                            <th>Username</th>
+                                            <th>Usertype</th>
+                                            <th>Action</th>
+                                            <th>Datetime</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <?php foreach ($log as $logs): ?>
+                                            <tr>
+                                                <td><?= htmlspecialchars($logs['username'] ?? 'Unknown') ?></td>
+                                                <td><?= htmlspecialchars($logs['usertype']) ?></td>
+                                                <td><?= htmlspecialchars($logs['action']) ?></td>
+                                                <td>
+                                                    <?= date('M/d/Y h:i A', strtotime($logs['created_at'])) ?>
+                                                </td>
+                                            </tr>
+                                        <?php endforeach; ?>
+                                    </tbody>
+
+                                </table>
                             </div>
                         </div>
                     </div>

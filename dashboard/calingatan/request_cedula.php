@@ -111,6 +111,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $relationship
         ]);
 
+        $insert_activity = $conn->prepare("INSERT INTO tbl_activity_logs (resident_id, action, barangay_id, created_at)
+        VALUES (:resident_id, :action, :barangay_id, NOW())");
+
+        $insert_activity->execute([
+            ':resident_id' => $resident_id,
+            ':action' => 'Requested Certificate (Cedula)',
+            ':barangay_id' => $for_barangay_id
+        ]);
+
         $_SESSION['success'] = "Cedula request submitted successfully!";
         header("Location: certificate_cedula.php");
         exit();

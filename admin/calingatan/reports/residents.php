@@ -233,7 +233,6 @@ $admin_barangay_id = $admin_stmt->fetchColumn();
                             <ul id="tagList" class="report-tags">
                                 <li><a href="reports/residents.php"><i class="fa-solid fa-users"></i> Residents</a></li>
                                 <li><a href="reports/household.php"><i class="fa-solid fa-house-user"></i> Household</a></li>
-                                <li><a href="reports/email_sent.php"><i class="fa-solid fa-envelope"></i> Email Sent</a></li>
                                 <li><a href="reports/announcement.php"><i class="fa-solid fa-bullhorn"></i> Announcement</a></li>
                                 <li><a href="reports/activity_logs.php"><i class="fa-solid fa-list-check"></i> Activity Logs</a></li>
                             </ul>

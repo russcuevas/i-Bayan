@@ -111,6 +111,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $status
         ]);
 
+        // ✅ Insert activity log
+        $insert_log = $conn->prepare("INSERT INTO tbl_activity_logs (resident_id, action, barangay_id, created_at)
+            VALUES (:resident_id, :action, :barangay_id, NOW())");
+
+        $insert_log->execute([
+            ':resident_id' => $resident_id,
+            ':action' => 'Requested Certificate (' . htmlspecialchars($certificate_type) . ')',
+            ':barangay_id' => $for_barangay_id
+        ]);
+
 
         $_SESSION['success'] = "Clearance to Closure request submitted successfully!";
         header("Location: certificate_closure.php");

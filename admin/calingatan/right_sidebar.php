@@ -14,7 +14,7 @@
                         </div>
                     </li>
 
-                    <li style="display: flex; align-items: center;" onclick="window.location.href = 'edit_profile.php'">
+                    <li style="display: flex; align-items: center;" onclick="window.location.href = 'account_settings.php'">
                         <div>
                             <label class="mb-0 hov-pointer">
                                 <i class="material-icons mr-2" style="font-size: 18px; vertical-align: middle;">settings</i> ACCOUNT SETTINGS
