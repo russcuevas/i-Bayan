@@ -475,7 +475,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                     </div>
                                 </div>
 
-                                <input type="text" name="total_amount" id="total_amount" value="0">
+                                <input type="hidden" name="total_amount" id="total_amount" value="0">
 
                                 <div style="display: flex; justify-content: end; gap: 5px; margin-top: 10px;">
                                     <button class="btn bg-teal waves-effect" type="submit">Request</button>

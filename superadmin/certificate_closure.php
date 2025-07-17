@@ -1,3 +1,28 @@
+<?php
+// session
+session_start();
+if (!isset($_SESSION['superadmin_id'])) {
+    header("Location: login.php");
+    exit();
+}
+
+// database connection
+include '../database/connection.php';
+
+$get_certificates_query = "
+    SELECT c.*, b.barangay_name
+    FROM tbl_closure c
+    LEFT JOIN tbl_barangay b ON c.for_barangay = b.id
+    ORDER BY c.id DESC
+";
+
+$stmt = $conn->prepare($get_certificates_query);
+$stmt->execute();
+$closures = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+
+?>
+
 <!DOCTYPE html>
 <html>
 
@@ -217,6 +242,7 @@
                                 <table class="table table-bordered table-striped table-hover js-basic-example dataTable">
                                     <thead>
                                         <tr>
+                                            <th>Barangay</th>
                                             <th>Fullname</th>
                                             <th>Certificate</th>
                                             <th>Price</th>
@@ -229,21 +255,36 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <tr>
-                                            <td>Zyrell Hidalgo</td>
-                                            <td>Barangay Clearance</td>
-                                            <td>₱50.00</td>
-                                            <td>Education</td>
-                                            <td>zyrellhidalgo@gmail.com</td>
-                                            <td>09495748301</td>
-                                            <td>March/06/2025</td>
-                                            <td>Pending</td>
-                                            <td>
-                                                <a href="" class="btn bg-teal waves-effect" style="margin-bottom: 5px;"><i class="fa-solid fa-eye"></i> UPDATE STATUS</a>
-                                                <a href="" class="btn bg-teal waves-effect" style="margin-bottom: 5px;"><i class="fa-solid fa-eye"></i> VIEW INFORMATION</a>
-                                                <a href="" class="btn bg-teal waves-effect" style="margin-bottom: 5px;"><i class="fa-solid fa-ban"></i> CANCEL REQUEST</a>
-                                            </td>
-                                        </tr>
+                                        <?php foreach ($closures as $closure): ?>
+                                            <tr>
+                                                <td><span style="text-transform: capitalize;"><?php echo htmlspecialchars($closure['barangay_name']); ?></span></td>
+                                                <td><?php echo $closure['owner_name'] ?></td>
+                                                <td><?php echo $closure['certificate_type'] ?></td>
+                                                <td><?php echo $closure['total_amount'] ?></td>
+                                                <td><?php echo $closure['purpose'] ?></td>
+                                                <td><?php echo $closure['email'] ?></td>
+                                                <td><?php echo $closure['contact'] ?></td>
+                                                <td><?= date('F d, Y', strtotime($closure['created_at'] ?? 'now')) ?></td>
+                                                <td>
+                                                    <?php
+                                                    $status = ucfirst($closure['status'] ?? 'Pending');
+                                                    $badgeClass = 'btn-info'; // default for Pending
+
+                                                    if ($status === 'To Pick Up') {
+                                                        $badgeClass = 'btn-warning text-dark';
+                                                    } elseif ($status === 'Claimed') {
+                                                        $badgeClass = 'btn-success';
+                                                    }
+                                                    ?>
+                                                    <span class="badge <?= $badgeClass ?>"><?= $status ?></span>
+                                                </td>
+                                                <td>
+                                                    <a href="closure_view_information.php?id=<?= $closure['id'] ?>" class="btn bg-teal waves-effect" style="margin-bottom: 5px;">
+                                                        <i class="fa-solid fa-eye"></i> VIEW INFORMATION
+                                                    </a>
+                                                </td>
+                                            </tr>
+                                        <?php endforeach ?>
                                     </tbody>
                                 </table>
                             </div>

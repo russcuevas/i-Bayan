@@ -247,7 +247,7 @@ $total_announcement = $announcement_data['total_announcement'];
                         <div class="col-md-6">
                             <div style="display: flex; justify-content: flex-end; align-items: center; gap: 10px; padding: 15px;">
                                 <label class="form-label" style="white-space: nowrap;">SELECT YEAR:</label>
-                                <select class="form-control select-form" name="relationship" required style="padding: 5px; flex: 1;">
+                                <select id="yearSelector" class="form-control select-form" required style="padding: 5px; flex: 1;">
                                     <option value="2025">2025</option>
                                     <option value="2026">2026</option>
                                     <option value="2027">2027</option>
@@ -255,6 +255,7 @@ $total_announcement = $announcement_data['total_announcement'];
                                     <option value="2029">2029</option>
                                     <option value="2030">2030</option>
                                 </select>
+
                             </div>
                         </div>
                         <div class="body">
@@ -272,7 +273,7 @@ $total_announcement = $announcement_data['total_announcement'];
                         <div class="col-md-6">
                             <div style="display: flex; justify-content: flex-end; align-items: center; gap: 10px; padding: 15px;">
                                 <label class="form-label" style="white-space: nowrap;">SELECT YEAR:</label>
-                                <select class="form-control select-form" name="relationship" required style="padding: 5px; flex: 1;">
+                                <select id="yearSelectorCertificates" class="form-control select-form" required style="padding: 5px; flex: 1;">
                                     <option value="2025">2025</option>
                                     <option value="2026">2026</option>
                                     <option value="2027">2027</option>
@@ -331,7 +332,145 @@ $total_announcement = $announcement_data['total_announcement'];
 
     <!-- Custom Js -->
     <script src="js/admin.js"></script>
-    <script src="js/pages/charts/chartjs.js"></script>
+
+    <script>
+        async function fetchTotalCertificateFees(year) {
+            try {
+                const response = await fetch(`total_fees.php?year=${year}`);
+                const result = await response.json();
+
+                if (!result.success) {
+                    console.error(result.message);
+                    return;
+                }
+
+                const labels = result.data.map(item =>
+                    item.barangay_name
+                    .toLowerCase()
+                    .split(' ')
+                    .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+                    .join(' ')
+                );
+
+                const data = result.data.map(item => Number(item.total_fees));
+
+                const ctx = document.getElementById('bar_chart').getContext('2d');
+
+                if (window.certificateFeesChart) {
+                    window.certificateFeesChart.destroy();
+                }
+
+                window.certificateFeesChart = new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: labels,
+                        datasets: [{
+                            label: `Total Certificate Fees (${year})`,
+                            data: data,
+                            backgroundColor: '#1a49cb'
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                ticks: {
+                                    callback: value => `₱${value.toLocaleString()}`
+                                }
+                            }
+                        },
+                        plugins: {
+                            legend: {
+                                display: false
+                            }
+                        }
+                    }
+                });
+
+            } catch (error) {
+                console.error('Fetch error:', error);
+            }
+        }
+
+        $(function() {
+            const defaultYear = $('#yearSelectorCertificates').val();
+            fetchTotalCertificateFees(defaultYear);
+
+            $('#yearSelectorCertificates').on('change', function() {
+                const selectedYear = $(this).val();
+                fetchTotalCertificateFees(selectedYear);
+            });
+        });
+    </script>
+
+
+    <script>
+        async function fetchTotalResidents(year) {
+            try {
+                const response = await fetch(`total_residents.php?year=${year}`);
+                const result = await response.json();
+
+                if (!result.success) {
+                    console.error(result.message);
+                    return;
+                }
+
+                const labels = result.data.map(item =>
+                    item.barangay_name
+                    .toLowerCase()
+                    .split(' ')
+                    .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+                    .join(' ')
+                );
+                const data = result.data.map(item => Number(item.total_residents));
+
+                const ctx = document.getElementById('line_chart').getContext('2d');
+
+                if (window.residentChart) {
+                    window.residentChart.destroy();
+                }
+
+                window.residentChart = new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: labels,
+                        datasets: [{
+                            label: `Total Residents (${year})`,
+                            data: data,
+                            borderColor: '#1a49cb',
+                            backgroundColor: 'rgba(0, 61, 245, 0.71)',
+                            pointBorderColor: 'rgba(0, 188, 212, 0)',
+                            pointBackgroundColor: 'black',
+                            pointBorderWidth: 1
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        legend: false
+                    }
+                });
+
+            } catch (error) {
+                console.error('Fetch error:', error);
+            }
+        }
+
+        // On page load
+        $(function() {
+            const currentYear = $('#yearSelector').val();
+            fetchTotalResidents(currentYear);
+
+            $('#yearSelector').on('change', function() {
+                const selectedYear = $(this).val();
+                fetchTotalResidents(selectedYear);
+            });
+
+            new Chart(document.getElementById("bar_chart").getContext("2d"), getChartJs('bar'));
+            new Chart(document.getElementById("radar_chart").getContext("2d"), getChartJs('radar'));
+            new Chart(document.getElementById("pie_chart").getContext("2d"), getChartJs('pie'));
+        });
+    </script>
 
     <script src="js/pages/index.js"></script>
 

@@ -62,12 +62,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['status'], $_POST['ced
                     certificate_type, resident_id, document_number, fullname, civil_status,
                     gender, tin, profession, purok, email, contact, valid_id, birth_certificate,
                     is_resident, purpose, for_barangay, total_amount, status, picked_up_by,
-                    relationship, claimed_at
+                    relationship, created_at
                 ) VALUES (
                     :certificate_type, :resident_id, :document_number, :fullname, :civil_status,
                     :gender, :tin, :profession, :purok, :email, :contact, :valid_id, :birth_certificate,
                     :is_resident, :purpose, :for_barangay, :total_amount, :status, :picked_up_by,
-                    :relationship, :claimed_at
+                    :relationship, :created_at
                 )
             ");
 
@@ -92,7 +92,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['status'], $_POST['ced
                 ':status'             => $new_status,
                 ':picked_up_by'       => $data['picked_up_by'],
                 ':relationship'       => $data['relationship'],
-                ':claimed_at'         => date('Y-m-d H:i:s')
+                ':created_at'         => date('Y-m-d H:i:s')
             ]);
         }
     }
