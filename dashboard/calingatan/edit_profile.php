@@ -28,7 +28,7 @@ $first_name = $resident['first_name'];
 $last_name = $resident['last_name'];
 $phone_number = $resident['phone_number'];
 $email = $resident['email'];
-$password = $resident['password']; // Note: In a real-world scenario, you wouldn't store plain passwords
+$password = $resident['password'];
 
 // Check if form is submitted
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -238,7 +238,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
                                 <div style="display: flex; justify-content: flex-end; gap: 10px;">
                                     <button type="submit" class="btn bg-teal waves-effect">Submit</button>
-                                    <button type="reset" class="btn btn-link waves-effect">Clear</button>
                                 </div>
                             </form>
 

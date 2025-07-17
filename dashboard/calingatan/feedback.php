@@ -200,7 +200,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
                                 <div style="display: flex; justify-content: flex-end; gap: 10px;">
                                     <button type="submit" class="btn bg-teal waves-effect">Submit</button>
-                                    <button type="reset" class="btn btn-link waves-effect">Clear</button>
+                                    <button type="reset" onclick="window.location.href = 'feedback.php'" class="btn btn-link waves-effect">Clear</button>
                                 </div>
                             </form>
                         </div>
