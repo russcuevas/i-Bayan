@@ -1,3 +1,15 @@
+<?php
+// session
+session_start();
+if (!isset($_SESSION['superadmin_id'])) {
+    header("Location: login.php");
+    exit();
+}
+
+// database connection
+include '../database/connection.php';
+?>
+
 <!DOCTYPE html>
 <html>
 
