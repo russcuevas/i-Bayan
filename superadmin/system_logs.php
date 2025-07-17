@@ -1,3 +1,54 @@
+<?php
+// session
+session_start();
+if (!isset($_SESSION['superadmin_id'])) {
+    header("Location: login.php");
+    exit();
+}
+
+// database connection
+include '../database/connection.php';
+
+$sql_superadmin = "
+SELECT s.id, CONCAT(sa.first_name, ' ', sa.last_name) AS fullname, 'Superadmin' AS position, s.logged_in, s.logged_out
+FROM tbl_system_logs_superadmin s
+JOIN tbl_superadmin sa ON s.superadmin_id = sa.id
+";
+
+// Admin logs - use full_name directly
+$sql_admin = "
+SELECT s.id, a.fullname AS fullname, a.position, s.logged_in, s.logged_out
+FROM tbl_system_logs_admin s
+JOIN tbl_admin a ON s.admin_id = a.id
+";
+
+// Residents logs - concat first_name, middle_name, last_name, suffix (suffix optional)
+$sql_residents = "
+SELECT s.id,
+       CONCAT(r.first_name, ' ', IFNULL(CONCAT(r.middle_name, ' '), ''), r.last_name, IFNULL(CONCAT(' ', r.suffix), '')) AS fullname,
+       'Resident' AS position,
+       s.logged_in,
+       s.logged_out
+FROM tbl_system_logs_residents s
+JOIN tbl_residents r ON s.resident_id = r.id
+";
+
+// Combine all logs with UNION ALL
+$sql = "
+($sql_superadmin)
+UNION ALL
+($sql_admin)
+UNION ALL
+($sql_residents)
+ORDER BY logged_in DESC
+";
+
+$stmt = $conn->prepare($sql);
+$stmt->execute();
+$logs = $stmt->fetchAll(PDO::FETCH_ASSOC);
+?>
+
+
 <!DOCTYPE html>
 <html>
 
@@ -167,41 +218,34 @@
                                     <thead>
                                         <tr>
                                             <th>Fullname</th>
-                                            <th>Position</th>
+                                            <th>Roles</th>
                                             <th>Logged In</th>
                                             <th>Logged Out</th>
                                             <th>Actions</th>
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <tr>
-                                            <td>Zyrell Hidalgo</td>
-                                            <td>Admin</td>
-                                            <td><span style="color: green">March/12/2025 - 8:53pm</span></td>
-                                            <td><span style="color: red">March/12/2025 - 8:55pm</span></td>
-                                            <td>
-                                                <a href="" class="btn bg-teal waves-effect" style="margin-bottom: 5px;"><i class="fa-solid fa-trash"></i> DELETE</a>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>Zyrell Hidalgo</td>
-                                            <td>Superadmin</td>
-                                            <td><span style="color: green">March/12/2025 - 8:53pm</span></td>
-                                            <td><span style="color: red">March/12/2025 - 8:55pm</span></td>
-                                            <td>
-                                                <a href="" class="btn bg-teal waves-effect" style="margin-bottom: 5px;"><i class="fa-solid fa-trash"></i> DELETE</a>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>Zyrell Hidalgo</td>
-                                            <td>Resident</td>
-                                            <td><span style="color: green">March/12/2025 - 8:53pm</span></td>
-                                            <td><span style="color: red">March/12/2025 - 8:55pm</span></td>
-                                            <td>
-                                                <a href="" class="btn bg-teal waves-effect" style="margin-bottom: 5px;"><i class="fa-solid fa-trash"></i> DELETE</a>
-                                            </td>
-                                        </tr>
+                                        <?php foreach ($logs as $log): ?>
+                                            <tr>
+                                                <td><?= htmlspecialchars($log['fullname']) ?></td>
+                                                <td><span style="text-transform: capitalize;"><?= htmlspecialchars($log['position']) ?></span></td>
+                                                <td><span style="color: green"><?= date('F/d/Y - g:ia', strtotime($log['logged_in'])) ?></span></td>
+                                                <td>
+                                                    <?php if ($log['logged_out']): ?>
+                                                        <span style="color: red"><?= date('F/d/Y - g:ia', strtotime($log['logged_out'])) ?></span>
+                                                    <?php else: ?>
+                                                        <span style="color: orange">Still logged in</span>
+                                                    <?php endif; ?>
+                                                </td>
+                                                <td>
+                                                    <a href="delete_log.php?id=<?= $log['id'] ?>&type=<?= strtolower($log['position']) ?>" class="btn bg-teal waves-effect" style="margin-bottom: 5px;">
+                                                        <i class="fa-solid fa-trash"></i> DELETE
+                                                    </a>
+                                                </td>
+                                            </tr>
+                                        <?php endforeach; ?>
                                     </tbody>
+
                                 </table>
                             </div>
                         </div>
@@ -270,6 +314,25 @@
     <!-- Demo Js -->
     <script src="js/demo.js"></script>
     <script src="plugins/sweetalert/sweetalert.min.js"></script>
+    <script>
+        <?php if (isset($_SESSION['success'])): ?>
+            swal({
+                type: 'success',
+                title: 'Success!',
+                text: '<?php echo $_SESSION['success']; ?>',
+                confirmButtonText: 'OK'
+            });
+            <?php unset($_SESSION['success']); ?>
+        <?php elseif (isset($_SESSION['error'])): ?>
+            swal({
+                type: 'error',
+                title: 'Oops...',
+                text: '<?php echo $_SESSION['error']; ?>',
+                confirmButtonText: 'OK'
+            });
+            <?php unset($_SESSION['error']); ?>
+        <?php endif; ?>
+    </script>
 </body>
 
 </html>

@@ -46,6 +46,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $_SESSION["barangay_id_$barangay_key"] = $barangay_id;
             $_SESSION["barangay_name_$barangay_key"] = $barangay_name_raw;
 
+            $insert_log = $conn->prepare("INSERT INTO tbl_system_logs_residents (resident_id, logged_in) VALUES (?, NOW())");
+            $insert_log->execute([$resident['id']]);
+            $log_id = $conn->lastInsertId();
+
+            // Store log ID in session for logout update
+            $_SESSION["log_id_resident_$barangay_key"] = $log_id;
+
             $redirect_path = "dashboard/$barangay_key/index.php";
             if (file_exists($redirect_path)) {
                 header("Location: $redirect_path?success");

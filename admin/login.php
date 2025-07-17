@@ -44,6 +44,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $_SESSION["barangay_id_$barangay_key"] = $admin['barangay_id'];
         $_SESSION["barangay_name_$barangay_key"] = $barangay_name_raw;
 
+        $insert_log_stmt = $conn->prepare("INSERT INTO tbl_system_logs_admin (admin_id, logged_in) VALUES (:admin_id, NOW())");
+        $insert_log_stmt->execute([':admin_id' => $admin['id']]);
+
+        $log_id = $conn->lastInsertId();
+        $_SESSION["log_id_admin_$barangay_key"] = $log_id;
+
         $redirect_navigate = [
             36 => 'bubuyan',
             37 => 'calingatan',

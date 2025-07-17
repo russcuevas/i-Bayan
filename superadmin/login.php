@@ -27,6 +27,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $_SESSION['superadmin_id'] = $superadmin['id'];
         $_SESSION['superadmin_name'] = $superadmin['first_name'] . ' ' . $superadmin['last_name'];
 
+        // Insert login log with logged_out = NULL
+        $stmt_log = $conn->prepare("INSERT INTO tbl_system_logs_superadmin (superadmin_id, logged_in, logged_out) VALUES (:superadmin_id, NOW(), NULL)");
+        $stmt_log->execute([':superadmin_id' => $superadmin['id']]);
+
+        // Store the log ID in session to update logged_out later
+        $_SESSION['log_id'] = $conn->lastInsertId();
+
         header("Location: index.php?success");
         exit();
     } else {
