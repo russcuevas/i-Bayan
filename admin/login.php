@@ -51,8 +51,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $_SESSION["log_id_admin_$barangay_key"] = $log_id;
 
         $redirect_navigate = [
+            28 => 'i',
+            29 => 'ii',
+            30 => 'ii-a',
+            31 => 'iii',
+            32 => 'iv',
+            35 => 'bayorbor',
             36 => 'bubuyan',
             37 => 'calingatan',
+            38 => 'kinalaglagan',
+            39 => 'loob',
+            40 => 'lumanglipa',
+            41 => 'upa',
+            42 => 'manggahan',
+            43 => 'nangkaan',
+            44 => 'san-sebastian',
+            45 => 'santol',
         ];
 
         $folder = $redirect_navigate[$barangay_id] ?? null;

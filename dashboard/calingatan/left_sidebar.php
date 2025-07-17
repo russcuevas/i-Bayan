@@ -46,10 +46,26 @@ $certificate_active = in_array($current_page, $certificate_pages);
                 </a>
             </li>
 
+
+            <li style="display: none;" class="<?= $current_page == 'edit_profile.php' ? 'active' : '' ?>">
+                <a href="edit_profile.php">
+                    <i class="material-icons">groups</i>
+                    <span>Edit profile</span>
+                </a>
+            </li>
+
             <li style="display: none;" class="<?= $current_page == 'family_profiling.php' ? 'active' : '' ?>">
                 <a href="family_profiling.php">
                     <i class="material-icons">groups</i>
                     <span>Family Profiling</span>
+                </a>
+            </li>
+
+
+            <li style="display: none;" class="<?= $current_page == 'help_desk.php' ? 'active' : '' ?>">
+                <a href="help_desk.php">
+                    <i class="material-icons">groups</i>
+                    <span>Help Desk</span>
                 </a>
             </li>
 

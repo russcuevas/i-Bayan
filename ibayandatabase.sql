@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jul 13, 2025 at 02:26 PM
+-- Generation Time: Jul 17, 2025 at 05:33 PM
 -- Server version: 10.4.27-MariaDB
 -- PHP Version: 8.2.0
 
@@ -20,6 +20,20 @@ SET time_zone = "+00:00";
 --
 -- Database: `ibayandatabase`
 --
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `tbl_activity_logs`
+--
+
+CREATE TABLE `tbl_activity_logs` (
+  `id` int(11) NOT NULL,
+  `resident_id` int(11) NOT NULL,
+  `action` varchar(255) NOT NULL,
+  `barangay_id` int(11) NOT NULL,
+  `created_at` datetime DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
 
@@ -42,14 +56,23 @@ CREATE TABLE `tbl_admin` (
   `updated_at` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+-- --------------------------------------------------------
+
 --
--- Dumping data for table `tbl_admin`
+-- Table structure for table `tbl_announcement`
 --
 
-INSERT INTO `tbl_admin` (`id`, `barangay_id`, `username`, `password`, `email`, `fullname`, `gender`, `contact_number`, `position`, `status`, `created_at`, `updated_at`) VALUES
-(7, 37, 'zyrellcali', 'f7c3bc1d808e04732adf679965ccc34ca7ae3441', 'zyrellhidalgo0@gmail.com', 'Zyrell Hidalgo', 'Female', '09495748300', 'staff', 'offline', '2025-06-27 10:53:38', '2025-06-27 10:53:38'),
-(8, 36, 'shainebubuyan', 'f7c3bc1d808e04732adf679965ccc34ca7ae3441', 'shainebubuyan@gmail.com', 'Shaine Inciong', 'Female', '09495748300', 'barangay official', 'online', '2025-06-27 15:53:04', '2025-06-27 15:53:04'),
-(9, 37, 'samplecali', 'f7c3bc1d808e04732adf679965ccc34ca7ae3441', 'russ@gmail.com', 'Sample Lang', 'Male', '09495748302', 'administrator', 'online', '2025-07-10 16:59:20', '2025-07-10 16:59:20');
+CREATE TABLE `tbl_announcement` (
+  `id` int(11) NOT NULL,
+  `announcement_title` varchar(255) NOT NULL,
+  `announcement_content` text NOT NULL,
+  `announcement_venue` varchar(255) DEFAULT NULL,
+  `announcement_image` varchar(255) DEFAULT NULL,
+  `barangay` int(11) NOT NULL,
+  `status` enum('active','inactive') NOT NULL DEFAULT 'active',
+  `created_at` datetime NOT NULL DEFAULT current_timestamp(),
+  `updated_at` datetime NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
 
@@ -79,8 +102,8 @@ INSERT INTO `tbl_barangay` (`id`, `barangay_name`, `municipality`, `zip`, `missi
 (31, 'iii', 'mataasnakahoy', '4223', NULL, NULL, '2025-06-26 22:12:25', '2025-06-28 00:59:51'),
 (32, 'iv', 'mataasnakahoy', '4223', NULL, NULL, '2025-06-26 22:12:36', '2025-06-28 00:59:43'),
 (35, 'bayorbor', 'mataasnakahoy', '4223', NULL, NULL, '2025-06-26 22:12:49', '2025-06-28 01:00:12'),
-(36, 'bubuyan', 'mataasnakahoy', '4223', NULL, NULL, '2025-06-26 22:13:16', '2025-06-28 00:32:38'),
-(37, 'calingatan', 'mataasnakahoy', '4223', NULL, NULL, '2025-06-26 22:13:32', '2025-06-28 00:25:05'),
+(36, 'bubuyan', 'mataasnakahoy', '4223', 'Bubuyan Mission Sample', 'Bubuyan Vision Sample', '2025-06-26 22:13:16', '2025-07-17 00:19:34'),
+(37, 'calingatan', 'mataasnakahoy', '4223', 'Calingatan Mission Sample', 'Calingatan Vision Sample', '2025-06-26 22:13:32', '2025-07-17 00:19:21'),
 (38, 'kinalaglagan', 'mataasnakahoy', '4223', NULL, NULL, '2025-06-26 22:13:51', '2025-06-28 00:58:27'),
 (39, 'loob', 'mataasnakahoy', '4223', NULL, NULL, '2025-06-26 22:14:05', '2025-06-28 00:46:32'),
 (40, 'lumanglipa', 'mataasnakahoy', '4223', NULL, NULL, '2025-06-26 22:14:13', '2025-06-28 00:46:25'),
@@ -105,13 +128,6 @@ CREATE TABLE `tbl_barangay_officials` (
   `created_at` datetime DEFAULT current_timestamp(),
   `updated_at` datetime DEFAULT current_timestamp() ON UPDATE current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Dumping data for table `tbl_barangay_officials`
---
-
-INSERT INTO `tbl_barangay_officials` (`id`, `profile_picture`, `fullname`, `position`, `barangay`, `created_at`, `updated_at`) VALUES
-(3, 'profile_picture/official_6862a7459dca19.82195854.jpg', 'Sample Cali', 'Sample Cali Captain', 37, '2025-06-28 14:11:38', '2025-06-30 23:03:33');
 
 -- --------------------------------------------------------
 
@@ -209,6 +225,69 @@ INSERT INTO `tbl_business_trade` (`id`, `code`, `name`, `price`, `created_at`, `
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `tbl_cedula`
+--
+
+CREATE TABLE `tbl_cedula` (
+  `id` int(11) NOT NULL,
+  `certificate_type` varchar(100) NOT NULL,
+  `resident_id` int(11) DEFAULT NULL,
+  `document_number` varchar(50) NOT NULL,
+  `fullname` varchar(255) NOT NULL,
+  `civil_status` varchar(50) NOT NULL,
+  `gender` varchar(10) NOT NULL,
+  `tin` varchar(50) NOT NULL,
+  `purok` varchar(50) NOT NULL,
+  `profession` varchar(100) NOT NULL,
+  `email` varchar(255) NOT NULL,
+  `contact` varchar(20) NOT NULL,
+  `valid_id` varchar(255) NOT NULL,
+  `birth_certificate` varchar(255) NOT NULL,
+  `is_resident` tinyint(1) NOT NULL,
+  `purpose` text NOT NULL,
+  `for_barangay` int(11) NOT NULL,
+  `total_amount` decimal(10,2) NOT NULL,
+  `status` varchar(50) NOT NULL DEFAULT 'Pending',
+  `picked_up_by` varchar(255) DEFAULT NULL,
+  `relationship` varchar(50) DEFAULT NULL,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `tbl_cedula_claimed`
+--
+
+CREATE TABLE `tbl_cedula_claimed` (
+  `id` int(11) NOT NULL,
+  `certificate_type` varchar(100) NOT NULL,
+  `resident_id` int(11) DEFAULT NULL,
+  `document_number` varchar(50) NOT NULL,
+  `fullname` varchar(255) NOT NULL,
+  `civil_status` varchar(50) NOT NULL,
+  `gender` varchar(10) NOT NULL,
+  `tin` varchar(50) NOT NULL,
+  `profession` varchar(100) NOT NULL,
+  `purok` varchar(100) NOT NULL,
+  `email` varchar(255) NOT NULL,
+  `contact` varchar(20) NOT NULL,
+  `valid_id` varchar(255) NOT NULL,
+  `birth_certificate` varchar(255) NOT NULL,
+  `is_resident` tinyint(1) NOT NULL,
+  `purpose` text NOT NULL,
+  `for_barangay` int(11) NOT NULL,
+  `total_amount` decimal(10,2) NOT NULL,
+  `status` varchar(50) NOT NULL DEFAULT 'Claimed',
+  `picked_up_by` varchar(255) DEFAULT NULL,
+  `relationship` varchar(50) DEFAULT NULL,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `tbl_certificates`
 --
 
@@ -255,6 +334,7 @@ CREATE TABLE `tbl_certificates_claimed` (
   `valid_id` varchar(255) DEFAULT NULL,
   `total_amount_paid` decimal(10,2) NOT NULL DEFAULT 0.00,
   `for_barangay` int(11) NOT NULL,
+  `status` varchar(50) NOT NULL,
   `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
   `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
@@ -274,6 +354,83 @@ CREATE TABLE `tbl_chats` (
   `sender_type` enum('resident','admin') NOT NULL,
   `chat_at` datetime DEFAULT current_timestamp(),
   `is_read` tinyint(1) DEFAULT 0
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `tbl_closure`
+--
+
+CREATE TABLE `tbl_closure` (
+  `id` int(11) NOT NULL,
+  `resident_id` int(11) NOT NULL,
+  `document_number` varchar(50) NOT NULL,
+  `picked_up_by` varchar(100) DEFAULT NULL,
+  `relationship` varchar(50) DEFAULT NULL,
+  `certificate_type` varchar(100) DEFAULT 'Clearance to operate',
+  `purpose` text NOT NULL,
+  `business_name` varchar(150) NOT NULL,
+  `business_trade` int(11) NOT NULL,
+  `business_address` varchar(255) NOT NULL,
+  `owner_name` varchar(100) NOT NULL,
+  `owner_purok` varchar(50) NOT NULL,
+  `email` varchar(100) NOT NULL,
+  `contact` varchar(50) NOT NULL,
+  `for_barangay` int(11) NOT NULL,
+  `valid_id` varchar(255) DEFAULT NULL,
+  `birth_certificate` varchar(255) DEFAULT NULL,
+  `is_resident` varchar(10) NOT NULL,
+  `total_amount` decimal(10,2) NOT NULL,
+  `status` varchar(50) NOT NULL DEFAULT 'Pending',
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `tbl_closure_claimed`
+--
+
+CREATE TABLE `tbl_closure_claimed` (
+  `id` int(11) NOT NULL,
+  `resident_id` int(11) NOT NULL,
+  `document_number` varchar(50) NOT NULL,
+  `picked_up_by` varchar(100) DEFAULT NULL,
+  `relationship` varchar(50) DEFAULT NULL,
+  `certificate_type` varchar(100) DEFAULT 'Clearance to operate',
+  `purpose` text NOT NULL,
+  `business_name` varchar(150) NOT NULL,
+  `business_trade` int(11) NOT NULL,
+  `business_address` varchar(255) NOT NULL,
+  `owner_name` varchar(100) NOT NULL,
+  `owner_purok` varchar(50) NOT NULL,
+  `email` varchar(100) NOT NULL,
+  `contact` varchar(50) NOT NULL,
+  `for_barangay` int(11) NOT NULL,
+  `valid_id` varchar(255) DEFAULT NULL,
+  `birth_certificate` varchar(255) DEFAULT NULL,
+  `is_resident` varchar(10) NOT NULL,
+  `total_amount` decimal(10,2) NOT NULL,
+  `status` varchar(50) NOT NULL DEFAULT 'Pending',
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `tbl_feedback`
+--
+
+CREATE TABLE `tbl_feedback` (
+  `id` int(11) NOT NULL,
+  `resident_id` int(11) NOT NULL,
+  `message` text NOT NULL,
+  `rating` int(11) NOT NULL CHECK (`rating` between 1 and 5),
+  `barangay` int(11) NOT NULL,
+  `created_at` datetime DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
@@ -385,6 +542,7 @@ CREATE TABLE `tbl_residents_family_members` (
   `middle_name` varchar(100) NOT NULL,
   `last_name` varchar(100) NOT NULL,
   `suffix` varchar(20) DEFAULT NULL,
+  `purok` varchar(100) DEFAULT NULL,
   `relationship` varchar(100) NOT NULL,
   `gender` varchar(10) NOT NULL,
   `date_of_birth` date NOT NULL,
@@ -398,7 +556,8 @@ CREATE TABLE `tbl_residents_family_members` (
   `phone_number` varchar(20) DEFAULT NULL,
   `philhealth_number` varchar(50) DEFAULT NULL,
   `school` varchar(150) DEFAULT NULL,
-  `occupation` varchar(150) DEFAULT NULL
+  `occupation` varchar(150) DEFAULT NULL,
+  `created_at` datetime NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
@@ -425,9 +584,64 @@ CREATE TABLE `tbl_superadmin` (
 INSERT INTO `tbl_superadmin` (`id`, `first_name`, `last_name`, `age`, `phone_number`, `username`, `email`, `password`) VALUES
 (1, 'Zyrell Superadmin', 'Hidalgo', 22, '09495748301', 'zyrellsuperadmin', 'zyrellhidalgo@gmail.com', 'f7c3bc1d808e04732adf679965ccc34ca7ae3441');
 
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `tbl_system_logs_admin`
+--
+
+CREATE TABLE `tbl_system_logs_admin` (
+  `id` int(11) NOT NULL,
+  `admin_id` int(11) NOT NULL,
+  `logged_in` datetime DEFAULT NULL,
+  `logged_out` datetime DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `tbl_system_logs_residents`
+--
+
+CREATE TABLE `tbl_system_logs_residents` (
+  `id` int(11) NOT NULL,
+  `resident_id` int(11) NOT NULL,
+  `logged_in` datetime NOT NULL,
+  `logged_out` datetime DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `tbl_system_logs_superadmin`
+--
+
+CREATE TABLE `tbl_system_logs_superadmin` (
+  `id` int(11) NOT NULL,
+  `superadmin_id` int(11) NOT NULL,
+  `logged_in` datetime DEFAULT NULL,
+  `logged_out` datetime DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `tbl_system_logs_superadmin`
+--
+
+INSERT INTO `tbl_system_logs_superadmin` (`id`, `superadmin_id`, `logged_in`, `logged_out`) VALUES
+(6, 1, '2025-07-17 23:21:19', '2025-07-17 23:28:28'),
+(7, 1, '2025-07-17 23:28:35', NULL);
+
 --
 -- Indexes for dumped tables
 --
+
+--
+-- Indexes for table `tbl_activity_logs`
+--
+ALTER TABLE `tbl_activity_logs`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `fk_activity_resident` (`resident_id`),
+  ADD KEY `fk_activity_barangay` (`barangay_id`);
 
 --
 -- Indexes for table `tbl_admin`
@@ -437,6 +651,13 @@ ALTER TABLE `tbl_admin`
   ADD UNIQUE KEY `username` (`username`),
   ADD UNIQUE KEY `email` (`email`),
   ADD KEY `barangay_id` (`barangay_id`);
+
+--
+-- Indexes for table `tbl_announcement`
+--
+ALTER TABLE `tbl_announcement`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `fk_announcement_barangay` (`barangay`);
 
 --
 -- Indexes for table `tbl_barangay`
@@ -457,6 +678,23 @@ ALTER TABLE `tbl_barangay_officials`
 ALTER TABLE `tbl_business_trade`
   ADD PRIMARY KEY (`id`),
   ADD UNIQUE KEY `code` (`code`);
+
+--
+-- Indexes for table `tbl_cedula`
+--
+ALTER TABLE `tbl_cedula`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `document_number` (`document_number`),
+  ADD KEY `for_barangay` (`for_barangay`),
+  ADD KEY `fk_resident` (`resident_id`);
+
+--
+-- Indexes for table `tbl_cedula_claimed`
+--
+ALTER TABLE `tbl_cedula_claimed`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `resident_id` (`resident_id`),
+  ADD KEY `for_barangay` (`for_barangay`);
 
 --
 -- Indexes for table `tbl_certificates`
@@ -481,6 +719,32 @@ ALTER TABLE `tbl_chats`
   ADD PRIMARY KEY (`id`),
   ADD KEY `resident_id` (`resident_id`),
   ADD KEY `admin_id` (`admin_id`);
+
+--
+-- Indexes for table `tbl_closure`
+--
+ALTER TABLE `tbl_closure`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `fk_closure_resident` (`resident_id`),
+  ADD KEY `fk_closure_barangay` (`for_barangay`),
+  ADD KEY `fk_closure_trade` (`business_trade`);
+
+--
+-- Indexes for table `tbl_closure_claimed`
+--
+ALTER TABLE `tbl_closure_claimed`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `fk_closure_claimed_resident` (`resident_id`),
+  ADD KEY `fk_closure_claimed_barangay` (`for_barangay`),
+  ADD KEY `fk_closure_claimed_trade` (`business_trade`);
+
+--
+-- Indexes for table `tbl_feedback`
+--
+ALTER TABLE `tbl_feedback`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `resident_id` (`resident_id`),
+  ADD KEY `barangay` (`barangay`);
 
 --
 -- Indexes for table `tbl_operate`
@@ -526,14 +790,47 @@ ALTER TABLE `tbl_superadmin`
   ADD UNIQUE KEY `email` (`email`);
 
 --
+-- Indexes for table `tbl_system_logs_admin`
+--
+ALTER TABLE `tbl_system_logs_admin`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `admin_id` (`admin_id`);
+
+--
+-- Indexes for table `tbl_system_logs_residents`
+--
+ALTER TABLE `tbl_system_logs_residents`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `resident_id` (`resident_id`);
+
+--
+-- Indexes for table `tbl_system_logs_superadmin`
+--
+ALTER TABLE `tbl_system_logs_superadmin`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `superadmin_id` (`superadmin_id`);
+
+--
 -- AUTO_INCREMENT for dumped tables
 --
+
+--
+-- AUTO_INCREMENT for table `tbl_activity_logs`
+--
+ALTER TABLE `tbl_activity_logs`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- AUTO_INCREMENT for table `tbl_admin`
 --
 ALTER TABLE `tbl_admin`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
+
+--
+-- AUTO_INCREMENT for table `tbl_announcement`
+--
+ALTER TABLE `tbl_announcement`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT for table `tbl_barangay`
@@ -545,7 +842,7 @@ ALTER TABLE `tbl_barangay`
 -- AUTO_INCREMENT for table `tbl_barangay_officials`
 --
 ALTER TABLE `tbl_barangay_officials`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- AUTO_INCREMENT for table `tbl_business_trade`
@@ -554,10 +851,22 @@ ALTER TABLE `tbl_business_trade`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=79;
 
 --
+-- AUTO_INCREMENT for table `tbl_cedula`
+--
+ALTER TABLE `tbl_cedula`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+
+--
+-- AUTO_INCREMENT for table `tbl_cedula_claimed`
+--
+ALTER TABLE `tbl_cedula_claimed`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+
+--
 -- AUTO_INCREMENT for table `tbl_certificates`
 --
 ALTER TABLE `tbl_certificates`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 
 --
 -- AUTO_INCREMENT for table `tbl_certificates_claimed`
@@ -569,13 +878,31 @@ ALTER TABLE `tbl_certificates_claimed`
 -- AUTO_INCREMENT for table `tbl_chats`
 --
 ALTER TABLE `tbl_chats`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=27;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=33;
+
+--
+-- AUTO_INCREMENT for table `tbl_closure`
+--
+ALTER TABLE `tbl_closure`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+
+--
+-- AUTO_INCREMENT for table `tbl_closure_claimed`
+--
+ALTER TABLE `tbl_closure_claimed`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+
+--
+-- AUTO_INCREMENT for table `tbl_feedback`
+--
+ALTER TABLE `tbl_feedback`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT for table `tbl_operate`
 --
 ALTER TABLE `tbl_operate`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT for table `tbl_operate_claimed`
@@ -587,13 +914,13 @@ ALTER TABLE `tbl_operate_claimed`
 -- AUTO_INCREMENT for table `tbl_residents`
 --
 ALTER TABLE `tbl_residents`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=19;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=25;
 
 --
 -- AUTO_INCREMENT for table `tbl_residents_family_members`
 --
 ALTER TABLE `tbl_residents_family_members`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=27;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=40;
 
 --
 -- AUTO_INCREMENT for table `tbl_superadmin`
@@ -602,8 +929,33 @@ ALTER TABLE `tbl_superadmin`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
+-- AUTO_INCREMENT for table `tbl_system_logs_admin`
+--
+ALTER TABLE `tbl_system_logs_admin`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+
+--
+-- AUTO_INCREMENT for table `tbl_system_logs_residents`
+--
+ALTER TABLE `tbl_system_logs_residents`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+
+--
+-- AUTO_INCREMENT for table `tbl_system_logs_superadmin`
+--
+ALTER TABLE `tbl_system_logs_superadmin`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+
+--
 -- Constraints for dumped tables
 --
+
+--
+-- Constraints for table `tbl_activity_logs`
+--
+ALTER TABLE `tbl_activity_logs`
+  ADD CONSTRAINT `fk_activity_barangay` FOREIGN KEY (`barangay_id`) REFERENCES `tbl_barangay` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `fk_activity_resident` FOREIGN KEY (`resident_id`) REFERENCES `tbl_residents` (`id`) ON DELETE CASCADE;
 
 --
 -- Constraints for table `tbl_admin`
@@ -612,10 +964,30 @@ ALTER TABLE `tbl_admin`
   ADD CONSTRAINT `tbl_admin_ibfk_1` FOREIGN KEY (`barangay_id`) REFERENCES `tbl_barangay` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
+-- Constraints for table `tbl_announcement`
+--
+ALTER TABLE `tbl_announcement`
+  ADD CONSTRAINT `fk_announcement_barangay` FOREIGN KEY (`barangay`) REFERENCES `tbl_barangay` (`id`) ON DELETE CASCADE;
+
+--
 -- Constraints for table `tbl_barangay_officials`
 --
 ALTER TABLE `tbl_barangay_officials`
   ADD CONSTRAINT `tbl_barangay_officials_ibfk_1` FOREIGN KEY (`barangay`) REFERENCES `tbl_barangay` (`id`);
+
+--
+-- Constraints for table `tbl_cedula`
+--
+ALTER TABLE `tbl_cedula`
+  ADD CONSTRAINT `fk_resident` FOREIGN KEY (`resident_id`) REFERENCES `tbl_residents` (`id`) ON DELETE SET NULL ON UPDATE CASCADE,
+  ADD CONSTRAINT `tbl_cedula_ibfk_1` FOREIGN KEY (`for_barangay`) REFERENCES `tbl_barangay` (`id`);
+
+--
+-- Constraints for table `tbl_cedula_claimed`
+--
+ALTER TABLE `tbl_cedula_claimed`
+  ADD CONSTRAINT `tbl_cedula_claimed_ibfk_1` FOREIGN KEY (`resident_id`) REFERENCES `tbl_residents` (`id`),
+  ADD CONSTRAINT `tbl_cedula_claimed_ibfk_2` FOREIGN KEY (`for_barangay`) REFERENCES `tbl_barangay` (`id`);
 
 --
 -- Constraints for table `tbl_certificates`
@@ -636,6 +1008,29 @@ ALTER TABLE `tbl_certificates_claimed`
 ALTER TABLE `tbl_chats`
   ADD CONSTRAINT `tbl_chats_ibfk_1` FOREIGN KEY (`resident_id`) REFERENCES `tbl_residents` (`id`) ON DELETE CASCADE,
   ADD CONSTRAINT `tbl_chats_ibfk_2` FOREIGN KEY (`admin_id`) REFERENCES `tbl_admin` (`id`) ON DELETE CASCADE;
+
+--
+-- Constraints for table `tbl_closure`
+--
+ALTER TABLE `tbl_closure`
+  ADD CONSTRAINT `fk_closure_barangay` FOREIGN KEY (`for_barangay`) REFERENCES `tbl_barangay` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `fk_closure_resident` FOREIGN KEY (`resident_id`) REFERENCES `tbl_residents` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `fk_closure_trade` FOREIGN KEY (`business_trade`) REFERENCES `tbl_business_trade` (`id`) ON DELETE CASCADE;
+
+--
+-- Constraints for table `tbl_closure_claimed`
+--
+ALTER TABLE `tbl_closure_claimed`
+  ADD CONSTRAINT `fk_closure_claimed_barangay` FOREIGN KEY (`for_barangay`) REFERENCES `tbl_barangay` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `fk_closure_claimed_resident` FOREIGN KEY (`resident_id`) REFERENCES `tbl_residents` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `fk_closure_claimed_trade` FOREIGN KEY (`business_trade`) REFERENCES `tbl_business_trade` (`id`) ON DELETE CASCADE;
+
+--
+-- Constraints for table `tbl_feedback`
+--
+ALTER TABLE `tbl_feedback`
+  ADD CONSTRAINT `tbl_feedback_ibfk_1` FOREIGN KEY (`resident_id`) REFERENCES `tbl_residents` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `tbl_feedback_ibfk_2` FOREIGN KEY (`barangay`) REFERENCES `tbl_barangay` (`id`) ON DELETE CASCADE;
 
 --
 -- Constraints for table `tbl_operate`
@@ -665,6 +1060,24 @@ ALTER TABLE `tbl_residents`
 ALTER TABLE `tbl_residents_family_members`
   ADD CONSTRAINT `fk_family_barangay` FOREIGN KEY (`barangay_address`) REFERENCES `tbl_barangay` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   ADD CONSTRAINT `tbl_residents_family_members_ibfk_1` FOREIGN KEY (`resident_id`) REFERENCES `tbl_residents` (`id`);
+
+--
+-- Constraints for table `tbl_system_logs_admin`
+--
+ALTER TABLE `tbl_system_logs_admin`
+  ADD CONSTRAINT `tbl_system_logs_admin_ibfk_1` FOREIGN KEY (`admin_id`) REFERENCES `tbl_admin` (`id`);
+
+--
+-- Constraints for table `tbl_system_logs_residents`
+--
+ALTER TABLE `tbl_system_logs_residents`
+  ADD CONSTRAINT `tbl_system_logs_residents_ibfk_1` FOREIGN KEY (`resident_id`) REFERENCES `tbl_residents` (`id`);
+
+--
+-- Constraints for table `tbl_system_logs_superadmin`
+--
+ALTER TABLE `tbl_system_logs_superadmin`
+  ADD CONSTRAINT `tbl_system_logs_superadmin_ibfk_1` FOREIGN KEY (`superadmin_id`) REFERENCES `tbl_superadmin` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
