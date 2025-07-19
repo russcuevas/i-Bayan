@@ -112,8 +112,6 @@ $announcements = $stmt->fetchAll(PDO::FETCH_ASSOC);
     <link href="../css/custom.css" rel="stylesheet">
 
     <link href="../css/themes/all-themes.css" rel="stylesheet" />
-    <!-- Sweetalert Css -->
-    <link href="../plugins/sweetalert/sweetalert.css" rel="stylesheet" />
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Poppins&display=swap');
 
@@ -166,6 +164,38 @@ $announcements = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
         .icon-style {
             transition: color 0.3s ease;
+        }
+
+        .swal-wide {
+            width: 600px !important;
+            font-family: 'Poppins', sans-serif;
+            padding: 30px;
+        }
+
+        .swal-title {
+            font-size: 28px !important;
+            font-weight: 600;
+            color: #1a49cb;
+        }
+
+        .swal-input {
+            font-size: 18px;
+            padding: 12px;
+            border-radius: 6px;
+        }
+
+        .swal-confirm-btn {
+            background-color: #1a49cb !important;
+            font-size: 16px;
+            padding: 10px 24px;
+            border-radius: 6px;
+        }
+
+        .swal-cancel-btn {
+            background-color: #aaa !important;
+            font-size: 16px;
+            padding: 10px 24px;
+            border-radius: 6px;
         }
     </style>
 </head>
@@ -318,7 +348,9 @@ $announcements = $stmt->fetchAll(PDO::FETCH_ASSOC);
                                                 <td><?= htmlspecialchars($announcement['announcement_venue']) ?></td>
                                                 <td><?= nl2br(htmlspecialchars($announcement['status'])) ?></td>
                                                 <td>
-                                                    <a href="" class="btn bg-teal waves-effect" style="margin-bottom: 5px;"><i class="fa-solid fa-comment-sms"></i> SEND SMS</a>
+                                                    <a href="send_sms.php?id=<?= $announcement['id'] ?>" class="btn bg-teal waves-effect" style="margin-bottom: 5px;" id="sendSmsBtn" data-announcement-title="<?= htmlspecialchars($announcement['announcement_title']) ?>">
+                                                        <i class="fa-solid fa-comment-sms"></i> SEND SMS
+                                                    </a>
 
                                                     <a href="edit_announcement.php?id=<?= $announcement['id'] ?>" class="btn bg-teal waves-effect" style="margin-bottom: 5px;">
                                                         <i class="fa-solid fa-pen-to-square"></i> EDIT
@@ -397,26 +429,66 @@ $announcements = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
     <!-- Demo Js -->
     <script src="../js/demo.js"></script>
-    <script src="../plugins/sweetalert/sweetalert.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
     <script>
+        document.getElementById('sendSmsBtn').addEventListener('click', function(e) {
+            e.preventDefault();
+
+            var announcementTitle = this.getAttribute('data-announcement-title');
+
+            Swal.fire({
+                title: "Are you sure?",
+                text: "Do you want to send SMS with this announcement: \"" + announcementTitle + "\"?",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonText: 'Yes',
+                cancelButtonText: 'Cancel',
+                reverseButtons: true,
+                dangerMode: true,
+                customClass: {
+                    popup: 'swal-wide',
+                    title: 'swal-title',
+                    confirmButton: 'swal-confirm-btn',
+                    cancelButton: 'swal-cancel-btn'
+                }
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    window.location.href = this.href;
+                }
+            });
+        });
+
         <?php if (isset($_SESSION['success'])): ?>
-            swal({
-                type: 'success',
+            Swal.fire({
                 title: 'Success!',
                 text: '<?php echo $_SESSION['success']; ?>',
-                confirmButtonText: 'OK'
+                icon: 'success',
+                confirmButtonText: 'OK',
+                customClass: {
+                    popup: 'swal-wide',
+                    title: 'swal-title',
+                    confirmButton: 'swal-confirm-btn'
+                }
             });
             <?php unset($_SESSION['success']); ?>
         <?php elseif (isset($_SESSION['error'])): ?>
-            swal({
-                type: 'error',
-                title: 'Oops...',
+            Swal.fire({
+                title: 'Error!',
                 text: '<?php echo $_SESSION['error']; ?>',
-                confirmButtonText: 'OK'
+                icon: 'error',
+                confirmButtonText: 'OK',
+                customClass: {
+                    popup: 'swal-wide',
+                    title: 'swal-title',
+                    confirmButton: 'swal-confirm-btn'
+                }
             });
             <?php unset($_SESSION['error']); ?>
         <?php endif; ?>
     </script>
+
+
 </body>
 
 </html>

@@ -40,9 +40,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['status'], $_POST['ope
     $new_status = $_POST['status'];
     $operate_id = $_POST['operate_id'];
 
+    // Update the status of the operation in tbl_operate
     $update = $conn->prepare("UPDATE tbl_operate SET status = ?, updated_at = NOW() WHERE id = ?");
     $updated = $update->execute([$new_status, $operate_id]);
 
+    // If status is "Claimed", insert into tbl_operate_claimed
     if ($updated && $new_status === 'Claimed') {
         $stmt = $conn->prepare("SELECT * FROM tbl_operate WHERE id = ?");
         $stmt->execute([$operate_id]);
@@ -89,10 +91,52 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['status'], $_POST['ope
         }
     }
 
+    // If status is "To Pick Up", send an SMS to the resident
+    elseif ($updated && $new_status === 'To Pick Up') {
+        // Fetch the operation data for "To Pick Up"
+        $stmt = $conn->prepare("SELECT * FROM tbl_operate WHERE id = ?");
+        $stmt->execute([$operate_id]);
+        $data = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        if ($data) {
+            $resident_stmt = $conn->prepare("SELECT phone_number, first_name FROM tbl_residents WHERE id = ?");
+            $resident_stmt->execute([$data['resident_id']]);
+            $resident = $resident_stmt->fetch(PDO::FETCH_ASSOC);
+
+            if ($resident && !empty($resident['phone_number'])) {
+                $apikey = 'b2a42d09e5cd42585fcc90bf1eeff24e';
+                $number = $resident['phone_number'];
+                $name = ucfirst(strtolower($resident['first_name']));
+                $amount = number_format($data['total_amount'], 2);
+                $certificate_type = ucfirst(strtolower($data['certificate_type']));
+                $message = "Hi $name, your $certificate_type is ready for pickup. Please bring ₱$amount. Thank you!";
+                $sendername = 'BPTOCEANUS';
+
+                $ch = curl_init();
+                $parameters = [
+                    'apikey' => $apikey,
+                    'number' => $number,
+                    'message' => $message,
+                    'sendername' => $sendername
+                ];
+
+                curl_setopt($ch, CURLOPT_URL, 'https://semaphore.co/api/v4/messages');
+                curl_setopt($ch, CURLOPT_POST, 1);
+                curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($parameters));
+                curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+
+                $output = curl_exec($ch);
+                curl_close($ch);
+            }
+        }
+    }
+
+    // Success message and redirect to the operate information page
     $_SESSION['success'] = "Status updated successfully.";
     header("Location: operate_view_information.php?id=" . $operate_id);
     exit();
 }
+
 
 
 ?>

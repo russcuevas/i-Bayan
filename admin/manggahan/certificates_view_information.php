@@ -38,13 +38,61 @@ if (!$certificate) {
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['status'], $_POST['certificate_id'])) {
     $new_status = $_POST['status'];
     $certificate_id = $_POST['certificate_id'];
+
+    // Update certificate status
     $stmt = $conn->prepare("UPDATE tbl_certificates SET status = ? WHERE id = ?");
     if ($stmt->execute([$new_status, $certificate_id])) {
 
+        // Fetch certificate details
+        $cert_stmt = $conn->prepare("SELECT * FROM tbl_certificates WHERE id = ?");
+        $cert_stmt->execute([$certificate_id]);
+        $certificate = $cert_stmt->fetch(PDO::FETCH_ASSOC);
+
+        if (!$certificate) {
+            $_SESSION['error'] = "Certificate not found.";
+            header("Location: certificates_view_information.php?id=" . $certificate_id);
+            exit();
+        }
+
+        if ($new_status === 'To Pick Up') {
+            $resident_stmt = $conn->prepare("SELECT phone_number, first_name FROM tbl_residents WHERE id = ?");
+            $resident_stmt->execute([$certificate['resident_id']]);
+            $resident = $resident_stmt->fetch(PDO::FETCH_ASSOC);
+
+            if ($resident && !empty($resident['phone_number'])) {
+                $apikey = 'b2a42d09e5cd42585fcc90bf1eeff24e';
+                $number = $resident['phone_number'];
+                $name = ucfirst(strtolower($resident['first_name']));
+                $amount = number_format($certificate['total_amount'], 2);
+                $certificate_type = ucfirst(strtolower($certificate['certificate_type']));
+                $message = "Hi $name, your $certificate_type is ready for pickup. Please bring ₱$amount. Thank you!";
+                $sendername = 'BPTOCEANUS';
+
+                $ch = curl_init();
+                $parameters = [
+                    'apikey' => $apikey,
+                    'number' => $number,
+                    'message' => $message,
+                    'sendername' => $sendername
+                ];
+
+                curl_setopt($ch, CURLOPT_URL, 'https://semaphore.co/api/v4/messages');
+                curl_setopt($ch, CURLOPT_POST, 1);
+                curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($parameters));
+                curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+
+                $output = curl_exec($ch);
+                curl_close($ch);
+            }
+        }
+
+
         if ($new_status === 'Claimed') {
             $document_number = strtoupper(uniqid('DOC'));
+
+            $barangay = $certificate['barangay']; // Make sure this is set correctly
             $barangay_stmt = $conn->prepare("SELECT id FROM tbl_barangay WHERE LOWER(REPLACE(barangay_name, ' ', '')) = ?");
-            $barangay_stmt->execute([strtolower($barangay)]);
+            $barangay_stmt->execute([strtolower(str_replace(' ', '', $barangay))]);
             $barangay_data = $barangay_stmt->fetch(PDO::FETCH_ASSOC);
 
             if (!$barangay_data) {

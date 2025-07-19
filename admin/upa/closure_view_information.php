@@ -44,6 +44,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['status'], $_POST['clo
     $updated = $update->execute([$new_status, $closure_id]);
 
     if ($updated && $new_status === 'Claimed') {
+        // For the "Claimed" status, insert the data into tbl_closure_claimed
         $stmt = $conn->prepare("SELECT * FROM tbl_closure WHERE id = ?");
         $stmt->execute([$closure_id]);
         $data = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -87,12 +88,50 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['status'], $_POST['clo
                 ':updated_at' => date('Y-m-d H:i:s')
             ]);
         }
+    } elseif ($updated && $new_status === 'To Pick Up') {
+        $stmt = $conn->prepare("SELECT * FROM tbl_closure WHERE id = ?");
+        $stmt->execute([$closure_id]);
+        $data = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        if ($data) {
+            $resident_stmt = $conn->prepare("SELECT phone_number, first_name FROM tbl_residents WHERE id = ?");
+            $resident_stmt->execute([$data['resident_id']]);
+            $resident = $resident_stmt->fetch(PDO::FETCH_ASSOC);
+
+            if ($resident && !empty($resident['phone_number'])) {
+                $apikey = 'b2a42d09e5cd42585fcc90bf1eeff24e';
+                $number = $resident['phone_number'];
+                $name = ucfirst(strtolower($resident['first_name']));
+                $amount = number_format($data['total_amount'], 2);
+                $certificate_type = ucfirst(strtolower($data['certificate_type']));
+                $message = "Hi $name, your $certificate_type is ready for pickup. Please bring ₱$amount. Thank you!";
+                $sendername = 'BPTOCEANUS';
+
+                $ch = curl_init();
+                $parameters = [
+                    'apikey' => $apikey,
+                    'number' => $number,
+                    'message' => $message,
+                    'sendername' => $sendername
+                ];
+
+                curl_setopt($ch, CURLOPT_URL, 'https://semaphore.co/api/v4/messages');
+                curl_setopt($ch, CURLOPT_POST, 1);
+                curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($parameters));
+                curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+
+                $output = curl_exec($ch);
+                curl_close($ch);
+            }
+        }
     }
 
+    // Success message and redirect
     $_SESSION['success'] = "Status updated successfully.";
     header("Location: closure_view_information.php?id=" . $closure_id);
     exit();
 }
+
 
 
 ?>

@@ -36,27 +36,33 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     // Update the user data in the database
     if ($type == 'admin') {
         $update_query = "UPDATE tbl_admin SET fullname = :fullname, contact_number = :contact WHERE id = :id";
+        $stmt_update = $conn->prepare($update_query);
+        $stmt_update->bindParam(':fullname', $fullname);
+        $stmt_update->bindParam(':contact', $contact);
+        $stmt_update->bindParam(':id', $id, PDO::PARAM_INT);
     } elseif ($type == 'superadmin') {
         $update_query = "UPDATE tbl_superadmin SET first_name = :fullname, phone_number = :contact WHERE id = :id";
+        $stmt_update = $conn->prepare($update_query);
+        $stmt_update->bindParam(':fullname', $fullname);
+        $stmt_update->bindParam(':contact', $contact);
+        $stmt_update->bindParam(':id', $id, PDO::PARAM_INT);
     } else {
-        // Split the fullname into first, middle, last, and suffix
+        // Split fullname
         $name_parts = explode(' ', $fullname);
         $first_name = $name_parts[0];
-        $middle_name = isset($name_parts[1]) ? $name_parts[1] : '';
-        $last_name = isset($name_parts[2]) ? $name_parts[2] : '';
-        $suffix = isset($name_parts[3]) ? $name_parts[3] : '';
+        $middle_name = $name_parts[1] ?? '';
+        $last_name = $name_parts[2] ?? '';
+        $suffix = $name_parts[3] ?? '';
 
-        // Update the residents table
         $update_query = "UPDATE tbl_residents SET first_name = :first_name, middle_name = :middle_name, last_name = :last_name, suffix = :suffix, phone_number = :contact WHERE id = :id";
+        $stmt_update = $conn->prepare($update_query);
+        $stmt_update->bindParam(':first_name', $first_name);
+        $stmt_update->bindParam(':middle_name', $middle_name);
+        $stmt_update->bindParam(':last_name', $last_name);
+        $stmt_update->bindParam(':suffix', $suffix);
+        $stmt_update->bindParam(':contact', $contact);
+        $stmt_update->bindParam(':id', $id, PDO::PARAM_INT);
     }
-
-    $stmt_update = $conn->prepare($update_query);
-    $stmt_update->bindParam(':first_name', $first_name);
-    $stmt_update->bindParam(':middle_name', $middle_name);
-    $stmt_update->bindParam(':last_name', $last_name);
-    $stmt_update->bindParam(':suffix', $suffix);
-    $stmt_update->bindParam(':contact', $contact);
-    $stmt_update->bindParam(':id', $id, PDO::PARAM_INT);
 
     if ($stmt_update->execute()) {
         $_SESSION['success'] = "Updated users successfully!";

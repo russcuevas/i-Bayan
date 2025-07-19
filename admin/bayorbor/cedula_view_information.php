@@ -57,19 +57,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['status'], $_POST['ced
         $data = $stmt->fetch(PDO::FETCH_ASSOC);
 
         if ($data) {
+            // Insert into tbl_cedula_claimed for "Claimed"
             $insert = $conn->prepare("
-                INSERT INTO tbl_cedula_claimed (
-                    certificate_type, resident_id, document_number, fullname, civil_status,
-                    gender, tin, profession, purok, email, contact, valid_id, birth_certificate,
-                    is_resident, purpose, for_barangay, total_amount, status, picked_up_by,
-                    relationship, created_at
-                ) VALUES (
-                    :certificate_type, :resident_id, :document_number, :fullname, :civil_status,
-                    :gender, :tin, :profession, :purok, :email, :contact, :valid_id, :birth_certificate,
-                    :is_resident, :purpose, :for_barangay, :total_amount, :status, :picked_up_by,
-                    :relationship, :created_at
-                )
-            ");
+            INSERT INTO tbl_cedula_claimed (
+                certificate_type, resident_id, document_number, fullname, civil_status,
+                gender, tin, profession, purok, email, contact, valid_id, birth_certificate,
+                is_resident, purpose, for_barangay, total_amount, status, picked_up_by,
+                relationship, created_at
+            ) VALUES (
+                :certificate_type, :resident_id, :document_number, :fullname, :civil_status,
+                :gender, :tin, :profession, :purok, :email, :contact, :valid_id, :birth_certificate,
+                :is_resident, :purpose, :for_barangay, :total_amount, :status, :picked_up_by,
+                :relationship, :created_at
+            )
+        ");
 
             $insert->execute([
                 ':certificate_type'   => $data['certificate_type'],
@@ -95,11 +96,53 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['status'], $_POST['ced
                 ':created_at'         => date('Y-m-d H:i:s')
             ]);
         }
-    }
 
-    $_SESSION['success'] = "Status updated successfully.";
-    header("Location: cedula_view_information.php?id=" . $cedula_id);
-    exit();
+        $_SESSION['success'] = "Status updated successfully.";
+        header("Location: cedula_view_information.php?id=" . $cedula_id);
+        exit();
+    } elseif ($updated && $new_status === 'To Pick Up') {
+        // Fetch the cedula data to get the resident details
+        $stmt = $conn->prepare("SELECT * FROM tbl_cedula WHERE id = ?");
+        $stmt->execute([$cedula_id]);
+        $data = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        if ($data) {
+            // Send SMS for "To Pick Up" status
+            $resident_stmt = $conn->prepare("SELECT phone_number, first_name FROM tbl_residents WHERE id = ?");
+            $resident_stmt->execute([$data['resident_id']]);
+            $resident = $resident_stmt->fetch(PDO::FETCH_ASSOC);
+
+            if ($resident && !empty($resident['phone_number'])) {
+                $apikey = 'b2a42d09e5cd42585fcc90bf1eeff24e';
+                $number = $resident['phone_number'];
+                $name = ucfirst(strtolower($resident['first_name']));
+                $amount = number_format($data['total_amount'], 2);
+                $certificate_type = ucfirst(strtolower($data['certificate_type']));
+                $message = "Hi $name, your $certificate_type is ready for pickup. Please bring ₱$amount. Thank you!";
+                $sendername = 'BPTOCEANUS';
+
+                $ch = curl_init();
+                $parameters = [
+                    'apikey' => $apikey,
+                    'number' => $number,
+                    'message' => $message,
+                    'sendername' => $sendername
+                ];
+
+                curl_setopt($ch, CURLOPT_URL, 'https://semaphore.co/api/v4/messages');
+                curl_setopt($ch, CURLOPT_POST, 1);
+                curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($parameters));
+                curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+
+                $output = curl_exec($ch);
+                curl_close($ch);
+            }
+        }
+
+        $_SESSION['success'] = "Status updated successfully";
+        header("Location: cedula_view_information.php?id=" . $cedula_id);
+        exit();
+    }
 }
 
 

@@ -1,6 +1,10 @@
 <?php
 session_start();
 include '../../database/connection.php';
+require '../../vendor/autoload.php';
+
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\Exception;
 
 $barangay = basename(__DIR__); // e.g., "calingatan"
 $session_key = "admin_id_$barangay";
@@ -38,27 +42,109 @@ if (!$certificate) {
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['status'], $_POST['certificate_id'])) {
     $new_status = $_POST['status'];
     $certificate_id = $_POST['certificate_id'];
+
+    // Update certificate status
     $stmt = $conn->prepare("UPDATE tbl_certificates SET status = ? WHERE id = ?");
     if ($stmt->execute([$new_status, $certificate_id])) {
 
+        // Fetch certificate details
+        $cert_stmt = $conn->prepare("SELECT * FROM tbl_certificates WHERE id = ?");
+        $cert_stmt->execute([$certificate_id]);
+        $certificate = $cert_stmt->fetch(PDO::FETCH_ASSOC);
+
+        if (!$certificate) {
+            $_SESSION['error'] = "Certificate not found.";
+            header("Location: certificates_view_information.php?id=" . $certificate_id);
+            exit();
+        }
+
+        if ($new_status === 'To Pick Up') {
+            $resident_stmt = $conn->prepare("SELECT phone_number, email, first_name FROM tbl_residents WHERE id = ?");
+            $resident_stmt->execute([$certificate['resident_id']]);
+            $resident = $resident_stmt->fetch(PDO::FETCH_ASSOC);
+
+            if ($resident) {
+                $name = ucfirst(strtolower($resident['first_name']));
+                $amount = number_format($certificate['total_amount'], 2);
+                $certificate_type = ucfirst(strtolower($certificate['certificate_type']));
+
+                // ---- SEND EMAIL FIRST ----
+                if (!empty($resident['email'])) {
+                    $email = $resident['email'];
+                    $fullname = $name;
+
+                    $mail = new PHPMailer(true);
+
+                    try {
+                        $mail->isSMTP();
+                        $mail->Host = 'smtp.gmail.com';
+                        $mail->SMTPAuth = true;
+                        $mail->Username = 'gmanagementtt111@gmail.com';
+                        $mail->Password = 'skbtosbmkiffrajr';
+                        $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
+                        $mail->Port = 587;
+
+                        $mail->setFrom('gsu-erequest@gmail.com', 'iBayan');
+                        $mail->addAddress($email, $fullname);
+
+                        $mail->isHTML(true);
+                        $mail->Subject = 'Your ' . $certificate_type . ' is Ready for Pickup';
+
+                        $mail_body = "<p>Dear {$fullname},</p>
+                              <p>Your {$certificate_type} is now ready for pickup.</p>
+                              <p>Please bring ₱{$amount} upon claiming at the barangay office.</p>
+                              <p>Thank you,<br>Barangay Admin</p>";
+
+                        $mail->Body = $mail_body;
+                        $mail->send();
+                    } catch (Exception $e) {
+                        error_log("Email failed to send: {$mail->ErrorInfo}");
+                    }
+                }
+
+                // ---- THEN SEND SMS ----
+                if (!empty($resident['phone_number'])) {
+                    $apikey = 'b2a42d09e5cd42585fcc90bf1eeff24e';
+                    $number = $resident['phone_number'];
+                    $message = "Hi $name, your $certificate_type is ready for pickup. Please bring ₱$amount. Thank you!";
+                    $sendername = 'BPTOCEANUS';
+
+                    $ch = curl_init();
+                    $parameters = [
+                        'apikey' => $apikey,
+                        'number' => $number,
+                        'message' => $message,
+                        'sendername' => $sendername
+                    ];
+
+                    curl_setopt($ch, CURLOPT_URL, 'https://semaphore.co/api/v4/messages');
+                    curl_setopt($ch, CURLOPT_POST, 1);
+                    curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($parameters));
+                    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+
+                    $output = curl_exec($ch);
+                    curl_close($ch);
+                }
+            }
+        }
+
         if ($new_status === 'Claimed') {
             $document_number = strtoupper(uniqid('DOC'));
-            $barangay_stmt = $conn->prepare("SELECT id FROM tbl_barangay WHERE LOWER(REPLACE(barangay_name, ' ', '')) = ?");
-            $barangay_stmt->execute([strtolower($barangay)]);
-            $barangay_data = $barangay_stmt->fetch(PDO::FETCH_ASSOC);
 
-            if (!$barangay_data) {
-                $_SESSION['error'] = "Barangay not found in tbl_barangay.";
+            // ✅ Use the for_barangay directly from the certificate
+            $for_barangay_id = $certificate['for_barangay'];
+
+            if (empty($for_barangay_id)) {
+                $_SESSION['error'] = "Barangay not specified in certificate.";
                 header("Location: certificates_view_information.php?id=" . $certificate_id);
                 exit();
             }
 
-            $for_barangay_id = $barangay_data['id'];
             $insert = $conn->prepare("INSERT INTO tbl_certificates_claimed (
-                resident_id, purok, document_number, picked_up_by, relationship, 
-                certificate_type, purpose, fullname, email, gender, contact, 
-                valid_id, total_amount_paid, for_barangay, status
-            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+        resident_id, purok, document_number, picked_up_by, relationship, 
+        certificate_type, purpose, fullname, email, gender, contact, 
+        valid_id, total_amount_paid, for_barangay, status
+    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
 
             $insert->execute([
                 $certificate['resident_id'],
@@ -74,7 +160,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['status'], $_POST['cer
                 $certificate['contact'],
                 $certificate['valid_id'],
                 $certificate['total_amount'],
-                $for_barangay_id,
+                $for_barangay_id, // ✅ Directly from tbl_certificates.for_barangay
                 'Claimed'
             ]);
         }
