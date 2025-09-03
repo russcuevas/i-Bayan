@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jul 17, 2025 at 05:33 PM
+-- Generation Time: Sep 03, 2025 at 05:23 AM
 -- Server version: 10.4.27-MariaDB
 -- PHP Version: 8.2.0
 
@@ -149,7 +149,7 @@ CREATE TABLE `tbl_business_trade` (
 --
 
 INSERT INTO `tbl_business_trade` (`id`, `code`, `name`, `price`, `created_at`, `updated_at`) VALUES
-(7, 'BT0001', 'Water Refilling Stations', '1000.00', '2025-06-26 14:23:30', '2025-06-26 14:23:30'),
+(7, 'BT0001', 'Water Refilling Stations', '1000.00', '2025-06-26 14:23:30', '2025-07-19 09:36:25'),
 (8, 'BT0002', 'Water Retailing Stations', '500.00', '2025-06-26 14:23:40', '2025-06-26 14:23:40'),
 (9, 'BT0003', 'Upholstery Shops', '1000.00', '2025-06-26 14:23:51', '2025-06-26 14:23:51'),
 (10, 'BT0004', 'Trucking Services', '1000.00', '2025-06-26 14:24:06', '2025-06-26 14:24:06'),
@@ -582,7 +582,7 @@ CREATE TABLE `tbl_superadmin` (
 --
 
 INSERT INTO `tbl_superadmin` (`id`, `first_name`, `last_name`, `age`, `phone_number`, `username`, `email`, `password`) VALUES
-(1, 'Zyrell Superadmin', 'Hidalgo', 22, '09495748301', 'zyrellsuperadmin', 'zyrellhidalgo@gmail.com', 'f7c3bc1d808e04732adf679965ccc34ca7ae3441');
+(1, 'Zyrell Superadmin Hidalgo', 'Hidalgo', 22, '09495748301', 'zyrellsuperadmin', 'zyrellhidalgo@gmail.com', 'f7c3bc1d808e04732adf679965ccc34ca7ae3441');
 
 -- --------------------------------------------------------
 
@@ -628,8 +628,11 @@ CREATE TABLE `tbl_system_logs_superadmin` (
 --
 
 INSERT INTO `tbl_system_logs_superadmin` (`id`, `superadmin_id`, `logged_in`, `logged_out`) VALUES
-(6, 1, '2025-07-17 23:21:19', '2025-07-17 23:28:28'),
-(7, 1, '2025-07-17 23:28:35', NULL);
+(14, 1, '2025-07-19 17:35:43', '2025-07-19 17:37:28'),
+(15, 1, '2025-07-19 18:06:47', '2025-07-19 18:07:42'),
+(16, 1, '2025-07-30 01:04:42', '2025-07-30 01:05:40'),
+(17, 1, '2025-09-03 11:02:06', '2025-09-03 11:03:46'),
+(18, 1, '2025-09-03 11:21:49', '2025-09-03 11:21:57');
 
 --
 -- Indexes for dumped tables
@@ -818,19 +821,19 @@ ALTER TABLE `tbl_system_logs_superadmin`
 -- AUTO_INCREMENT for table `tbl_activity_logs`
 --
 ALTER TABLE `tbl_activity_logs`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=33;
 
 --
 -- AUTO_INCREMENT for table `tbl_admin`
 --
 ALTER TABLE `tbl_admin`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
 
 --
 -- AUTO_INCREMENT for table `tbl_announcement`
 --
 ALTER TABLE `tbl_announcement`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT for table `tbl_barangay`
@@ -842,7 +845,7 @@ ALTER TABLE `tbl_barangay`
 -- AUTO_INCREMENT for table `tbl_barangay_officials`
 --
 ALTER TABLE `tbl_barangay_officials`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
 -- AUTO_INCREMENT for table `tbl_business_trade`
@@ -854,73 +857,73 @@ ALTER TABLE `tbl_business_trade`
 -- AUTO_INCREMENT for table `tbl_cedula`
 --
 ALTER TABLE `tbl_cedula`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
 -- AUTO_INCREMENT for table `tbl_cedula_claimed`
 --
 ALTER TABLE `tbl_cedula_claimed`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT for table `tbl_certificates`
 --
 ALTER TABLE `tbl_certificates`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
 
 --
 -- AUTO_INCREMENT for table `tbl_certificates_claimed`
 --
 ALTER TABLE `tbl_certificates_claimed`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- AUTO_INCREMENT for table `tbl_chats`
 --
 ALTER TABLE `tbl_chats`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=33;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=39;
 
 --
 -- AUTO_INCREMENT for table `tbl_closure`
 --
 ALTER TABLE `tbl_closure`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- AUTO_INCREMENT for table `tbl_closure_claimed`
 --
 ALTER TABLE `tbl_closure_claimed`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT for table `tbl_feedback`
 --
 ALTER TABLE `tbl_feedback`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT for table `tbl_operate`
 --
 ALTER TABLE `tbl_operate`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT for table `tbl_operate_claimed`
 --
 ALTER TABLE `tbl_operate_claimed`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT for table `tbl_residents`
 --
 ALTER TABLE `tbl_residents`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=25;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=32;
 
 --
 -- AUTO_INCREMENT for table `tbl_residents_family_members`
 --
 ALTER TABLE `tbl_residents_family_members`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=40;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=53;
 
 --
 -- AUTO_INCREMENT for table `tbl_superadmin`
@@ -932,19 +935,19 @@ ALTER TABLE `tbl_superadmin`
 -- AUTO_INCREMENT for table `tbl_system_logs_admin`
 --
 ALTER TABLE `tbl_system_logs_admin`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
 
 --
 -- AUTO_INCREMENT for table `tbl_system_logs_residents`
 --
 ALTER TABLE `tbl_system_logs_residents`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
 
 --
 -- AUTO_INCREMENT for table `tbl_system_logs_superadmin`
 --
 ALTER TABLE `tbl_system_logs_superadmin`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=19;
 
 --
 -- Constraints for dumped tables

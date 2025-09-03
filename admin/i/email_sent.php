@@ -272,7 +272,7 @@ usort($all_claimed, function ($a, $b) {
                                 <li><a href="residents.php"><i class="fa-solid fa-users"></i> Residents</a></li>
                                 <li><a href="email_sent.php" class="active"><i class="fa-solid fa-envelope"></i> Email Sent</a></li>
                                 <li><a href="announcement_list.php"><i class="fa-solid fa-bullhorn"></i> Announcement</a></li>
-                                <li><a href="reports/activity_logs.php"><i class="fa-solid fa-list-check"></i> Activity Logs</a></li>
+                                <li><a href="logs.php"><i class="fa-solid fa-list-check"></i> Activity Logs</a></li>
                             </ul>
                         </div>
 

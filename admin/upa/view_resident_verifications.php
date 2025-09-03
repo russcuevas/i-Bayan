@@ -92,7 +92,7 @@ if (isset($_POST['reject_all']) && !empty($_POST['rejection_note'])) {
         $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
         $mail->Port = 587;
 
-        $mail->setFrom('gsu-erequest@gmail.com', 'iBayan');
+        $mail->setFrom('gsu-erequest@gmail.com', 'LGU Mataasnakahoy');
         $mail->addAddress($email, $fullname);
 
         $mail->isHTML(true);

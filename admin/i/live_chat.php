@@ -79,7 +79,8 @@ if ($selected_resident_id) {
         <div class="row">
             <!-- Sidebar: Residents -->
             <div class="col-md-3 border-end">
-                <h5 class="text-center mb-3">Residents</h5>
+                <h5 class="text-left">Residents</h5>
+                <a href="index.php" class="btn btn-primary mb-3">Go back</a>
                 <div class="list-group" id="resident-list">
                     <?php foreach ($residents as $res): ?>
                         <?php $unread = $unreadCounts[$res['id']] ?? 0; ?>
